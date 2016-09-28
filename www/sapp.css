@@ -1,0 +1,64 @@
+.banner{
+  margin-left:auto;
+  margin-right:auto;
+  height:60px;
+}
+.navbar{
+  background-color:#1d84b5;
+  max-width:1200px;
+}
+.header{
+    max-width:1200px;
+}
+.container{
+  margin:0;
+}
+.navbar-default .navbar-brand{
+  color:#fbfcff;
+}
+.navbar-default .nav li a {
+  color:#fbfcff;
+}
+.nav .nav-tabs{
+  width:100%;
+}
+.content{
+  position:relative;
+  width:100%;
+}
+.setwidth{
+  margin:0;
+}
+#submit{
+  left: 50px;
+  top: 13px;
+  position: relative;
+}
+#submitprot{
+  left: 50px;
+  top: 13px;
+  position: relative;
+}
+.tables{
+  position:relative;
+  left:-15px;
+}
+.tables .nav .active a{
+      background-color:#1d84b5;
+      color:white;
+}
+.info{
+  font-size:12px;
+  position:relative;
+  left:-40px;
+  
+}
+.info li {
+       display: inline;
+}
+.info ul {
+      list-style-type: none;
+}
+.tab-content{
+  width:125%;
+}
