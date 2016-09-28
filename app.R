@@ -170,7 +170,15 @@ if (interactive()) {
                                        ),
                                        actionButton("submitprot", "submit")
                                      )
-                                   ))
+                                   )),
+                            column(4,
+                                   selectInput("select", label = ("Select a species"), 
+                                               choices = list(
+                                                 "Salmon Salar" = 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql', 
+                                                 "Zebrafish" = 'http://10.209.0.227:7955/blazegraph/namespace/ZebraDB/sparql' ), 
+                                               selected = 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql')
+                                   
+                            )
                           ))),
         tags$br(),
         # DataTables #############################
