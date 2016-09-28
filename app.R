@@ -181,7 +181,7 @@ if (interactive()) {
                               12,
                               mainPanel(
                                 width = 12,
-                                style = "height=100%",
+                                style = "height=100%;width:110%",
                                 textOutput("exampleOutput2"),
                                 bsAlert("alert2"),
                                 tabsetPanel(
