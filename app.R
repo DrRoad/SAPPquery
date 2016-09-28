@@ -72,7 +72,15 @@ if (interactive()) {
                                        ),
                                        actionButton("submit", "submit")
                                      )
-                                   ))
+                                   )),
+                            column(4,
+                              selectInput("select", label = ("Select a species"), 
+                                          choices = list(
+                                            "Salmon Salar" = 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql', 
+                                            "Zebrafish" = 'http://10.209.0.227:7955/blazegraph/namespace/ZebraDB/sparql' ), 
+                                          selected = 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql')
+                              
+                            )
                           ))),
         tags$br(),
         # DataTables #############################
@@ -238,8 +246,11 @@ if (interactive()) {
   # Server ---------------------------------
   server <- function(input,output,session){
     # Database endpoint
-    endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
-
+    #output$value <- renderText({ input$select })
+    #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
+    
+    endpoint <- isolate(input$select)
+    
     # Sappdata ===========================
     Sappdata <- observeEvent(input$submit,{
 
