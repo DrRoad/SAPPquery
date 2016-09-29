@@ -153,7 +153,7 @@ if (interactive()) {
         tags$div(class = "content",
                  tags$div(class = "container setwidth",
                           fluidRow(
-                            column(12,
+                            column(4,
                                    tags$form(
                                      class = "form-inline",
                                      tags$div(
