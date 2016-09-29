@@ -97,6 +97,11 @@ if (interactive()) {
                                 tabsetPanel(
                                   # SAPP Tab =================================
                                   tabPanel("SAPP",
+                                           tags$div(class = "info",
+                                                    tags$ul(
+                                                      tags$li(""),
+                                                      tags$li("")
+                                                    )),
                                                    DT::dataTableOutput('myTable')
                                            ),
                                   # BLAST TAB =================================
@@ -136,6 +141,11 @@ if (interactive()) {
                                                ),
                                   # Result Summary =================================
                                   tabPanel("Result Summary",
+                                           tags$div(class = "info",
+                                                    tags$ul(
+                                                      tags$li(""),
+                                                      tags$li("")
+                                                    )),
                                       DT::dataTableOutput('resultsummarydata_table')
                                   )
       
@@ -195,6 +205,11 @@ if (interactive()) {
                                 tabsetPanel(
                                   # SAPP Tab =================================
                                   tabPanel("SAPP",
+                                           tags$div(class = "info",
+                                                    tags$ul(
+                                                      tags$li(""),
+                                                      tags$li("")
+                                                    )),
                                           DT::dataTableOutput('myTableprot')
                                   ),
                                   # BLAST TAB =================================
@@ -239,6 +254,11 @@ if (interactive()) {
                                   ),
                                   # # Interpro Domains Tab =================================
                                   tabPanel("Interpro Domains ",
+                                           tags$div(class = "info",
+                                                    tags$ul(
+                                                      tags$li(""),
+                                                      tags$li("")
+                                                    )),
                                                  DT::dataTableOutput('interpro_table')
                                   )
                                             
