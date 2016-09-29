@@ -96,3 +96,15 @@ function urls(y){
   }
   return match;
 }
+function iprsearch(x){
+  //var pattern = /&lt;(.+\/(.+))&gt/i;
+  var pattern = /&lt(.+\/(.+:)?(.+))&gt/i;
+  var new_var = pattern.exec(x);
+  if(new_var[2] == null){
+    match = '<a href=https://www.ebi.ac.uk/interpro/search?q='+new_var[3]+' target="_blank">'+new_var[3]+'</a> ';
+  }else{
+    match = '<a href=http://www.cathdb.info/version/latest/superfamily/'+new_var[3]+' target="_blank">'+new_var[3]+'</a> ';
+  }
+  //https://www.ebi.ac.uk/interpro/search?q=
+  return match;
+}
