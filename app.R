@@ -813,8 +813,7 @@ if (interactive()) {
                 fixedColumns = TRUE,
                 rowCallback = JS(
                   "function(row, data){",
-                  "if(data[2] =='N/A'){}else{var new_links = urls(data[2])}",
-                  #"alert(data[2])",
+                  "if(data[2] =='N/A'){}else{var new_links = iprsearch(data[2])}",
                   "$('td:eq(2)', row).html(new_links);",
                   "}"
                 )
