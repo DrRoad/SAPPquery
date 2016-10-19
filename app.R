@@ -1,4 +1,4 @@
-# install missing pacakges
+# install missing pacakges if needed
 list.of.packages <- c("shiny", "shinyBS","shinyjs","SPARQL","data.table","DT","stringr","plyr","rstudioapi")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
