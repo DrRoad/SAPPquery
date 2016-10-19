@@ -27,11 +27,12 @@ source('ontology_links.R')
 jsfile <- "www/jsfile.js"
 if (interactive()) {
   # UI ---------------------------------
-  ui <- fluidPage(style="width:100%; margin:0 auto;",
+  ui <- fluidPage(
     useShinyjs(),
     tags$head(
       tags$meta(charset = "UTF-8"),
       tags$title("SAPP query"),
+      #tags$script(HTML(jscode)),
       tags$script(src = 'jsfile.js'),
       tags$link(rel = "stylesheet", type = "text/css", href = "sapp.css")
     ),
@@ -95,7 +96,7 @@ if (interactive()) {
                               12,
                               mainPanel(
                                 width = 12,
-                                style = "height=100%;width:100%",
+                                style = "height=100%;width:110%",
                                 textOutput("exampleOutput"),
                                 bsAlert("alert"),
                                 tabsetPanel(
@@ -176,7 +177,7 @@ if (interactive()) {
                                          textInput(
                                            "variableprot",
                                            "NP number query",
-                                           width = "125px",
+                                           width = "120px",
                                            value = "NP_001133193.1",
                                            placeholder = NULL
                                          ),
@@ -203,7 +204,7 @@ if (interactive()) {
                               12,
                               mainPanel(
                                 width = 12,
-                                style = "height=100%;width:100%",
+                                style = "height=100%;width:110%",
                                 textOutput("exampleOutput2"),
                                 bsAlert("alert2"),
                                 tabsetPanel(
@@ -479,7 +480,7 @@ if (interactive()) {
             output$myTable <- DT::renderDataTable(
               results,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
@@ -494,7 +495,7 @@ if (interactive()) {
               swiss_table,
               extensions = 'Responsive',
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 3,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 fnInitComplete = JS(
@@ -513,18 +514,13 @@ if (interactive()) {
               priam_table,
               # extensions = 'Responsive', # This is for making the table clickable
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 3,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 # Add a tooltip to the header after table has finished rendering
                 fnInitComplete = JS("function (settings, json){
-<<<<<<< HEAD
-                                  tool_header();
-                }"),
-=======
                                     tool_header();
           }"),
->>>>>>> e3fa5e2e44a875a7d11ff5d9b6bc074c15ff6c4c
                 # Add a anchor tag to the table while rendering
                 rowCallback = JS(
                   "function(row, data){",
@@ -539,7 +535,7 @@ if (interactive()) {
             output$interprodata_table <- DT::renderDataTable(
               interpro_table,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
@@ -555,7 +551,7 @@ if (interactive()) {
             output$enzdp_table <- DT::renderDataTable(
               enzdp_table,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
@@ -571,7 +567,7 @@ if (interactive()) {
             output$resultsummarydata_table <- DT::renderDataTable(
               results_summary,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE
               )
@@ -782,7 +778,7 @@ if (interactive()) {
             output$myTableprot <- DT::renderDataTable(
               results,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
@@ -797,31 +793,17 @@ if (interactive()) {
               #This is the BLAST result(s)
               result,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 fnInitComplete = JS(
                   "function (settings, json){tool_header();}")
               )
             )
-            output$priamprot_table <- DT::renderDataTable(
-              priam_table_prot,
-              options = list(
-                iDisplayLength = 10,
-                scrollX = TRUE,
-                fixedColumns = TRUE,
-                rowCallback = JS(
-                  "function(row, data){",
-                  "if(data[2] =='N/A'){}else{var new_links = urls(data[2])}",
-                  "$('td:eq(2)', row).html(new_links);",
-                  "}"
-                )
-              )
-            )
             output$signalIP_table <- DT::renderDataTable(
               signalIP,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 fnInitComplete = JS(
@@ -831,7 +813,7 @@ if (interactive()) {
             output$ipr_table <- DT::renderDataTable(
               ipr,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
@@ -842,22 +824,14 @@ if (interactive()) {
                 )
               )
             )
-            # Interpro Domains
             output$interpro_table <- DT::renderDataTable(
               iprresults,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
                   "function(row, data){",
-<<<<<<< HEAD
-                  #"if(data[1] =='N/A'){}else{var new_links = iprd(data[1])}",
-                  #"$('td:eq(1)', row).html(new_links);",
-                  "if(data[3] =='N/A'){}else{var new_links2 = iprd(data[3])}",
-                  #"alert(new_links2)",
-                  "$('td:eq(3)', row).html(new_links2);",
-=======
                   "if(data[1] =='N/A'){}else{var new_links = urls(data[1])}",
                   "$('td:eq(1)', row).html(new_links);",
                   "if(data[3] =='N/A'){}else{var new_links = urls(data[3])}",
@@ -869,23 +843,19 @@ if (interactive()) {
             output$priamprot_table <- DT::renderDataTable(
               priam_table_prot,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
                   "function(row, data){",
                   "if(data[2] =='N/A'){}else{var new_links = urls(data[2])}",
                   "$('td:eq(2)', row).html(new_links);",
->>>>>>> e3fa5e2e44a875a7d11ff5d9b6bc074c15ff6c4c
                   "}"
                 )
               )
             )
-<<<<<<< HEAD
-=======
             
             
->>>>>>> e3fa5e2e44a875a7d11ff5d9b6bc074c15ff6c4c
             incProgress(1, detail = "Done")
           }
           }) # Progress bar ends
