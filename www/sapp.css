@@ -5,14 +5,11 @@
 }
 .navbar{
   background-color:#1d84b5;
-  max-width:1305px; 
 
-}
-.Header{
-    max-width:1305px;
 }
 .container{
   margin:0;
+  width:100%;
 }
 .navbar-default .navbar-brand{
   color:#fbfcff;
@@ -26,6 +23,10 @@
 .content{
   position:relative;
   width:100%;
+  background-color:#f2f2f2;
+  padding-top:5px;
+  -webkit-box-shadow: 0 2px 2px 0 #B5B5B5;
+  box-shadow: 0 2px 2px 0 #B5B5B5;
 }
 .setwidth{
   margin:0;
