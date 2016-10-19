@@ -185,7 +185,7 @@ if (interactive()) {
                                        actionButton("submitprot", "submit")
                                      )
                                    )),
-                            column(4,
+                            column(6,
                                    selectInput("select", label = ("Select a species"), 
                                                choices = list(
                                                  "Salmon Salar" = 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql', 
