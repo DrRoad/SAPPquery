@@ -106,14 +106,34 @@ function urls(y){
   return match;
 }
 function iprsearch(x){
-  //var pattern = /&lt;(.+\/(.+))&gt/i;
   var pattern = /&lt(.+\/(.+:)?(.+))&gt/i;
   var new_var = pattern.exec(x);
+  
+ //  if( (new_var[3].substring(0,2)) == ('PWY')) {
+  //   match =  new_var[3];
+  // }
   if(new_var[2] == null){
     match = '<a href=https://www.ebi.ac.uk/interpro/search?q='+new_var[3]+' target="_blank">'+new_var[3]+'</a> ';
   }else{
     match = '<a href=http://www.cathdb.info/version/latest/superfamily/'+new_var[3]+' target="_blank">'+new_var[3]+'</a> ';
   }
-  //https://www.ebi.ac.uk/interpro/search?q=
   return match;
+}
+function iprd(x){
+  var pattern = /&lt;(.+\/(.+:)?(.+))&gt;/i;
+  var new_var = pattern.exec(x);
+  //if (new_var[2] == null ){
+  //  alert(new_var[2]);
+  if (new_var[3].substring(0,3)==="PWY"){
+    match = '<a href=http://biocyc.org/META/NEW-IMAGE?type=PATHWAY&object='+new_var[3]+' target="_blank">'+new_var[3]+'</a>';
+  }
+  if (new_var[1].substring(0,39) === "http://identifiers.org/cath.superfamily"){
+     match = '<a href=http://www.cathdb.info/version/latest/superfamily/'+new_var[3]+' target="_blank">'+new_var[3]+'</a> ';
+  }
+  else{
+    match = '<a href='+new_var[1]+' target="_blank">'+new_var[3]+'</a> '; 
+  }
+  
+  return match;
+
 }

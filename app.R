@@ -27,11 +27,12 @@ source('ontology_links.R')
 jsfile <- "www/jsfile.js"
 if (interactive()) {
   # UI ---------------------------------
-  ui <- fluidPage(style="width:100%; margin:0 auto;",
+  ui <- fluidPage(
     useShinyjs(),
     tags$head(
       tags$meta(charset = "UTF-8"),
       tags$title("SAPP query"),
+      #tags$script(HTML(jscode)),
       tags$script(src = 'jsfile.js'),
       tags$link(rel = "stylesheet", type = "text/css", href = "sapp.css")
     ),
@@ -95,7 +96,7 @@ if (interactive()) {
                               12,
                               mainPanel(
                                 width = 12,
-                                style = "height=100%;width:100%",
+                                style = "height=100%;width:110%",
                                 textOutput("exampleOutput"),
                                 bsAlert("alert"),
                                 tabsetPanel(
@@ -176,7 +177,7 @@ if (interactive()) {
                                          textInput(
                                            "variableprot",
                                            "NP number query",
-                                           width = "125px",
+                                           width = "120px",
                                            value = "NP_001133193.1",
                                            placeholder = NULL
                                          ),
@@ -203,7 +204,7 @@ if (interactive()) {
                               12,
                               mainPanel(
                                 width = 12,
-                                style = "height=100%;width:100%",
+                                style = "height=100%;width:110%",
                                 textOutput("exampleOutput2"),
                                 bsAlert("alert2"),
                                 tabsetPanel(
@@ -777,7 +778,7 @@ if (interactive()) {
             output$myTableprot <- DT::renderDataTable(
               results,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
@@ -792,7 +793,7 @@ if (interactive()) {
               #This is the BLAST result(s)
               result,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 fnInitComplete = JS(
@@ -802,7 +803,7 @@ if (interactive()) {
             output$signalIP_table <- DT::renderDataTable(
               signalIP,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 fnInitComplete = JS(
@@ -812,7 +813,7 @@ if (interactive()) {
             output$ipr_table <- DT::renderDataTable(
               ipr,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
@@ -826,7 +827,7 @@ if (interactive()) {
             output$interpro_table <- DT::renderDataTable(
               iprresults,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
@@ -842,7 +843,7 @@ if (interactive()) {
             output$priamprot_table <- DT::renderDataTable(
               priam_table_prot,
               options = list(
-                iDisplayLength = 10,
+                iDisplayLength = 5,
                 scrollX = TRUE,
                 fixedColumns = TRUE,
                 rowCallback = JS(
