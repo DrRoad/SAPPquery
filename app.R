@@ -177,7 +177,7 @@ if (interactive()) {
                                          textInput(
                                            "variableprot",
                                            "NP number query",
-                                           width = "120px",
+                                           width = "125px",
                                            value = "NP_001133193.1",
                                            placeholder = NULL
                                          ),
