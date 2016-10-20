@@ -260,8 +260,6 @@ if (interactive()) {
                                                     )),
                                            DT::dataTableOutput('interpro_table')
                                   )
-                                  
-                                  
                                 ) 
                               ) 
                             ) 
@@ -273,9 +271,6 @@ if (interactive()) {
   # Server ---------------------------------
   server <- function(input,output,session){
     # Database endpoint
-    #output$value <- renderText({ input$select })
-    #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
-    
     endpoint <- isolate(input$select)
     
     # Sappdata ===========================
@@ -714,7 +709,6 @@ if (interactive()) {
               ipr <- noframe()
             }
             
-            
             iprdomains <- unique(results[tool=='Interpro'&colname=='signature']$value)
             ipr_query <- "prefix ssb: <http://csb.wur.nl/genome/>
             prefix biopax3: <http://www.biopax.org/release/bp-level3.owl>
@@ -848,9 +842,6 @@ if (interactive()) {
                 )
               )
             )
-            
-            
-            
             incProgress(1, detail = "Done")
           }
           }) # Progress bar ends
