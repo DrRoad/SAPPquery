@@ -826,6 +826,7 @@ if (interactive()) {
                 )
               )
             )
+            # interpro Domains
             output$interpro_table <- DT::renderDataTable(
               iprresults,
               options = list(
@@ -836,7 +837,7 @@ if (interactive()) {
                   "function(row, data){",
                   "if(data[1] =='N/A'){}else{var new_links = urls(data[1])}",
                   "$('td:eq(1)', row).html(new_links);",
-                  "if(data[3] =='N/A'){}else{var new_links = urls(data[3])}",
+                  "if(data[3] =='N/A'){}else{var new_links = iprd(data[3])}",
                   "$('td:eq(3)', row).html(new_links);",
                   "}"
                 )
