@@ -260,8 +260,6 @@ if (interactive()) {
                                                     )),
                                            DT::dataTableOutput('interpro_table')
                                   )
-                                  
-                                  
                                 ) 
                               ) 
                             ) 
@@ -272,10 +270,8 @@ if (interactive()) {
   ) # FluidPAge
   # Server ---------------------------------
   server <- function(input,output,session){
-    # Database endpoint
-    #output$value <- renderText({ input$select })
-    #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
     
+    # Database endpoint
     endpoint <- isolate(input$select)
     
     # Sappdata ===========================
@@ -714,7 +710,6 @@ if (interactive()) {
               ipr <- noframe()
             }
             
-            
             iprdomains <- unique(results[tool=='Interpro'&colname=='signature']$value)
             ipr_query <- "prefix ssb: <http://csb.wur.nl/genome/>
             prefix biopax3: <http://www.biopax.org/release/bp-level3.owl>
@@ -832,6 +827,7 @@ if (interactive()) {
                 )
               )
             )
+            # interpro Domains
             output$interpro_table <- DT::renderDataTable(
               iprresults,
               options = list(
@@ -842,7 +838,7 @@ if (interactive()) {
                   "function(row, data){",
                   "if(data[1] =='N/A'){}else{var new_links = urls(data[1])}",
                   "$('td:eq(1)', row).html(new_links);",
-                  "if(data[3] =='N/A'){}else{var new_links = urls(data[3])}",
+                  "if(data[3] =='N/A'){}else{var new_links = iprd(data[3])}",
                   "$('td:eq(3)', row).html(new_links);",
                   "}"
                 )
