@@ -90,7 +90,7 @@ if (interactive()) {
                               12,
                               mainPanel(
                                 width = 12,
-                                style = "height=100%;width:110%",
+                                style = "height=100%;width:100%",
                                 textOutput("exampleOutput"),
                                 bsAlert("alert"),
                                 tabsetPanel(
@@ -171,7 +171,7 @@ if (interactive()) {
                                          textInput(
                                            "variableprot",
                                            "NP number query",
-                                           width = "120px",
+                                           width = "125px",
                                            value = "NP_001133193.1",
                                            placeholder = NULL
                                          ),
@@ -198,7 +198,7 @@ if (interactive()) {
                               12,
                               mainPanel(
                                 width = 12,
-                                style = "height=100%;width:110%",
+                                style = "height=100%;width:100%",
                                 textOutput("exampleOutput2"),
                                 bsAlert("alert2"),
                                 tabsetPanel(
