@@ -357,6 +357,7 @@ if (interactive()) {
             results[, tool := sub('>', '', sub('<http://csb.wur.nl/genome/', '', tool))]
             results[, feature := sub('>','',sub('<http://csb.wur.nl/genome/protein/[[:alnum:]]+/','',feature))]
             results <-results[!grepl('http://www.w3.org/1999/02/22-rdf-syntax-ns#type',colname)]
+            results[,Ncbiprotein:=ncbiprotein]
             results[, ncbiprotein := o(paste('ncbiprotein', ncbiprotein, sep ='/'))]
             
             ### BLAST #############################
@@ -441,16 +442,42 @@ if (interactive()) {
             
             ### Comparing results across tools #############################
             results_summary <-
-              rbind(results[tool == 'Priam' & colname == 'evalue', list('value' = value), by = c('header', 'tool')],
-                    results[tool != 'Priam' & colname == 'tool', list('value' = .N), by = c('header', 'tool')])
-            results_summary <-dcast(results_summary,header ~ tool,fill = NA,fun.aggregate = paste,collapse = " ")
+              rbind(results[tool == 'Priam' & colname == 'evalue', list('value' = value), by = c('Ncbiprotein','header', 'tool')],
+                    results[tool == 'Enzdp' & colname == 'likelihoodscore', list('value' = value), by = c('Ncbiprotein','header', 'tool')],
+                    results[tool %in% c('Blast','Interpro') & colname == 'tool', list('value' = .N), by = c('Ncbiprotein','header', 'tool')])
+            results_summary <-dcast(results_summary,Ncbiprotein + header ~ tool,fill = NA,fun.aggregate = paste,collapse = " ")
             
+            #map salmon ncbiproteinid to ncbigeneid
+            if (file.exists('ncbilink.RData'))
+              {load('ncbilink.RData')}
+            else{
+            #download Salmon gff from NCBI 
+            gff_url <- 'ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF_000233375.1_ICSASG_v2/GCF_000233375.1_ICSASG_v2_genomic.gff.gz'
+            gff_name <- 'GCF_000233375.1_ICSASG_v2_genomic.gff.gz'
+            if (!file.exists(gff_name))
+              #downlod using curl, for some reason the default method is slow in Rstudio but not plain R (both on orion cn5) 
+              download.file(gff_url,gff_name,method='curl') 
+            
+            #process CDS lines from GFF file
+            gff <- fread(paste('zgrep [[:space:]]CDS[[:space:]]',gff_name))
+            gff <- gff[V3=='CDS']
+            ncbigene <- sub('GeneID:','',str_match(gff$V9,'GeneID:[0-9]*'))
+            ncbiname <- sub('gene=','',str_match(gff$V9,'gene=[a-z,A-Z,0-9]*'))
+            ncbiprotein <- sub('protein_id=','',str_match(gff$V9,'protein_id=[N,X]P_[0-9]*\\.[0-9]*'))
+            ncbilink <- data.table(ncbigene,ncbiprotein,ncbiname)
+            setnames(ncbilink,c('ncbigene','ncbiprotein','ncbiname'))
+            ncbilink <- unique(ncbilink[!is.na(ncbiprotein)])
+            save(ncbilink,file='ncbilink.RData')
+            }
             # Adjust types of columns if they are present
             try(results_summary[, Interpro := as.numeric(Interpro)])
             try(results_summary[, Blast := as.numeric(Blast)])
             try(results_summary[is.na(Interpro), Interpro := 0])
             try(results_summary[is.na(Blast), Blast := 0])
-            try(setorder(results_summary, -Interpro))
+            
+            results_summary <- merge(ncbilink,results_summary,by.y='Ncbiprotein',by.x='ncbiprotein',all.y=T)
+            results_summary[,ncbiprotein:=NULL]
+            try(setorder(results_summary, -Enzdp))
             
             ### Isolate the variables to be renderd #############################
             # Send the versions and tools name to header
