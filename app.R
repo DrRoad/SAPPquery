@@ -586,7 +586,13 @@ if (interactive()) {
               options = list(
                 iDisplayLength = 10,
                 scrollX = TRUE,
-                fixedColumns = TRUE
+                fixedColumns = TRUE,
+                rowCallback =JS(
+                  "function(row,data){",
+                  "if(data[1] =='N/A'){}else{var match = geneurls(data[1]);}",
+                  "$('td:eq(1)', row).html(match)",
+                  "}"
+                )
               )
             )
             incProgress(1, detail = "Done")

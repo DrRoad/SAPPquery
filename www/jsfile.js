@@ -87,7 +87,7 @@ $('th').each( function(){
 // Tooltips tend to push td out of the place. I use this to stop that from happening
 $('th').tooltip({container:'body'});
 }
-// Fucntion to create anchor tags
+// Fucntions to create anchor tags and urls
 function anchor(x){
   var myText = x; 
   var pattern = /\[(.+)\]\((.+)\)/i;
@@ -116,7 +116,6 @@ function iprsearch(x){
   }
   return match;
 }
-
 function iprd(x){
   var pattern = /&lt;(.+\/(.+:)?(.+))&gt;/i;
   var new_var = pattern.exec(x);
@@ -131,5 +130,9 @@ function iprd(x){
   }
   
   return match;
-
+}
+function geneurls(x) {
+  var base_url = 'http://identifiers.org/ncbigene/';
+  var match = '<a href='+base_url + x+' target="_blank">' + x + '</a>';
+  return match;
 }
