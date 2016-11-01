@@ -292,9 +292,7 @@ if (interactive()) {
       source('noframe.R')
       
       ECnumber <- input$variable
-      #ECnumber <- '1.2.3.4'
-      #ECnumber <- '5.4.2.11'
-      
+
       # Render EC number to text
       output$text <- renderText({ECnumber})
       
@@ -369,7 +367,7 @@ if (interactive()) {
               # Grab names of tool and version to display in header
               swiss_tool <- toupper(swiss_table$tool[1])
               swiss_version <- swiss_table$version[1]
-              # Re-order and renmae the datatable
+              # Re-order and rename the datatable
               swiss_table <- swiss_table[,.(ncbiprotein,uniprot,alignment_length,bitscore,evalue,gaps,mismatches,percidentity,qend,qstart,send,sstart,subjectname)]
               swiss_table <- rename(swiss_table,c("alignment_length" = "aln","evalue" = "e","mismatches" = "mm","percidentity" = "pi","bitscore" = "bs",
                                                   "qend" = "qe","send" = "se","qstart" = "qs","sstart" = "ss"))
@@ -693,15 +691,6 @@ if (interactive()) {
               resukt_version <- "N/A"
               result <- noframe()
             }
-            
-            #**SAPP feature requests**:
-            # * Swissprot and COG features are type ssb:Blast, while COG features also have type ssb:Cog, please add a ssb:Swiss type to make it easier to separate results.
-            #* COGs are for bacteria/archae, please add a ekuaryote tool, [EggNOG](http://eggnogdb.embl.de/) would have returned KOG2670 (search for it at the site).
-            #**Shiny suggestions**:
-            
-            # * For now, split on the tool column (swiss/cog) and create two separate tables,
-            #* remove "queryid"" and move "tool and "version" to caption
-            # * Connect to Uniprot and COG to extract EC numbers and GO annotation
             
             ### Priam table created #############################
             incProgress(0.3, detail = "Fetching PRIAM data")

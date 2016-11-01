@@ -1,3 +1,4 @@
+//Jquery function to allow using ENTER key with inputbox
 $(document).ready(function() {
   var $els = $("[data-proxy-click]");
   $.each($els,function(idx, el) {
@@ -6,7 +7,7 @@ $(document).ready(function() {
     $el.keydown(function (e) {if (e.keyCode == 13) {$proxy.click();}});
   });
 });
-
+// add tooltip to header of tables
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
@@ -95,6 +96,7 @@ function anchor(x){
   var match = '<a href="'+n[2]+'" target="_blank">'+n[1]+'</a>';
   return match;
 }
+// Add url anchors
 function urls(y){
   var str = y;
   var res = str.split("__");
@@ -106,6 +108,7 @@ function urls(y){
   }
   return match;
 }
+//Add interpro anchors
 function iprsearch(x){
   var pattern = /&lt(.+\/(.+:)?(.+))&gt/i;
   var new_var = pattern.exec(x);
@@ -116,6 +119,7 @@ function iprsearch(x){
   }
   return match;
 }
+//Add interpro domain anchors
 function iprd(x){
   var pattern = /&lt;(.+\/(.+:)?(.+))&gt;/i;
   var new_var = pattern.exec(x);
@@ -131,6 +135,7 @@ function iprd(x){
   
   return match;
 }
+//Add ncbigene anchors
 function geneurls(x) {
   var base_url = 'http://identifiers.org/ncbigene/';
   var match = '<a href='+base_url + x+' target="_blank">' + x + '</a>';
