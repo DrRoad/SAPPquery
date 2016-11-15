@@ -81,3 +81,23 @@
   margin-right:auto;
   
 }
+#a_d_subject{
+  position:relative;
+  border-radius:0 0 0 0;
+}
+#a_d_predicate{
+  position:relative;
+  left:50px;
+  border-radius:0 0 0 0;
+}
+#a_d_object{
+  position:relative;
+  left:100px;
+  border-radius:0 0 0 0;
+}
+#ma_submit{
+  position:relative;
+  left:150px;
+  top:13px;
+  border-radius:0 0 0 0;
+}
