@@ -3,6 +3,9 @@ list.of.packages <- c("shiny", "shinyBS","shinyjs","SPARQL","data.table","DT","s
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
+#####FOR DEVonly
+#.libPaths("C:/Rstudio/Library")
+
 library(shiny)
 library(shinyBS)
 library(shinyjs)
@@ -12,6 +15,7 @@ library(DT)
 library(stringr)
 library(plyr)
 library(rstudioapi)
+library(curl)
 
 # set a working directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -240,67 +244,77 @@ if (interactive()) {
                                   ),
                                   # Manual Anotation =================================
                                   tabPanel("Manual Annotation",
-                                           tags$div(class = "info",
-                                                    tags$div(class = "container",
-                                                             fluidRow(
-                                                               column(12,
-                                                                      mainPanel(
-                                                                        width=12,
-                                                                        column(12,
-                                                                               p("The database is in a turtle file format."),
-                                                                               tags$form(
-                                                                                 class = "form-inline",
-                                                                                 tags$div(
-                                                                                   class = "form-group",
-                                                                                   tagAppendAttributes(
-                                                                                     id ="a_d_subject",
-                                                                                     textInput(
-                                                                                       "a_subject",
-                                                                                       "Subject",
-                                                                                       width = "125px",
-                                                                                       value = "",
-                                                                                       placeholder = NULL
-                                                                                     )
-                                                                                   ),
-                                                                                   tagAppendAttributes(
-                                                                                     id ="a_d_predicate",
-                                                                                     textInput(
-                                                                                       "a_predicate",
-                                                                                       "Predicate",
-                                                                                       width = "125px",
-                                                                                       value = "",
-                                                                                       placeholder = NULL
-                                                                                     )
-                                                                                   ),
-                                                                                   tagAppendAttributes(
-                                                                                     id ="a_d_object",
-                                                                                     textInput(
-                                                                                       "a_object",
-                                                                                       "Object",
-                                                                                       width = "125px",
-                                                                                       value = "",
-                                                                                       placeholder = NULL
-                                                                                     )
-                                                                                   ),
-                                                                                   `data-proxy-click` = "ma_submit",
-                                                                                   actionButton("ma_submit", "submit")
-                                                                                 ) # Inputboxes div Ends
-                                                                               )) # Form and column div ends
-                                                                      ) # main panel div
-                                                               ) # column div ends
-                                                               # ,column(12,
-                                                               #        h3("Preview database file"),
-                                                               #        mainPanel(
-                                                               #          textOutput('text2'),
-                                                               #          tags$hr()
-                                                               # 
-                                                               #        )
-                                                               #        #,mainPanel(DT::dataTableOutput('contents'))
-                                                               # ) # column 12
-                                                               
-                                                             ) # Fluid row
-                                                    ) # div container ends
-                                           ) # div info ends
+                                  tags$div(class = "info",
+                                  tags$div(class = "container",
+                                             fluidRow(
+                                               column(12,
+                                                      mainPanel(
+                                                        width=12,
+                                                        column(12,
+                                                               p("The database is in a turtle file format."),
+                                                               p("Prefix is rah <localhost:9999/blazegraph/ManualAnno/>"),
+                                                               p("The update query is done by using INSERTA DATA {subject predicat object}"),
+                                                               tags$br(),
+                                                               h4("Insert Data"),
+                                                               tags$form(
+                                                                 class = "form-inline",
+                                                                 tags$div(
+                                                                   class = "form-group",
+                                                                   tagAppendAttributes(
+                                                                     id ="a_d_subject",
+                                                                     textInput(
+                                                                       "a_subject",
+                                                                       "Subject",
+                                                                       width = "125px",
+                                                                       value = "",
+                                                                       placeholder = NULL
+                                                                     )
+                                                                   ),
+                                                                   tagAppendAttributes(
+                                                                     id ="a_d_predicate",
+                                                                     textInput(
+                                                                       "a_predicate",
+                                                                       "Predicate",
+                                                                       width = "125px",
+                                                                       value = "",
+                                                                       placeholder = NULL
+                                                                     )
+                                                                   ),
+                                                                   tagAppendAttributes(
+                                                                     id ="a_d_object",
+                                                                     textInput(
+                                                                       "a_object",
+                                                                       "Object",
+                                                                       width = "125px",
+                                                                       value = "",
+                                                                       placeholder = NULL
+                                                                     )
+                                                                   ),
+                                                                   `data-proxy-click` = "ma_submit",
+                                                                   actionButton("ma_submit", "submit")
+                                                                 ) # Inputboxes div Ends
+                                                               )) # Form and column div ends
+                                                      ) # main panel div
+                                               ) # column div ends
+                                                ,column(12,
+                                                      tags$div(class = "container",
+                                                        fluidRow(
+                                                        column(12,
+                                                          h3(class="text1",
+                                                          "Update query renderd")
+                                                        )
+                                                      ),
+                                                       mainPanel(
+                                                         textOutput('updatequery'),
+                                                         tags$hr()
+                                                
+                                                       )
+                                                       ,mainPanel(DT::dataTableOutput('contents'))
+                                                 ) # container
+                                                 )# column 12
+                                             ) # Fluid row
+                                  ) # div container ends
+                                  ) # div info ends
                                   ),
                                   # SIGNAL IP Tab =================================
                                   tabPanel("SIGNALP",
@@ -947,44 +961,43 @@ if (interactive()) {
     
     # SAPP Annotation ===========================
     endpoint <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
-    endpoint <- "http://128.39.179.17:9999/blazegraph/namespace/ManualAnno/sparql"
     
     # Here data is sent to the sparql endpoint
     observeEvent (input$ma_submit,{
       # Save inputs from text fields 
-      #subject <- isolate(input$a_subject)
-      #predicate <-isolate(input$a_predicate)
-      #object <- isolate(shQuote(input$a_object))
-      #endof <- "." # The dot is needed for turtle file format
-      #annotation_line <- paste(subject,predicate,object,endof)
+      subject <- isolate(input$a_subject)
+      predicate <-isolate(input$a_predicate)
+      object <- isolate(shQuote(input$a_object))
       
-      # Test enpoint
-      prefix <- c("ma","http://nmbu.no/SalmonGenome/annotation#",
-                  "sg", "http://nmbu.no/SalmonGenome#")
-      query1 <- "query=select * where { ?s ?p ?o } limit 1"
+      # Build update query
+      update <- paste("prefix rah: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno>
+                      INSERT DATA{ <rah:",subject,"> <rah:",predicate,"> ",object,". }",sep="")
       
-      query <-"SELECT ?geneID ?longName ?Who ?When ?Comment
-      WHERE{
-        #?gene ma:gene_id ?geneID.
-        ?geneID rdf:type ?gene.
-        ?long ma:long_name ?longName.
-        ?who ma:who ?Who.
-        ?when ma:when ?When.
-        ?comment ma:comment ?Comment.
-      }"
-      gff_url <- 'http://128.39.179.17:9999/blazegraph/namespace/ManualAnno/sparql?query=select * where { ?s ?p ?o } limit 1'
-      gff_name <- 'stuff.ttl'
-      if (!file.exists(gff_name))
-        #downlod using curl, for some reason the default method is slow in Rstudio but not plain R (both on orion cn5) 
-        download.file(gff_url,gff_name,method='curl') 
+       # update <- "prefix rah: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno>
+       #                 INSERT DATA{ <this> <is_not> 'no sfsfs erwrw dsfesr'. }"
+      # SPARQL update request using post 
+      SPARQL(endpoint, update=update, curl_args = list(style="post"))
       
-      
-      r <- curl()
-      res <- SPARQL(endpoint,query1)$results
-      res
-      output$contents <- DT::renderDataTable({
-        revdb
+      #
+      output$updatequery <- renderText({
+        update
       })
+      
+      ### Fetch database and explore -----------------------------
+      # Idea put in a check to see if the data entry worked.
+      # Allow user to choose prefixes
+      # Aloow users to Delete data
+      # set up a button remove last query
+      
+      query <- "prefix rah: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno> 
+      select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+      fetch_query <- SPARQL(endpoint,query)$results
+      
+      data<-as.matrix(fetch_query)
+      output$contents <- DT::renderDataTable({
+      data  
+      })
+      
       # Update text field after a submition and set value to empty
       updateTextInput(session,'a_subject', value = "")
       updateTextInput(session,'a_object', value = "")
