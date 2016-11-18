@@ -15,7 +15,6 @@ library(DT)
 library(stringr)
 library(plyr)
 library(rstudioapi)
-library(curl)
 
 # set a working directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
