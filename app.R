@@ -126,12 +126,6 @@ if (interactive()) {
                                            DT::dataTableOutput('priamdata_table')
                                            
                                   ),
-                                  # Manual Anotation =================================
-                                  tabPanel("Manual Annotation",
-                                           tags$div(class = "info"
-                                                    #DT::dataTableOutput('')
-                                           )
-                                  ),
                                   # Interpro Tab =================================
                                   tabPanel("Interpro",
                                            tags$div(class = "info",
@@ -157,6 +151,73 @@ if (interactive()) {
                                                       tags$li("")
                                                     )),
                                            DT::dataTableOutput('resultsummarydata_table')
+                                  ),
+                                  # Manual Anotation =================================
+                                  tabPanel("Manual Annotation",
+                                           tags$div(class="ma",
+                                                    tags$div(class = "container",
+                                                             fluidRow(
+                                                               column(12,
+                                                                      mainPanel(width=12,
+                                                                                p("The database is in a turtle file format."),
+                                                                                tags$br(),
+                                                                                h4("Insert Data"),
+                                                                                tags$form(
+                                                                                  class = "form-inline",
+                                                                                  tags$div(
+                                                                                    class = "form-group",
+                                                                                    tagAppendAttributes(
+                                                                                      id ="a_d_subject",
+                                                                                      textInput(
+                                                                                        "a_subject",
+                                                                                        "Subject",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    tagAppendAttributes(
+                                                                                      id ="a_d_predicate",
+                                                                                      textInput(
+                                                                                        "a_predicate",
+                                                                                        "Predicate",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    tagAppendAttributes(
+                                                                                      id ="a_d_object",
+                                                                                      textInput(
+                                                                                        "a_object",
+                                                                                        "Object",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    `data-proxy-click` = "ma_submit",
+                                                                                    actionButton("ma_submit", "Submit")
+                                                                                  ) # Inputboxes div Ends
+                                                                                ),
+                                                                                tags$br(),
+                                                                                p("Delete last entry"),
+                                                                                actionButton("delete", "Delete")
+                                                                      ) # Form and column div ends
+                                                               ) # main panel div
+                                                               ,column(12,
+                                                                       mainPanel(
+                                                                         p("Open or update the database view the latest annotations"),
+                                                                         actionButton("opendb","Open/Update"),
+                                                                         textOutput('updatequery'),
+                                                                         tags$hr()
+                                                                         
+                                                                       ),
+                                                                       mainPanel(width=12,DT::dataTableOutput('contents'))
+                                                               ) # Column 12 ends
+                                                             ) # Fluid row ends
+                                                    ) # div container ends
+                                           ) # div info ends
                                   )
                                   
                                 ) # tabset ends
@@ -241,80 +302,6 @@ if (interactive()) {
                                                     )),
                                            DT::dataTableOutput('priamprot_table')
                                   ),
-                                  # Manual Anotation =================================
-                                  tabPanel("Manual Annotation",
-                                           tags$div(class = "info",
-                                                    tags$div(class = "container",
-                                                             fluidRow(
-                                                               column(12,
-                                                                      mainPanel(
-                                                                        width=12,
-                                                                        column(12,
-                                                                               p("The database is in a turtle file format."),
-                                                                               p("Prefix is rah <localhost:9999/blazegraph/ManualAnno/>"),
-                                                                               p("The update query is done by using INSERTA DATA {subject predicat object}"),
-                                                                               tags$br(),
-                                                                               h4("Insert Data"),
-                                                                               tags$form(
-                                                                                 class = "form-inline",
-                                                                                 tags$div(
-                                                                                   class = "form-group",
-                                                                                   tagAppendAttributes(
-                                                                                     id ="a_d_subject",
-                                                                                     textInput(
-                                                                                       "a_subject",
-                                                                                       "Subject",
-                                                                                       width = "125px",
-                                                                                       value = "",
-                                                                                       placeholder = NULL
-                                                                                     )
-                                                                                   ),
-                                                                                   tagAppendAttributes(
-                                                                                     id ="a_d_predicate",
-                                                                                     textInput(
-                                                                                       "a_predicate",
-                                                                                       "Predicate",
-                                                                                       width = "125px",
-                                                                                       value = "",
-                                                                                       placeholder = NULL
-                                                                                     )
-                                                                                   ),
-                                                                                   tagAppendAttributes(
-                                                                                     id ="a_d_object",
-                                                                                     textInput(
-                                                                                       "a_object",
-                                                                                       "Object",
-                                                                                       width = "125px",
-                                                                                       value = "",
-                                                                                       placeholder = NULL
-                                                                                     )
-                                                                                   ),
-                                                                                   `data-proxy-click` = "ma_submit",
-                                                                                   actionButton("ma_submit", "submit")
-                                                                                 ) # Inputboxes div Ends
-                                                                               )) # Form and column div ends
-                                                                      ) # main panel div
-                                                               ) # column div ends
-                                                               ,column(12,
-                                                                       tags$div(class = "container",
-                                                                                fluidRow(
-                                                                                  column(12,
-                                                                                         h3(class="text1",
-                                                                                            "Update query renderd")
-                                                                                  )
-                                                                                ),
-                                                                                mainPanel(
-                                                                                  textOutput('updatequery'),
-                                                                                  tags$hr()
-                                                                                  
-                                                                                )
-                                                                                ,mainPanel(DT::dataTableOutput('contents'))
-                                                                       ) # container
-                                                               )# column 12
-                                                             ) # Fluid row
-                                                    ) # div container ends
-                                           ) # div info ends
-                                  ),
                                   # SIGNAL IP Tab =================================
                                   tabPanel("SIGNALP",
                                            tags$div(class = "info",
@@ -345,6 +332,74 @@ if (interactive()) {
                                                       tags$li("")
                                                     )),
                                            DT::dataTableOutput('interpro_table')
+                                  )
+                                  ,
+                                  # Manual Anotation =================================
+                                  tabPanel("Manual Annotation",
+                                           tags$div(class="ma",
+                                                    tags$div(class = "container",
+                                                             fluidRow(
+                                                               column(12,
+                                                                      mainPanel(width=12,
+                                                                                p("The database is in a turtle file format."),
+                                                                                tags$br(),
+                                                                                h4("Insert Data"),
+                                                                                tags$form(
+                                                                                  class = "form-inline",
+                                                                                  tags$div(
+                                                                                    class = "form-group",
+                                                                                    tagAppendAttributes(
+                                                                                      id ="a_d_subject",
+                                                                                      textInput(
+                                                                                        "a_subject",
+                                                                                        "Subject",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    tagAppendAttributes(
+                                                                                      id="a_d_predicate",
+                                                                                      textInput(
+                                                                                        "a_predicate",
+                                                                                        "Predicate",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    tagAppendAttributes(
+                                                                                      id ="a_d_object",
+                                                                                      textInput(
+                                                                                        "a_object",
+                                                                                        "Object",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    `data-proxy-click` = "masubmit_prot",
+                                                                                    actionButton("ma_submit_prot", "Submit")
+                                                                                  ) # Inputboxes div Ends
+                                                                                ),
+                                                                                tags$br(),
+                                                                                p("Delete last entry"),
+                                                                                actionButton("delete_prot", "Delete")
+                                                                      ) # Form and column div ends
+                                                               ), # main panel div
+                                                               column(12,
+                                                                      mainPanel(
+                                                                        p("Open or update the database view the latest annotations"),
+                                                                        actionButton("opendb_prot","Open/Update"),
+                                                                        textOutput('updatequery_prot'),
+                                                                        tags$hr()
+                                                                        
+                                                                      ),
+                                                                      mainPanel(width=12, DT::dataTableOutput('contents_prot'))
+                                                               ) # Column 12 ends
+                                                             ) # Fluid row ends
+                                                    ) # div container ends
+                                           ) # div info ends
                                   )
                                 ) 
                               ) 
@@ -957,25 +1012,26 @@ if (interactive()) {
           }
           }) # Progress bar ends
         }) # SappprotData ends
-    
     # SAPP Annotation ===========================
-    endpoint <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
+    endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
+    # Here the data is sent to the sparql endpoint
     
-    # Here data is sent to the sparql endpoint
+    ## For reaction
     observeEvent (input$ma_submit,{
       # Save inputs from text fields 
       subject <- isolate(input$a_subject)
+      #Subject should be the same as the search input
       predicate <-isolate(input$a_predicate)
       object <- isolate(shQuote(input$a_object))
       
       # Build update query
-      update <- paste("prefix rah: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno>
-                      INSERT DATA{ <rah:",subject,"> <rah:",predicate,"> ",object,". }",sep="")
-      
-      # update <- "prefix rah: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno>
-      #                 INSERT DATA{ <this> <is_not> 'no sfsfs erwrw dsfesr'. }"
+      update <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
+                      INSERT DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+      # Contruct a delete query
+      delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
+                            DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
       # SPARQL update request using post 
-      SPARQL(endpoint, update=update, curl_args = list(style="post"))
+      SPARQL(endpoint2, update=update, curl_args = list(style="post"))
       
       #
       output$updatequery <- renderText({
@@ -987,14 +1043,34 @@ if (interactive()) {
       # Allow user to choose prefixes
       # Aloow users to Delete data
       # set up a button remove last query
+      # Fix Div structure in Manual anno, the tables is off
       
-      query <- "prefix rah: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno> 
+      query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
       select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
-      fetch_query <- SPARQL(endpoint,query)$results
+      fetch_query <- SPARQL(endpoint2,query)$results
       
-      data<-as.matrix(fetch_query)
+      data<-as.data.frame(fetch_query)
+      
       output$contents <- DT::renderDataTable({
         data  
+      })
+      observeEvent (input$delete,{
+        # Contruct a delete query
+        delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+        output$updatequery <- renderText({
+          delete_query
+        })
+        SPARQL(endpoint2, update=delete_query, curl_args = list(style="post"))
+        
+        query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno//> 
+        select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+        fetch_query <- SPARQL(endpoint2,query)$results
+        
+        data<-as.data.frame(fetch_query)
+        
+        output$contents <- DT::renderDataTable({
+          data  
+        })
       })
       
       # Update text field after a submition and set value to empty
@@ -1002,7 +1078,85 @@ if (interactive()) {
       updateTextInput(session,'a_object', value = "")
       updateTextInput(session,'a_predicate', value = "")
     })
+    ### For protein
+    observeEvent (input$ma_submit_prot,{
+      # Save inputs from text fields 
+      subject <- isolate(input$a_subject)
+      #Subject should be the same as the search input
+      predicate <-isolate(input$a_predicate)
+      object <- isolate(shQuote(input$a_object))
+      
+      # Build update query
+      update <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
+                      INSERT DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+      # Contruct a delete query
+      delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
+                            DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+      # SPARQL update request using post 
+      SPARQL(endpoint2, update=update, curl_args = list(style="post"))
+      
+      #
+      output$updatequery_prot <- renderText({
+        update
+      })
+      
+      ### Fetch database and explore -----------------------------
+      # Idea put in a check to see if the data entry worked.
+      # Allow user to choose prefixes
+      # Aloow users to Delete data
+      # set up a button remove last query
+      # Fix Div structure in Manual anno, the tables is off
+      
+      query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
+      select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+      fetch_query <- SPARQL(endpoint2,query)$results
+      
+      data<-as.data.frame(fetch_query)
+      
+      output$contents_prot <- DT::renderDataTable({
+        data  
+      })
+      observeEvent (input$delete_prot,{
+        # Contruct a delete query
+        delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+        output$updatequery_prot <- renderText({
+          delete_query
+        })
+        SPARQL(endpoint2, update=delete_query, curl_args = list(style="post"))
+        
+        query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
+        select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+        fetch_query <- SPARQL(endpoint2,query)$results
+        
+        data<-as.data.frame(fetch_query)
+        
+        output$contents_prot <- DT::renderDataTable({
+          data  
+        })
+      })
+      
+      # Update text field after a submition and set value to empty
+      updateTextInput(session,'a_subject', value = "")
+      updateTextInput(session,'a_object', value = "")
+      updateTextInput(session,'a_predicate', value = "")
+    })
+    
+    observeEvent (input$opendb_prot,{
+      query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+      fetch_query <- SPARQL(endpoint2,query)$results
+      data<-as.data.frame(fetch_query)
+      output$contents_prot <- DT::renderDataTable({
+        data  
+      })
+    })
+    observeEvent (input$opendb,{
+      query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+      fetch_query <- SPARQL(endpoint2,query)$results
+      data<-as.data.frame(fetch_query)
+      output$contents <- DT::renderDataTable({
+        data  
+      })
+    })
   }
-  
   shinyApp(ui, server)
   }

@@ -101,6 +101,16 @@
   top:13px;
   border-radius:0 0 0 0;
 }
+#ma_submit_prot{
+  position:relative;
+  left:150px;
+  top:13px;
+  border-radius:0 0 0 0;
+}
 .text1{
   padding-left:10px;
+}
+.ma{
+  position:relative;
+  left:-16px;
 }
