@@ -336,12 +336,12 @@ if (interactive()) {
                                    ,
                                    # Manual Anotation =================================
                                    tabPanel("Manual Annotation",
-                                           tags$div(class="ma",
+                                            DT::dataTableOutput('ma_table'),
+                                            tags$div(class="ma",
                                                     tags$div(class = "container",
                                                               fluidRow(
                                                                 column(12,
                                                                        mainPanel(width=12,
-                                                                                p("The database is in a turtle file format."),
                                                                                 tags$br(),
                                                                                 h4("Insert Data"),
                                                                                 tags$form(
@@ -351,7 +351,7 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       id ="a_d_subject",
                                                                                       textInput(
-                                                                                        "a_subject",
+                                                                                        "a_subject_prot",
                                                                                         "Subject",
                                                                                         width = "125px",
                                                                                         value = "",
@@ -361,7 +361,7 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       id="a_d_predicate",
                                                                                       textInput(
-                                                                                        "a_predicate",
+                                                                                        "a_predicate_prot",
                                                                                         "Predicate",
                                                                                         width = "125px",
                                                                                         value = "",
@@ -371,14 +371,14 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       id ="a_d_object",
                                                                                       textInput(
-                                                                                        "a_object",
+                                                                                        "a_object_prot",
                                                                                         "Object",
                                                                                         width = "125px",
                                                                                         value = "",
                                                                                         placeholder = NULL
                                                                                       )
                                                                                     ),
-                                                                                    `data-proxy-click` = "masubmit_prot",
+                                                                                    `data-proxy-click` = "ma_submit_prot",
                                                                                     actionButton("ma_submit_prot", "Submit")
                                                                                   ) # Inputboxes div Ends
                                                                                 ),
@@ -770,6 +770,24 @@ if (interactive()) {
       ?feature a ?tool.
       ?feature ?colname ?value
       }"
+      
+      #ncbiprotein <- 'NP_001130025.1'
+      endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
+      maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
+      SELECT ?proteinName ?column ?value 
+      WHERE{<csb:protein> <csb:name> ?proteinName. 
+      FILTER(contains(?proteinName, '",ncbiprotein,"'))
+      <csb:",ncbiprotein,"> ?column ?value.}",sep="")
+      
+      fetch_query <- SPARQL(endpoint2,maquery)$results
+      data<-as.data.table(fetch_query)
+      #data[,colname:=sub('>','',sub('<csb:','',colname))]
+      data[,column:=sub('>','',sub('<csb:','',column))]
+      
+      output$ma_table <- DT::renderDataTable({
+      data
+      })
+      
       # Start the progression bar =================================
       withProgress(
         message = 'Fetching data',
@@ -1078,13 +1096,14 @@ if (interactive()) {
                   updateTextInput(session,'a_object', value = "")
                   updateTextInput(session,'a_predicate', value = "")
     })
+    
     ### For protein
     observeEvent (input$ma_submit_prot,{
       # Save inputs from text fields 
-      subject <- isolate(input$a_subject)
+      subject <- isolate(input$a_subject_prot)
       #Subject should be the same as the search input
-      predicate <-isolate(input$a_predicate)
-      object <- isolate(shQuote(input$a_object))
+      predicate <-isolate(input$a_predicate_prot)
+      object <- isolate(shQuote(input$a_object_prot))
       
       # Build update query
       update <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
@@ -1106,6 +1125,9 @@ if (interactive()) {
       # Aloow users to Delete data
       # set up a button remove last query
       # Fix Div structure in Manual anno, the tables is off
+      # Add a link creation for GeneID and Pubmed fx.
+      # remove <csb: > using regexp
+      # Have pre defined predicates and ability to create new ones.
       
       query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
                   select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
@@ -1148,6 +1170,7 @@ if (interactive()) {
          data  
       })
     })
+    # Render to reaction tab
     observeEvent (input$opendb,{
       query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
       fetch_query <- SPARQL(endpoint2,query)$results
