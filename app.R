@@ -781,7 +781,6 @@ if (interactive()) {
       
       fetch_query <- SPARQL(endpoint2,maquery)$results
       data<-as.data.table(fetch_query)
-      #data[,colname:=sub('>','',sub('<csb:','',colname))]
       data[,column:=sub('>','',sub('<csb:','',column))]
       
       output$ma_table <- DT::renderDataTable({
