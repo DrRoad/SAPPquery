@@ -1084,7 +1084,6 @@ if (interactive()) {
       fetch_query <- SPARQL(endpoint2,query)$results
       
       data<-as.data.frame(fetch_query)
-     
       output$contents <- DT::renderDataTable({
         data  
       })
