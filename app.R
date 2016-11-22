@@ -1134,13 +1134,12 @@ if (interactive()) {
           data  
         })
       })
-      
       # Update text field after a submition and set value to empty
       updateTextInput(session,'a_subject', value = "")
       updateTextInput(session,'a_object', value = "")
       updateTextInput(session,'a_predicate', value = "")
     })
-    
+    # Render to Protein tab
     observeEvent (input$opendb_prot,{
       query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
         fetch_query <- SPARQL(endpoint2,query)$results
@@ -1149,6 +1148,7 @@ if (interactive()) {
          data  
       })
     })
+    # Render to Reaction tab
     observeEvent (input$opendb,{
       query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
       fetch_query <- SPARQL(endpoint2,query)$results
