@@ -1148,6 +1148,7 @@ if (interactive()) {
          data  
       })
     })
+    # Render to reaction tab
     observeEvent (input$opendb,{
       query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
       fetch_query <- SPARQL(endpoint2,query)$results
