@@ -460,29 +460,17 @@ if (interactive()) {
           queryfun <- function(basequery, ecnumber) { return(sub('4.2.1.11', ecnumber, basequery))  }
           
           results_interpro <- data.table(SPARQL(endpoint, paste(prefixes, queryfun(basequery_interpro, ECnumber)))$results)
-          incProgress(0.2, detail = "Fetching Interpro data")
-          
           results_priam <- data.table(SPARQL(endpoint, paste(prefixes, queryfun(basequery_priam, ECnumber)))$results)
-          incProgress(0.25, detail = "Fetching PRIAM data")
-          
           results_enzdp <- data.table(SPARQL(endpoint, paste(prefixes, queryfun(basequery_enzdp, ECnumber)))$results)
-          incProgress(0.3, detail = "Fetching Enzdp data")
-          
           results_uniprot <-data.table(SPARQL(endpoint, paste(prefixes, queryfun(basequery_uniprot, ECnumber)))$results)
-          incProgress(0.4, detail = "Fetching Uniprot data")
+          incProgress(0.4, detail = "Fetching data")
           
           ### Check if dataframes are empty #############################
           if (empty(results_interpro) && empty(results_priam) && empty(results_uniprot) == TRUE) {
             output$exampleOutput <- renderText({
-              createAlert(
-                session,
-                "alert",
-                "exampleAlert",
-                title = "No Query Found",
+              createAlert(session,"alert","exampleAlert",title = "No Query Found",
                 content = "The number you enterd is not a valid ECnumber or a EC number wich returned an
-                empty results",
-                append = FALSE
-              )
+                empty results", append = FALSE)
             })
           }
           # Build dataframes =================================
@@ -781,7 +769,6 @@ if (interactive()) {
       
       fetch_query <- SPARQL(endpoint2,maquery)$results
       data<-as.data.table(fetch_query)
-      #data[,colname:=sub('>','',sub('<csb:','',colname))]
       data[,column:=sub('>','',sub('<csb:','',column))]
       
       output$ma_table <- DT::renderDataTable({
