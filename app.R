@@ -19,8 +19,11 @@ library(rstudioapi)
 # set a working directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-#Source Jon Olav's hyperlink function
+#Source hyperlink function and directories
 source('ontology_links.R')
+sapply(list.files(pattern="[.]R$", path="var/", full.names=TRUE), source);
+sapply(list.files(pattern="[.]R$", path="query/", full.names=TRUE), source);
+
 # Point to js file
 jsfile <- "www/jsfile.js"
 if (interactive()) {
@@ -218,8 +221,11 @@ if (interactive()) {
                                                              ) # Fluid row ends
                                                     ) # div container ends
                                            ) # div info ends
-                                  )
-                                  
+                                  ),
+                                  tabPanel("Federated query",
+                                           actionButton("fd","Submit"),
+                                           DT::dataTableOutput('federated_table')
+                                           )
                                 ) # tabset ends
                               ) # main panael ends
                             )
@@ -426,13 +432,11 @@ if (interactive()) {
       results_uniprot <- NULL
       swiss_table <- NULL
       enzdp_table <- NULL
-      #ECnumber <- NULL
-      
+
       ### Variable and js scripts addCLass #############################
-      #shinyjs::removeClass(selector = "body", class = "sidebar-collapse")
       shinyjs::addClass(selector = "body", class = "sidebar-collapse")
-      source('noframe.R')
-      
+      source('var/noframe.R')
+      source('var/rename_protein.R')
       ECnumber <- input$variable
 
       # Render EC number to text
@@ -448,14 +452,14 @@ if (interactive()) {
           incProgress(0.1, detail = "Starting SAPP query")
           
           # Grab queries from source file
-          prefixes_all <- source('prefixes_reactive.R')
+          prefixes_all <- source('query/prefixes_reactive.R')
           # Extract relevant data from the list.
           prefixes <- prefixes_all$value[1]
           basequery_interpro <- prefixes_all$value[2]
           basequery_priam <- prefixes_all$value[3]
           basequery_uniprot <- prefixes_all$value[4]
           basequery_enzdp <- prefixes_all$value[5]
-          
+
           ### Query functions #############################
           queryfun <- function(basequery, ecnumber) { return(sub('4.2.1.11', ecnumber, basequery))  }
           
@@ -480,13 +484,7 @@ if (interactive()) {
             incProgress(0.6, detail = "Building tables")
             
             # in order to get nice tables we replace them.
-            results[, ncbiprotein := str_match(header, '[N,X]P_[[:digit:]]+.[[:digit:]]+')]
-            results[, colname := sub('>', '', sub('<http://csb.wur.nl/genome/', '', colname))]
-            results[, tool := sub('>', '', sub('<http://csb.wur.nl/genome/', '', tool))]
-            results[, feature := sub('>','',sub('<http://csb.wur.nl/genome/protein/[[:alnum:]]+/','',feature))]
-            results <-results[!grepl('http://www.w3.org/1999/02/22-rdf-syntax-ns#type',colname)]
-            results[,Ncbiprotein:=ncbiprotein]
-            results[, ncbiprotein := o(paste('ncbiprotein', ncbiprotein, sep ='/'))]
+            results <- rename_reaction(results)
             
             ### BLAST #############################
             if ("Blast" %in% results$tool) {
@@ -739,27 +737,18 @@ if (interactive()) {
       ipr <- NULL
       priam_table_prot <- NULL
       iprresults <- NULL
-      #input$submitprot <- NULL
-      
+
       ### Variable and js scripts addCLass #############################
-      #shinyjs::removeClass(selector = "body", class = "sidebar-collapse")
       shinyjs::addClass(selector = "body", class = "sidebar-collapse")
       ncbiprotein <- input$variableprot
       
       ### Run the basequery #############################
-      basequery <- "prefix ssb: <http://csb.wur.nl/genome/>
-      select ?header ?tool ?feature ?colname ?value
-      where
-      {
-      ?cds ssb:header ?header.
-      FILTER(contains(?header,'changeme'))
-      ?cds ssb:protein ?protein.
-      ?protein ssb:feature ?feature.
-      ?feature a ?tool.
-      ?feature ?colname ?value
-      }"
-      
+      basequery <- source('query/protein_query.R')$value
+       
       #ncbiprotein <- 'NP_001130025.1'
+      #ncbiprotein <- 'NP_0011333471'
+      endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
+      
       endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
       maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
       SELECT ?proteinName ?column ?value 
@@ -769,8 +758,11 @@ if (interactive()) {
       
       fetch_query <- SPARQL(endpoint2,maquery)$results
       data<-as.data.table(fetch_query)
-      data[,column:=sub('>','',sub('<csb:','',column))]
-      
+      if (empty(data) == TRUE){
+        results <- noframe()
+      }else{
+        data[,column:=sub('>','',sub('<csb:','',column))]  
+      }
       output$ma_table <- DT::renderDataTable({
       data
       })
@@ -783,6 +775,7 @@ if (interactive()) {
         {
           Sys.sleep(0.50)
           incProgress(0.1, detail = "Starting SAPP protein query")
+          
           ### Start querying and load results #############################
           queryfun <- function(basequery, ncbiprotein) {return(sub('changeme', ncbiprotein, basequery))}
           res <- SPARQL(endpoint, queryfun(basequery,ncbiprotein))
@@ -791,27 +784,17 @@ if (interactive()) {
           ### Check if dataframe is empty #############################
           if (empty(results) == TRUE) {
             output$exampleOutput <- renderText({
-              createAlert(
-                session,
-                "alert2",
-                "exampleAlert2",
-                title = "No Query Found",
+              createAlert(session,"alert2","exampleAlert2",title = "No Query Found",
                 content = "The number you enterd is not a valid NP number or a NP number wich returned an
-                empty results",
-                append = FALSE
-              )
+                empty results", append = FALSE)
             })
           }
           # Build dataframes and parse columns =================================
           else{
             ### Change names of results columns #############################
-            results[,ncbiprotein:=str_match(header,'[N,X]P_[[:digit:]]+.[[:digit:]]+')]
-            results[,colname:=sub('>','',sub('<http://csb.wur.nl/genome/','',colname))]
-            results[,tool:=sub('>','',sub('<http://csb.wur.nl/genome/','',tool))]
-            results[,feature:=sub('>','',sub('<http://csb.wur.nl/genome/protein/[[:alnum:]]+/','',feature))]
-            #simple report per protein and tool, some hickups where duplicate values per feature trigger aggregation dcast
-            results <- results[!grepl('http://www.w3.org/1999/02/22-rdf-syntax-ns#type',colname)] #remove, duplicate values triggers aggregation in dcast
-            results[, ncbiprotein := o(paste('ncbiprotein', ncbiprotein, sep ='/'))] #TEST
+            source('var/rename_protein.R')
+            results <- rename_protein(results)
+            
             # Create a empty dataframe if needed
             if (empty(results) == TRUE){
               results <- noframe()
@@ -857,10 +840,7 @@ if (interactive()) {
               priam_version_prot <- "N/A"
               priam_table_prot <- noframe()
             }
-            
-            #**Shiny suggestions:**
-            #* Reorder columns and remove duplicate info, move "tool and "version" to caption
-            
+  
             incProgress(0.4, detail = "Fetching Interpro data")
             
             ### Interproscan #############################
@@ -932,7 +912,8 @@ if (interactive()) {
             # Drop the feature column from SAPP before rendering
             results$feature <- NULL
             #NP_001133193.1
-            
+           
+             
             output$myTableprot <- DT::renderDataTable(
               results,
               options = list(
@@ -1017,7 +998,8 @@ if (interactive()) {
           }
           }) # Progress bar ends
         }) # SappprotData ends
-    # SAPP Annotation ===========================
+    # SAPP Annotation ==========================
+    
     endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
     # Here the data is sent to the sparql endpoint
     
@@ -1068,7 +1050,7 @@ if (interactive()) {
                     SPARQL(endpoint2, update=delete_query, curl_args = list(style="post"))
                     
                     query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno//> 
-                select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+                    select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
                     fetch_query <- SPARQL(endpoint2,query)$results
                     
                     data<-as.data.frame(fetch_query)
@@ -1149,15 +1131,6 @@ if (interactive()) {
       updateTextInput(session,'a_predicate', value = "")
     })
     # Render to protein tab
-    observeEvent (input$opendb_prot,{
-      query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
-        fetch_query <- SPARQL(endpoint2,query)$results
-          data<-as.data.frame(fetch_query)
-      output$contents_prot <- DT::renderDataTable({
-         data  
-      })
-    })
-    # Render to reaction tab
     observeEvent (input$opendb,{
       query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
       fetch_query <- SPARQL(endpoint2,query)$results
@@ -1166,6 +1139,47 @@ if (interactive()) {
         data  
       })
     })
+    observeEvent (input$opendb_prot,{
+      query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+        fetch_query <- SPARQL(endpoint2,query)$results
+          data<-as.data.frame(fetch_query)
+    output$contents_prot <- DT::renderDataTable({
+      data  
+      })
+    })
+    endpoint = c("http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql","http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/")
+    observeEvent(input$fd,{
+      query_fed <- "
+        prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
+        prefix ssb: <http://csb.wur.nl/genome/>
+        select ?header ?tool ?feature ?colname ?value
+        where {
+          SERVICE <http://localhost:9999/blazegraph/namespace/ManualAnno/sparql>{
+            <csb:protein> <csb:name> ?header.
+            FILTER(contains(?header, 'NP_001133193.1'))
+            <csb:NP_001130025.1> <csb:tool> ?tool.
+            <csb:NP_001130025.1> <csb:hasGeneid> ?feature .
+            ?s ?colname '100192341'.
+            <csb:NP_001130025.1> <csb:PubmedID> ?value .
+          }
+          SERVICE <http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql>{
+            ?cds ssb:header ?header.
+            FILTER(contains(?header,'NP_001133193.1'))
+            ?cds ssb:protein ?protein.
+            ?protein ssb:feature ?feature.
+            ?feature a ?tool.
+            ?feature ?colname ?value
+        }LIMIT 10
+      }"
+      fetch_query <- SPARQL(endpoint,query)$results
+
+      data<-as.data.frame(fetch_query)
+
+      output$federated_table <- DT::renderDataTable({
+
+      })
+    })
+    
   }
   shinyApp(ui, server)
   }
