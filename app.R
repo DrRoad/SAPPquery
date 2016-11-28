@@ -54,7 +54,7 @@ if (interactive()) {
              )),
     navbarPage( 
       "SAPP Query",
-      # Reavtive NavTab =================================
+      # Reaction NavTab =================================
       tabPanel(
         "Reaction",
         # Search feild ##########################
@@ -157,13 +157,12 @@ if (interactive()) {
                                   ),
                                   # Manual Anotation =================================
                                   tabPanel("Manual Annotation",
+                                           DT::dataTableOutput('ma_table'),
                                            tags$div(class="ma",
                                                     tags$div(class = "container",
                                                              fluidRow(
                                                                column(12,
                                                                       mainPanel(width=12,
-                                                                                p("The database is in a turtle file format."),
-                                                                                tags$br(),
                                                                                 h4("Insert Data"),
                                                                                 tags$form(
                                                                                   class = "form-inline",
@@ -203,29 +202,67 @@ if (interactive()) {
                                                                                     actionButton("ma_submit", "Submit")
                                                                                   ) # Inputboxes div Ends
                                                                                 ),
-                                                                                tags$br(),
+                                                                                h4(style="padding-top:10px;", "Delete Data"),
                                                                                 p("Delete last entry"),
-                                                                                actionButton("delete", "Delete")
+                                                                                actionButton("delete_last", "Delete"),
+                                                                                tags$div(style="padding-top:10px;",
+                                                                                         p("Delete a specific entry"),
+                                                                                         tags$form(
+                                                                                           class = "form-inline",
+                                                                                           tags$div(
+                                                                                             class = "form-group",
+                                                                                             tagAppendAttributes(
+                                                                                               class ="delete_subject",
+                                                                                               textInput(
+                                                                                                 "d_subject_reaction",
+                                                                                                 "Subject",
+                                                                                                 width = "125px",
+                                                                                                 value = "",
+                                                                                                 placeholder = NULL
+                                                                                               )
+                                                                                             ),
+                                                                                             tagAppendAttributes(
+                                                                                               class="delete_predicate",
+                                                                                               textInput(
+                                                                                                 "d_predicate_reaction",
+                                                                                                 "Predicate",
+                                                                                                 width = "125px",
+                                                                                                 value = "",
+                                                                                                 placeholder = NULL
+                                                                                               )
+                                                                                             ),
+                                                                                             tagAppendAttributes(
+                                                                                               class ="delete_object",
+                                                                                               textInput(
+                                                                                                 "d_object_reaction",
+                                                                                                 "Object",
+                                                                                                 width = "125px",
+                                                                                                 value = "",
+                                                                                                 placeholder = NULL
+                                                                                               )
+                                                                                             ),
+                                                                                             `data-proxy-click` = "delete_reaction",
+                                                                                             actionButton("delete_reaction", "Delete")
+                                                                                           )
+                                                                                         ) # tags form ends
+                                                                                ) # Div tags
                                                                       ) # Form and column div ends
-                                                               ) # main panel div
-                                                               ,column(12,
-                                                                       mainPanel(
+                                                               ), # main panel div
+                                                               mainPanel(style="margin-left:15px;padding-top:10px;",
                                                                          p("Open or update the database view the latest annotations"),
-                                                                         actionButton("opendb","Open/Update"),
+                                                                         actionButton("opendb","Open"),
                                                                          textOutput('updatequery'),
-                                                                         tags$hr()
-                                                                         
-                                                                       ),
-                                                                       mainPanel(width=12,DT::dataTableOutput('contents'))
-                                                               ) # Column 12 ends
-                                                             ) # Fluid row ends
-                                                    ) # div container ends
-                                           ) # div info ends
-                                  ),
-                                  tabPanel("Federated query",
-                                           actionButton("fd","Submit"),
-                                           DT::dataTableOutput('federated_table')
-                                           )
+                                                                         tags$hr(),
+                                                                         DT::dataTableOutput('contents')
+                                                               ) # mainPanel 
+                                           ) # Fluid row ends
+                                  ) # div container ends
+                                ) # div info ends
+                                ), # tabPanel
+                                tabPanel("Federated query",
+                                       actionButton("fd","Submit"),
+                                       DT::dataTableOutput('federated_table')
+                                       )
                                 ) # tabset ends
                               ) # main panael ends
                             )
@@ -250,7 +287,7 @@ if (interactive()) {
                                            "variableprot",
                                            "NP number query",
                                            width = "125px",
-                                           value = "NP_001133193.1",
+                                           value = "NP_001130025.1",
                                            placeholder = NULL
                                          ),
                                          `data-proxy-click` = "submitprot"
@@ -325,12 +362,9 @@ if (interactive()) {
                                                       tags$li(textOutput("tool_interpro_prot")),
                                                       tags$li(textOutput("version_interpro_prot"))
                                                     )),
-                                           
                                            DT::dataTableOutput('ipr_table')
-                                           
-                                           
                                   ),
-                                  # # Interpro Domains Tab =================================
+                                  # Interpro Domains Tab =================================
                                   tabPanel("Interpro Domains ",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -340,13 +374,14 @@ if (interactive()) {
                                            DT::dataTableOutput('interpro_table')
                                   )
                                    ,
-                                   # Manual Anotation =================================
-                                   tabPanel("Manual Annotation",
-                                            DT::dataTableOutput('ma_table'),
+                                  # Manual Anotation =================================
+                                  tabPanel("Manual Annotation",
+                                            DT::dataTableOutput('ma_table_prot'),
                                             tags$div(class="ma",
                                                     tags$div(class = "container",
                                                               fluidRow(
                                                                 column(12,
+                                                                       # Input feilds -----------------------------------
                                                                        mainPanel(width=12,
                                                                                 tags$br(),
                                                                                 h4("Insert Data"),
@@ -385,25 +420,66 @@ if (interactive()) {
                                                                                       )
                                                                                     ),
                                                                                     `data-proxy-click` = "ma_submit_prot",
-                                                                                    actionButton("ma_submit_prot", "Submit")
+                                                                                    actionButton("ma_submit_prot", "Insert"),
+                                                                                   tags$br() 
                                                                                   ) # Inputboxes div Ends
                                                                                 ),
-                                                                                tags$br(),
+                                                                                h4(style="padding-top:10px;", "Delete Data"),
                                                                                 p("Delete last entry"),
-                                                                                actionButton("delete_prot", "Delete")
+                                                                                actionButton("delete_prot", "Delete"),
+                                                                                tags$div(style="padding-top:10px;",
+                                                                                p("Delete a specific entry"),
+                                                                                          tags$form(
+                                                                                            class = "form-inline",
+                                                                                            tags$div(
+                                                                                              class = "form-group",
+                                                                                              tagAppendAttributes(
+                                                                                                class ="delete_subject",
+                                                                                                textInput(
+                                                                                                  "d_subject_prot",
+                                                                                                  "Subject",
+                                                                                                  width = "125px",
+                                                                                                  value = "",
+                                                                                                  placeholder = NULL
+                                                                                                )
+                                                                                              ),
+                                                                                              tagAppendAttributes(
+                                                                                                class="delete_predicate",
+                                                                                                textInput(
+                                                                                                  "d_predicate_prot",
+                                                                                                  "Predicate",
+                                                                                                  width = "125px",
+                                                                                                  value = "",
+                                                                                                  placeholder = NULL
+                                                                                                )
+                                                                                              ),
+                                                                                              tagAppendAttributes(
+                                                                                                class ="delete_object",
+                                                                                                textInput(
+                                                                                                  "d_object_prot",
+                                                                                                  "Object",
+                                                                                                  width = "125px",
+                                                                                                  value = "",
+                                                                                                  placeholder = NULL
+                                                                                                )
+                                                                                              ),
+                                                                                              `data-proxy-click` = "delete_submit_prot",
+                                                                                              actionButton("delete_submit_prot", "Delete")
+                                                                                            )
+                                                                              ) # tags form ends
+                                                                          ) # Div tags
                                                                       ) # Form and column div ends
                                                                ), # main panel div
-                                                               column(12,
-                                                                       mainPanel(
-                                                                         p("Open or update the database view the latest annotations"),
-                                                                         actionButton("opendb_prot","Open/Update"),
-                                                                         textOutput('updatequery_prot'),
-                                                                         tags$hr()
-
-                                                             ),
-                                                                        mainPanel(width=12, DT::dataTableOutput('contents_prot'))
-                                                                ) # Column 12 ends
-                                                              ) # Fluid row ends
+                                                                 mainPanel(style="margin-left:15px;padding-top:10px;",
+                                                                     p("Open or update the database view the latest annotations"),
+                                                                     actionButton("opendb_prot","Open"),
+                                                                     textOutput('updatequery_prot'),
+                                                                     tags$hr(),
+                                                                     #mainPanel(width=12, 
+                                                                     DT::dataTableOutput('contents_prot')
+                                                               )
+                                                             #) # Column 12 ends
+                                                      ) # Fluid row ends
                                                     ) # div container ends
                                            ) # div info ends
                                   )
@@ -421,25 +497,18 @@ if (interactive()) {
     
     # Database endpoint
     endpoint <- isolate(input$select)
+    #endpoint <- 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql'
     
-    # SAPP Reaction ===========================
+    # SAPP Reaction ============================
     Sappdata <- observeEvent(input$submit,{
       
       ### Clear all data.frames #############################
-      results <- NULL
-      results_interpro <- NULL
-      results_priam <- NULL
-      results_uniprot <- NULL
-      swiss_table <- NULL
-      enzdp_table <- NULL
+      results <- NULL;results_interpro <- NULL;results_priam <- NULL;results_uniprot <- NULL;swiss_table <- NULL;enzdp_table <- NULL;
 
       ### Variable and js scripts addCLass #############################
       shinyjs::addClass(selector = "body", class = "sidebar-collapse")
-      source('var/noframe.R')
-      source('var/rename_protein.R')
+      # Render EC number input and render to text
       ECnumber <- input$variable
-
-      # Render EC number to text
       output$text <- renderText({ECnumber})
       
       # Start the progression bar =================================
@@ -482,71 +551,39 @@ if (interactive()) {
             ### Rename columns #############################
             results <- data.table(ldply(.id = "tool",list(Interpro = results_interpro,Priam = results_priam, Blast = results_uniprot,Enzdp = results_enzdp )))
             incProgress(0.6, detail = "Building tables")
-            
             # in order to get nice tables we replace them.
             results <- rename_reaction(results)
             
             ### BLAST #############################
             if ("Blast" %in% results$tool) {
               swiss_table <- dcast(results[tool == 'Blast'], ncbiprotein + feature ~ colname,fun.aggregate = paste,collapse = "__")
-              swiss_table[, uniprot := o(paste('uniprot', substr(subjectid, 4, 9), sep ='/'))]
-              # Feature aln bitscore eval gaps mm %ident qend qstart send sstart subjectid subjectname tool version
-              
               # Grab names of tool and version to display in header
               swiss_tool <- toupper(swiss_table$tool[1])
               swiss_version <- swiss_table$version[1]
-              # Re-order and rename the datatable
-              swiss_table <- swiss_table[,.(ncbiprotein,uniprot,alignment_length,bitscore,evalue,gaps,mismatches,percidentity,qend,qstart,send,sstart,subjectname)]
-              swiss_table <- rename(swiss_table,c("alignment_length" = "aln","evalue" = "e","mismatches" = "mm","percidentity" = "pi","bitscore" = "bs",
-                                                  "qend" = "qe","send" = "se","qstart" = "qs","sstart" = "ss"))
-            } else {
-              swiss_tool <- toupper("N/A")
-              swiss_version <- "N/A"
-              # Create a "empty" dataframe needed for the rendering of the datatables.
-              swiss_table <- noframe()
-            }
+              # Send swiss_Table to a function that proceses the headers
+              swiss_table <- blast_reaction_rename(swiss_table)
+            } else {swiss_tool <- toupper("N/A"); swiss_version <- "N/A";swiss_table <- noframe()}
+            
             ### PRIAM #############################
             if ("Priam" %in% results$tool) {
               priam_table <- dcast(results[tool == 'Priam'],ncbiprotein + feature ~ colname,fun.aggregate = paste,collapse = "__")
-              head(priam_table)
-              priam_table <-rename(priam_table,c("<http://www.biopax.org/release/bp-level3.owl#xref" = "ECurl"))
-              priam_table[, evalue := as.numeric(evalue)]
-              setkey(priam_table, evalue)
-              
               # Save tool and version vales for displaying
               priam_tool <- toupper(priam_table$tool[1])
               priam_version <- priam_table$version[1]
-              
-              # rename the headers in the priam table
-              priam_table <-rename(priam_table,c("align_length" = "aln","bit_score" = "bs","evalue" = "e","is_best_overlap" = "isb","positive_hit_probability" = "php",
-                                                 "profile_from" = "pf","profile_length" = "pl","profile_proportion" = "pp","profile_to" = "pt","query_from" = "qf","query_length" = "ql","query_strand" = "qs","query_to" = "qt"))
-              priam_table <- priam_table[,.(ncbiprotein,ECurl,aln,bs,e,isb,php,profile_ID,pf,pl,pp,pt,qf,ql,qs,qt)]
-              
-            } else  {
-              priam_tool <- "N/A"
-              priam_version <- "N/A"
-              priam_table <- noframe()
-            }
+              # Parse priam table
+              priam_table <- priam_reaction_rename(priam_table)
+            } else {priam_tool <- "N/A"; priam_version <- "N/A";priam_table <- noframe();}
+            
             ### InterproScan #############################
             if ("Interpro" %in% results$tool) {
               interpro_table <-dcast(results[tool == 'Interpro'], ncbiprotein + feature ~ colname)
-              
-              # Change the analysis column slightly so the identifiers mathces the terms in identifiers.org, then link signature column
-              interpro_table[analysis == 'prints', analysis := 'sprint']
-              interpro_table[analysis == 'prositepatterns', analysis :='prosite']
-              interpro_table[, signature := o(paste(analysis, sub('>','',sub('<http://csb.wur.nl/genome/', '', signature)), sep = '/'))]
-              
               # Grab tool and version varibles
               interpro_tool <- toupper(interpro_table$tool[1])
               interpro_version <- interpro_table$version[1]
-              
-              # Drop the columns that are not needed
-              interpro_table <- interpro_table[,.(ncbiprotein,signature,analysis,begin,end,score)]
-            } else {
-              interpro_tool <- "N/A"
-              interpro_version <- "N/A"
-              interpro_table <- noframe()
-            }
+              # Parse interpro_table
+              interpro_table<-interpro_reaction_rename(interpro_table)
+            } else {interpro_tool <- "N/A";interpro_version <- "N/A";interpro_table <- noframe();}
+           
             ### EnzDP #############################
             if ("Enzdp" %in% results$tool) {
               enzdp_table <-dcast(results[tool == 'Enzdp'], ncbiprotein + feature ~ colname)
@@ -556,15 +593,9 @@ if (interactive()) {
               # Grab the tool and version variables
               enzdp_tool <- toupper(enzdp_table$tool[1])
               enzdp_version <- enzdp_table$version[1]
-              
               # Drop the tool and variable
               enzdp_table <- enzdp_table[,.(ncbiprotein,ECurl,likelihoodscore,maxbitscore)]
-              
-            } else {
-              enzdp_tool <- "N/A"
-              enzdp_version <- "N/A"
-              enzdp_table <- noframe()
-            }
+            } else {enzdp_tool <- "N/A"; enzdp_version <- "N/A"; enzdp_table <- noframe();}
             
             ### Comparing results across tools #############################
             results_summary <-
@@ -722,21 +753,16 @@ if (interactive()) {
               )
             )
             incProgress(1, detail = "Done")
-                  }
+            }
           })
           })
     
-    # SAPP Protein ===========================
+    # SAPP Protein =============================
     Sappdataprot <- observeEvent(input$submitprot, {
       
       ### Clear all data.frames #############################
-      results <- NULL
-      result <- NULL
-      blastresults <- NULL
-      signalIP <- NULL
-      ipr <- NULL
-      priam_table_prot <- NULL
-      iprresults <- NULL
+      results <- NULL;result <- NULL;blastresults <- NULL;signalIP <- NULL;ipr <- NULL;
+      priam_table_prot <- NULL;iprresults <- NULL;
 
       ### Variable and js scripts addCLass #############################
       shinyjs::addClass(selector = "body", class = "sidebar-collapse")
@@ -746,8 +772,7 @@ if (interactive()) {
       basequery <- source('query/protein_query.R')$value
        
       #ncbiprotein <- 'NP_001130025.1'
-      #ncbiprotein <- 'NP_0011333471'
-      endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
+      #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
       
       endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
       maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
@@ -757,14 +782,14 @@ if (interactive()) {
       <csb:",ncbiprotein,"> ?column ?value.}",sep="")
       
       fetch_query <- SPARQL(endpoint2,maquery)$results
-      data<-as.data.table(fetch_query)
-      if (empty(data) == TRUE){
+      fetch_query<-as.data.table(fetch_query)
+      if (empty(fetch_query) == TRUE){
         results <- noframe()
       }else{
-        data[,column:=sub('>','',sub('<csb:','',column))]  
+        fetch_query[,column:=sub('>','',sub('<csb:','',column))]  
       }
-      output$ma_table <- DT::renderDataTable({
-      data
+      output$ma_table_prot <- DT::renderDataTable({
+        fetch_query
       })
       
       # Start the progression bar =================================
@@ -792,35 +817,25 @@ if (interactive()) {
           # Build dataframes and parse columns =================================
           else{
             ### Change names of results columns #############################
-            source('var/rename_protein.R')
+            #source('var/rename_protein.R')
             results <- rename_protein(results)
             
             # Create a empty dataframe if needed
-            if (empty(results) == TRUE){
-              results <- noframe()
-            }
+            if (empty(results) == TRUE){results <- noframe()}
             
             ### Blast against Swissprot and COG #############################
             incProgress(0.3, detail = "Fetching BLAST data")
             blastresults <- dcast(results[tool=='Blast'],feature~colname)
-            
-            #blastresults$queryid <- NULL #COG
-            result <- blastresults[tool=='cog']
-            
-            #Swissprot
             result <- blastresults[tool=='swiss']
+            
+            result_version <- result$result_version[1]
             result_tool <- result$tool[1]
-            result_version <- result$version[1]
+            result <- blastresults[tool=='cog']
             result <- result[,.(ncbiprotein,alignment_length,bitscore,evalue,gaps,mismatches,percidentity,qend,qstart,send,sstart,subjectname)]
             result <- rename(result,c("alignment_length" = "aln","evalue" = "e","mismatches" = "mm","percidentity" = "pi","bitscore" = "bs",
                                       "qend" = "qe","send" = "se","qstart" = "qs","sstart" = "ss"))
-            
             # Create a empty dataframe if needed
-            if (empty(result) == TRUE){
-              result_tool <- "N/A"
-              resukt_version <- "N/A"
-              result <- noframe()
-            }
+            if (empty(result) == TRUE){result_tool <- "N/A";resukt_version <- "N/A";result <- noframe();}
             
             ### Priam table created #############################
             incProgress(0.3, detail = "Fetching PRIAM data")
@@ -998,16 +1013,14 @@ if (interactive()) {
           }
           }) # Progress bar ends
         }) # SappprotData ends
+    
     # SAPP Annotation ==========================
-    
     endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
-    # Here the data is sent to the sparql endpoint
     
-    ## For reaction
+    # Reaction Annotation ======================
     observeEvent (input$ma_submit,{
                   # Save inputs from text fields 
                   subject <- isolate(input$a_subject)
-                  #Subject should be the same as the search input
                   predicate <-isolate(input$a_predicate)
                   object <- isolate(shQuote(input$a_object))
                   
@@ -1020,7 +1033,7 @@ if (interactive()) {
                   # SPARQL update request using post 
                   SPARQL(endpoint2, update=update, curl_args = list(style="post"))
                   
-                  #
+                  # Render the update query
                   output$updatequery <- renderText({
                     update
                   })
@@ -1060,17 +1073,17 @@ if (interactive()) {
                     })
                   })
                   
+                  
                   # Update text field after a submition and set value to empty
                   updateTextInput(session,'a_subject', value = "")
                   updateTextInput(session,'a_object', value = "")
                   updateTextInput(session,'a_predicate', value = "")
     })
     
-    ### For protein
+    # Protein Annotation =======================
     observeEvent (input$ma_submit_prot,{
       # Save inputs from text fields 
       subject <- isolate(input$a_subject_prot)
-      #Subject should be the same as the search input
       predicate <-isolate(input$a_predicate_prot)
       object <- isolate(shQuote(input$a_object_prot))
       
@@ -1083,7 +1096,7 @@ if (interactive()) {
       # SPARQL update request using post 
       SPARQL(endpoint2, update=update, curl_args = list(style="post"))
       
-      #
+      # REnder the update query
       output$updatequery_prot <- renderText({
         update
       })
@@ -1109,7 +1122,8 @@ if (interactive()) {
       })
       observeEvent (input$delete_prot,{
         # Contruct a delete query
-        delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+        delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
+                              DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
         output$updatequery_prot <- renderText({
           delete_query
         })
@@ -1124,60 +1138,113 @@ if (interactive()) {
         output$contents_prot <- DT::renderDataTable({
           data  
         })
+        updateTextInput(session,'a_subject', value = "")
+        updateTextInput(session,'a_object', value = "")
+        updateTextInput(session,'a_object', value = "")
+      })
+  })
+    
+    # Delete a specific entry ==================  
+    observeEvent(input$delete_reaction,{
+      subject <- isolate(input$d_subject_reaction)
+      predicate <-isolate(input$d_predicate_reaction)
+      object <- isolate(shQuote(input$d_object_reaction))
+      
+      # Contruct a delete query
+      delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+      output$updatequery <- renderText({
+        delete_query
+      })
+      SPARQL(endpoint2, update=delete_query, curl_args = list(style="post"))
+      
+      query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
+      select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+      fetch_query <- SPARQL(endpoint2,query)$results
+      fetch_query<-as.data.frame(fetch_query)
+      output$contents <- DT::renderDataTable({
+        fetch_query  
       })
       # Update text field after a submition and set value to empty
-      updateTextInput(session,'a_subject', value = "")
-      updateTextInput(session,'a_object', value = "")
-      updateTextInput(session,'a_predicate', value = "")
-    })
-    # Render to protein tab
+      updateTextInput(session,'d_subject_reaction', value = "")
+      updateTextInput(session,'d_object_reaction', value = "")
+      updateTextInput(session,'d_object_reaction', value = "")
+    })  
+   
+    observeEvent(input$delete_submit_prot,{
+        subject <- isolate(input$d_subject_prot)
+        #subject <-"NP_001130025.1"
+        predicate <-isolate(input$d_predicate_prot)
+        #predicate <- "auther"
+        object <- isolate(shQuote(input$d_object_prot))
+        
+        # Contruct a delete query
+        delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+        output$updatequery_prot <- renderText({
+          delete_query
+        })
+        SPARQL(endpoint2, update=delete_query, curl_args = list(style="post"))
+        
+        query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
+        select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+        fetch_query <- SPARQL(endpoint2,query)$results
+        fetch_query<-as.data.frame(fetch_query)
+        output$contents_prot <- DT::renderDataTable({
+          fetch_query  
+        })
+        # Update text field after a submition and set value to empty
+        updateTextInput(session,'d_subject_prot', value = "")
+        updateTextInput(session,'d_object_prot', value = "")
+        updateTextInput(session,'d_predicate_prot', value = "")
+      })
+
+    # Open Database for both tabs protein and reaction ===================
     observeEvent (input$opendb,{
       query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
       fetch_query <- SPARQL(endpoint2,query)$results
-      data<-as.data.frame(fetch_query)
+      fetch_query<-as.data.frame(fetch_query)
       output$contents <- DT::renderDataTable({
-        data  
+        fetch_query
       })
     })
     observeEvent (input$opendb_prot,{
       query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
-        fetch_query <- SPARQL(endpoint2,query)$results
-          data<-as.data.frame(fetch_query)
-    output$contents_prot <- DT::renderDataTable({
-      data  
+      fetch_query <- SPARQL(endpoint2,query)$results
+      fetch_query<-as.data.frame(fetch_query)
+      output$contents_prot <- DT::renderDataTable({
+        fetch_query
       })
     })
-    endpoint = c("http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql","http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/")
+    
+    # Federated query TEST ======================
+    endpoint3 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
     observeEvent(input$fd,{
-      query_fed <- "
-        prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
-        prefix ssb: <http://csb.wur.nl/genome/>
-        select ?header ?tool ?feature ?colname ?value
-        where {
-          SERVICE <http://localhost:9999/blazegraph/namespace/ManualAnno/sparql>{
-            <csb:protein> <csb:name> ?header.
-            FILTER(contains(?header, 'NP_001133193.1'))
-            <csb:NP_001130025.1> <csb:tool> ?tool.
-            <csb:NP_001130025.1> <csb:hasGeneid> ?feature .
-            ?s ?colname '100192341'.
-            <csb:NP_001130025.1> <csb:PubmedID> ?value .
-          }
-          SERVICE <http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql>{
-            ?cds ssb:header ?header.
-            FILTER(contains(?header,'NP_001133193.1'))
-            ?cds ssb:protein ?protein.
-            ?protein ssb:feature ?feature.
-            ?feature a ?tool.
-            ?feature ?colname ?value
-        }LIMIT 10
-      }"
-      fetch_query <- SPARQL(endpoint,query)$results
+      
+    query_fed <- "
+    prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
+    prefix ssb: <http://csb.wur.nl/genome/>
+    select ?header ?tool ?feature ?colname ?value ?header2 ?tool2 ?feature2 ?colname2 ?value2 {      
+      <csb:protein> <csb:name> ?header.
+      FILTER(contains(?header, 'NP_001133193.1'))
+      <csb:NP_001130025.1> <csb:tool> ?tool.
+      <csb:NP_001130025.1> <csb:hasGeneid> ?feature .
+      ?s ?colname '100192341'.
+      <csb:NP_001130025.1> <csb:PubmedID> ?value .    
+        service <http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql> {      
+          ?cds ssb:header ?header2.
+          FILTER(contains(?header2,'NP_001130025.1'))
+          ?cds ssb:protein ?protein.
+          ?protein ssb:feature ?feature2.
+          ?feature2 a ?tool2.
+        ?feature2 ?colname2 ?value2.
+      }
+    } "
 
-      data<-as.data.frame(fetch_query)
-
-      output$federated_table <- DT::renderDataTable({
-
-      })
+    fetch_query <- SPARQL(endpoint3,query=query_fed)$results
+    fetch_query <-as.data.frame(fetch_query)
+    output$federated_table <- DT::renderDataTable(
+      fetch_query,
+      extensions = 'Responsive'
+      )
     })
     
   }

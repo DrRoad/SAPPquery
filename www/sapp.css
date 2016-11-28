@@ -81,6 +81,15 @@
   margin-right:auto;
   
 }
+.text1{
+  padding-left:10px;
+}
+.ma{
+  position:relative;
+  left:-16px;
+}
+/*Styling for input fields */
+
 #a_d_subject{
   position:relative;
   border-radius:0 0 0 0;
@@ -107,10 +116,23 @@
   top:13px;
   border-radius:0 0 0 0;
 }
-.text1{
-  padding-left:10px;
-}
-.ma{
+#delete_submit_prot,#delete_reaction{
   position:relative;
-  left:-16px;
+  left:150px;
+  border-radius:0 0 0 0;
+  top:13px;
+}
+.delete_subject{
+  position:relative;
+  border-radius:0 0 0 0;
+}
+.delete_predicate{
+  position:relative;
+  left:50px;
+  border-radius:0 0 0 0;
+}
+.delete_object{
+  position:relative;
+  left:100px;
+  border-radius:0 0 0 0; 
 }
