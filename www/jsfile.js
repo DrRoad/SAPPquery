@@ -124,9 +124,9 @@ function iprd(x){
   var pattern = /&lt;(.+\/(.+:)?(.+))&gt;/i;
   var new_var = pattern.exec(x);
   if (new_var[3].substring(0,3)==="PWY"){
-    match = '<a href=http://biocyc.org/META/NEW-IMAGE?type=PATHWAY&object='+new_var[3]+' target="_blank">'+new_var[3]+'</a>';
+   match = '<a href=http://biocyc.org/META/NEW-IMAGE?type=PATHWAY&object='+new_var[3]+' target="_blank">'+new_var[3]+'</a>';
   }
-  if (new_var[1].substring(0,39) === "http://identifiers.org/cath.superfamily"){
+  else if (new_var[1].substring(0,39) === "http://identifiers.org/cath.superfamily"){
      match = '<a href=http://www.cathdb.info/version/latest/superfamily/'+new_var[3]+' target="_blank">'+new_var[3]+'</a> ';
   }
   else{

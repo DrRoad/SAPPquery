@@ -826,11 +826,13 @@ if (interactive()) {
             ### Blast against Swissprot and COG #############################
             incProgress(0.3, detail = "Fetching BLAST data")
             blastresults <- dcast(results[tool=='Blast'],feature~colname)
+            result <- blastresults[tool=='cog']
+            # Swissprot results
             result <- blastresults[tool=='swiss']
-            
+            # Send tool and version to header
             result_version <- result$result_version[1]
             result_tool <- result$tool[1]
-            result <- blastresults[tool=='cog']
+            
             result <- result[,.(ncbiprotein,alignment_length,bitscore,evalue,gaps,mismatches,percidentity,qend,qstart,send,sstart,subjectname)]
             result <- rename(result,c("alignment_length" = "aln","evalue" = "e","mismatches" = "mm","percidentity" = "pi","bitscore" = "bs",
                                       "qend" = "qe","send" = "se","qstart" = "qs","sstart" = "ss"))
@@ -840,15 +842,7 @@ if (interactive()) {
             ### Priam table created #############################
             incProgress(0.3, detail = "Fetching PRIAM data")
             priam_table_prot <- dcast(results[tool=='Priam'],feature~colname)
-            priam_table_prot <-rename(priam_table_prot,c("<http://www.biopax.org/release/bp-level3.owl#xref" = "xref"))
-            priam_tool_prot <- toupper(priam_table_prot$tool[1])
-            priam_version_prot <- priam_table_prot$version[1]
-            
-            # rename the headers in the priam table
-            priam_table_prot <-rename(priam_table_prot,c("align_length" = "aln","bit_score" = "bs","evalue" = "e","is_best_overlap" = "isb","positive_hit_probability" = "php",
-                                                         "profile_from" = "pf","profile_length" = "pl","profile_proportion" = "pp","profile_to" = "pt","query_from" = "qf","query_length" = "ql","query_strand" = "qs","query_to" = "qt"))
-            priam_table_prot <- priam_table_prot[,.(ncbiprotein,xref,aln,bs,e,isb,php,profile_ID,pf,pl,pp,pt,qf,ql,qs,qt)]
-            
+         
             # Create a empty dataframe if needed
             if (empty(priam_table_prot) == TRUE){
               priam_tool_prot <- "N/A"
@@ -875,18 +869,9 @@ if (interactive()) {
             }
             
             iprdomains <- unique(results[tool=='Interpro'&colname=='signature']$value)
-            ipr_query <- "prefix ssb: <http://csb.wur.nl/genome/>
-            prefix biopax3: <http://www.biopax.org/release/bp-level3.owl>
-            select *
-            where
-            {
-            ?signature a ssb:SignatureAccession.
-            VALUES ?signature { domains }
-            ?signature ssb:interpro_description ?interpro_description;
-            #ssb:signature_description ?signature_description;
-            #ssb:unipathway ?unipathway;
-            <http://www.biopax.org/release/bp-level3.owl#xref> ?xref
-            }"
+            
+            ipr_query <- source('query/ipr_query.R')
+            
             ### Interproscan Domains #############################
             incProgress(0.6, detail = "Fetching Interpro domain data")
             iprres <- SPARQL(endpoint,sub('domains',paste(iprdomains,collapse=' '),ipr_query))
@@ -896,12 +881,10 @@ if (interactive()) {
             iprresults[grep('identifiers.org/interpro',xref),xreftype:='IPRdomain']
             
             # Create a empty dataframe if needed
-            if (empty(iprresults) == TRUE){
-              iprresults <- noframe()
-            }
+            if (empty(iprresults) == TRUE){iprresults <- noframe()}
             
             ### Try the Tmhm #############################
-            #try(tmhmm <- dcast(results[tool=='Tmhmm'],feature~colname))
+            try(tmhmm <- dcast(results[tool=='Tmhmm'],feature~colname))
             
             ### SignalP #############################
             try(signalIP <- dcast(results[tool=='SignalP'],feature~colname))
@@ -911,8 +894,7 @@ if (interactive()) {
             signalIP <- rename(signalIP, c('cpos' = 'c', 'dmaxcut'= "dmc",'signal'='s') )
             
             ### Isolate the variables to be renderd #############################
-            # Send the versions and tools name to header
-            isolate ({
+            isolate ({             # Send the versions and tools name to header
               output$tool_blast <- renderText({ paste("Tool: ",result_tool)})
               output$version_blast <- renderText({paste("Version: ",result_version) })
               output$tool_priam_prot <- renderText({ paste("Tool: ",priam_tool_prot)})
@@ -928,7 +910,6 @@ if (interactive()) {
             results$feature <- NULL
             #NP_001133193.1
            
-             
             output$myTableprot <- DT::renderDataTable(
               results,
               options = list(
