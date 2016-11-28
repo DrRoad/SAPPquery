@@ -200,8 +200,14 @@ if (interactive()) {
                                                                                     ),
                                                                                     `data-proxy-click` = "ma_submit",
                                                                                     actionButton("ma_submit", "Submit")
-                                                                                  ) # Inputboxes div Ends
-                                                                                ),
+                                                                                  )
+                                                                                )# Inputboxes div Ends
+                                                                                ,
+                                                                                # A TEST FOR SELECT INPUT BOX
+                                                                                selectInput("select", label = h3("Select predicate"), 
+                                                                                            choices = list("GeneID" = "GeneID", "Name" = "name", "Author" = "author", "Date"="date"), 
+                                                                                            selected = "mame"),
+                                                                                
                                                                                 h4(style="padding-top:10px;", "Delete Data"),
                                                                                 p("Delete last entry"),
                                                                                 actionButton("delete_last", "Delete"),
@@ -498,6 +504,7 @@ if (interactive()) {
     # Database endpoint
     endpoint <- isolate(input$select)
     #endpoint <- 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql'
+    output$value <- renderPrint({ input$select })
     
     # SAPP Reaction ============================
     Sappdata <- observeEvent(input$submit,{
@@ -510,6 +517,26 @@ if (interactive()) {
       # Render EC number input and render to text
       ECnumber <- input$variable
       output$text <- renderText({ECnumber})
+      
+      ### Manual Annotation Blazegraph query
+      #ECnumber <- '5.4.2.11'
+      #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
+      endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
+      maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
+                       SELECT ?ECName ?column ?value 
+                       WHERE{<csb:ecnumber> <csb:name> ?ECName. 
+                       FILTER(contains(?ECName, '",ECnumber,"'))
+                       <csb:",ECnumber,"> ?column ?value.}",sep="")
+      
+      fetch_query <- SPARQL(endpoint2,maquery)$results
+      fetch_query<-as.data.table(fetch_query)
+      if (empty(fetch_query) == TRUE){results <- noframe()
+      }else{
+        fetch_query[,column:=sub('>','',sub('<csb:','',column))]  
+      }
+      output$ma_table <- DT::renderDataTable({
+        fetch_query
+      })
       
       # Start the progression bar =================================
       withProgress(
@@ -771,9 +798,9 @@ if (interactive()) {
       ### Run the basequery #############################
       basequery <- source('query/protein_query.R')$value
        
+      ### Manual Annotation Blazegraph query
       #ncbiprotein <- 'NP_001130025.1'
       #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
-      
       endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
       maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
       SELECT ?proteinName ?column ?value 
@@ -783,14 +810,14 @@ if (interactive()) {
       
       fetch_query <- SPARQL(endpoint2,maquery)$results
       fetch_query<-as.data.table(fetch_query)
-      if (empty(fetch_query) == TRUE){
-        results <- noframe()
+      if (empty(fetch_query) == TRUE){results <- noframe()
       }else{
         fetch_query[,column:=sub('>','',sub('<csb:','',column))]  
       }
       output$ma_table_prot <- DT::renderDataTable({
         fetch_query
       })
+      
       
       # Start the progression bar =================================
       withProgress(
@@ -826,28 +853,35 @@ if (interactive()) {
             ### Blast against Swissprot and COG #############################
             incProgress(0.3, detail = "Fetching BLAST data")
             blastresults <- dcast(results[tool=='Blast'],feature~colname)
+            result <- blastresults[tool=='cog']
+            
+            # Swissprot results
             result <- blastresults[tool=='swiss']
             
+            # Send tool and version to header
             result_version <- result$result_version[1]
             result_tool <- result$tool[1]
-            result <- blastresults[tool=='cog']
+            
             result <- result[,.(ncbiprotein,alignment_length,bitscore,evalue,gaps,mismatches,percidentity,qend,qstart,send,sstart,subjectname)]
             result <- rename(result,c("alignment_length" = "aln","evalue" = "e","mismatches" = "mm","percidentity" = "pi","bitscore" = "bs",
                                       "qend" = "qe","send" = "se","qstart" = "qs","sstart" = "ss"))
             # Create a empty dataframe if needed
-            if (empty(result) == TRUE){result_tool <- "N/A";resukt_version <- "N/A";result <- noframe();}
+            if (empty(result) == TRUE){result_tool <- "N/A";result_version <- "N/A";result <- noframe();}
             
             ### Priam table created #############################
             incProgress(0.3, detail = "Fetching PRIAM data")
             priam_table_prot <- dcast(results[tool=='Priam'],feature~colname)
-            priam_table_prot <-rename(priam_table_prot,c("<http://www.biopax.org/release/bp-level3.owl#xref" = "xref"))
+            
+            # Get tool and verison information
             priam_tool_prot <- toupper(priam_table_prot$tool[1])
             priam_version_prot <- priam_table_prot$version[1]
-            
+            priam_table_prot <-rename(priam_table_prot,c("<http://www.biopax.org/release/bp-level3.owl#xref" = "xref"))
             # rename the headers in the priam table
             priam_table_prot <-rename(priam_table_prot,c("align_length" = "aln","bit_score" = "bs","evalue" = "e","is_best_overlap" = "isb","positive_hit_probability" = "php",
                                                          "profile_from" = "pf","profile_length" = "pl","profile_proportion" = "pp","profile_to" = "pt","query_from" = "qf","query_length" = "ql","query_strand" = "qs","query_to" = "qt"))
             priam_table_prot <- priam_table_prot[,.(ncbiprotein,xref,aln,bs,e,isb,php,profile_ID,pf,pl,pp,pt,qf,ql,qs,qt)]
+            
+            #priam_table_prot <- priam_protein_rename(priam_table_prot)
             
             # Create a empty dataframe if needed
             if (empty(priam_table_prot) == TRUE){
@@ -875,18 +909,9 @@ if (interactive()) {
             }
             
             iprdomains <- unique(results[tool=='Interpro'&colname=='signature']$value)
-            ipr_query <- "prefix ssb: <http://csb.wur.nl/genome/>
-            prefix biopax3: <http://www.biopax.org/release/bp-level3.owl>
-            select *
-            where
-            {
-            ?signature a ssb:SignatureAccession.
-            VALUES ?signature { domains }
-            ?signature ssb:interpro_description ?interpro_description;
-            #ssb:signature_description ?signature_description;
-            #ssb:unipathway ?unipathway;
-            <http://www.biopax.org/release/bp-level3.owl#xref> ?xref
-            }"
+            
+            ipr_query <- source('query/ipr_query.R')
+            
             ### Interproscan Domains #############################
             incProgress(0.6, detail = "Fetching Interpro domain data")
             iprres <- SPARQL(endpoint,sub('domains',paste(iprdomains,collapse=' '),ipr_query))
@@ -896,9 +921,7 @@ if (interactive()) {
             iprresults[grep('identifiers.org/interpro',xref),xreftype:='IPRdomain']
             
             # Create a empty dataframe if needed
-            if (empty(iprresults) == TRUE){
-              iprresults <- noframe()
-            }
+            if (empty(iprresults) == TRUE){iprresults <- noframe()}
             
             ### Try the Tmhm #############################
             #try(tmhmm <- dcast(results[tool=='Tmhmm'],feature~colname))
@@ -911,8 +934,7 @@ if (interactive()) {
             signalIP <- rename(signalIP, c('cpos' = 'c', 'dmaxcut'= "dmc",'signal'='s') )
             
             ### Isolate the variables to be renderd #############################
-            # Send the versions and tools name to header
-            isolate ({
+            isolate ({             # Send the versions and tools name to header
               output$tool_blast <- renderText({ paste("Tool: ",result_tool)})
               output$version_blast <- renderText({paste("Version: ",result_version) })
               output$tool_priam_prot <- renderText({ paste("Tool: ",priam_tool_prot)})
@@ -928,7 +950,6 @@ if (interactive()) {
             results$feature <- NULL
             #NP_001133193.1
            
-             
             output$myTableprot <- DT::renderDataTable(
               results,
               options = list(
