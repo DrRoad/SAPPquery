@@ -37,6 +37,7 @@
   -moz-box-shadow:0 2px 2px 0 #B5B5B5;
   box-shadow: 0 2px 2px 0 #B5B5B5;
   top: -20px;
+  
 }
 .setwidth{
   margin:0;
@@ -90,37 +91,51 @@
 }
 /*Styling for input fields */
 
-#a_d_subject{
+.a_d_subject{
   position:relative;
   border-radius:0 0 0 0;
 }
-#a_d_predicate{
+@media(-webkit-min-device-pixel-ratio:0) {
+ .a_d_predicate {
+   position:relative;
+   left:75px; }
+} 
+
+.a_d_predicate{
   position:relative;
-  left:50px;
   border-radius:0 0 0 0;
+  left:75px;
 }
-#a_d_object{
+.a_d_object{
   position:relative;
-  left:100px;
+  -webkit-left: 150px;
+  -moz-left: 150px;
+  left:150px;
   border-radius:0 0 0 0;
 }
 #ma_submit{
   position:relative;
-  left:150px;
-  top:13px;
+  -webkit-left: 225px;
+  -moz-left: 225px;
+  left:225px;
+  top:12.5px;
   border-radius:0 0 0 0;
 }
 #ma_submit_prot{
   position:relative;
-  left:150px;
-  top:13px;
+  -webkit-left: 225px;
+  -moz-left: 225px;
+  left:225px;
+  top:12.5px;
   border-radius:0 0 0 0;
 }
 #delete_submit_prot,#delete_reaction{
   position:relative;
-  left:150px;
+  -webkit-left: 225px;
+  -moz-left: 225px;
+  left:225px;
   border-radius:0 0 0 0;
-  top:13px;
+  top:12.5px;
 }
 .delete_subject{
   position:relative;
@@ -128,11 +143,15 @@
 }
 .delete_predicate{
   position:relative;
-  left:50px;
+  -webkit-left: 75px;
+  -moz-left: 75px;
+  left:75px;
   border-radius:0 0 0 0;
 }
 .delete_object{
   position:relative;
-  left:100px;
+  -webkit-left: 150px;
+  -moz-left: 150px;
+  left:150px;
   border-radius:0 0 0 0; 
 }

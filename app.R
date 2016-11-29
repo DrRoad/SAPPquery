@@ -169,7 +169,7 @@ if (interactive()) {
                                                                                   tags$div(
                                                                                     class = "form-group",
                                                                                     tagAppendAttributes(
-                                                                                      id ="a_d_subject",
+                                                                                      class ="a_d_subject",
                                                                                       textInput(
                                                                                         "a_subject",
                                                                                         "Subject",
@@ -179,7 +179,7 @@ if (interactive()) {
                                                                                       )
                                                                                     ),
                                                                                     tagAppendAttributes(
-                                                                                      id ="a_d_predicate",
+                                                                                      class ="a_d_predicate",
                                                                                       textInput(
                                                                                         "a_predicate",
                                                                                         "Predicate",
@@ -189,7 +189,8 @@ if (interactive()) {
                                                                                       )
                                                                                     ),
                                                                                     tagAppendAttributes(
-                                                                                      id ="a_d_object",
+                                                                                      class ="a_d_object",
+                                                                                      
                                                                                       textInput(
                                                                                         "a_object",
                                                                                         "Object",
@@ -255,8 +256,9 @@ if (interactive()) {
                                                                       ) # Form and column div ends
                                                                ), # main panel div
                                                                mainPanel(style="margin-left:15px;padding-top:10px;",
-                                                                         p("Open or update the database view the latest annotations"),
+                                                                         p("Open the database view the latest annotations"),
                                                                          actionButton("opendb","Open"),
+                                                                         actionButton("closedb","Close"),
                                                                          textOutput('updatequery'),
                                                                          tags$hr(),
                                                                          DT::dataTableOutput('contents')
@@ -378,8 +380,7 @@ if (interactive()) {
                                                       tags$li("")
                                                     )),
                                            DT::dataTableOutput('interpro_table')
-                                  )
-                                   ,
+                                  ),
                                   # Manual Anotation =================================
                                   tabPanel("Manual Annotation",
                                             DT::dataTableOutput('ma_table_prot'),
@@ -396,7 +397,7 @@ if (interactive()) {
                                                                                   tags$div(
                                                                                     class = "form-group",
                                                                                     tagAppendAttributes(
-                                                                                      id ="a_d_subject",
+                                                                                      class ="a_d_subject",
                                                                                       textInput(
                                                                                         "a_subject_prot",
                                                                                         "Subject",
@@ -406,7 +407,7 @@ if (interactive()) {
                                                                                       )
                                                                                     ),
                                                                                     tagAppendAttributes(
-                                                                                      id="a_d_predicate",
+                                                                                      class="a_d_predicate",
                                                                                       textInput(
                                                                                         "a_predicate_prot",
                                                                                         "Predicate",
@@ -416,7 +417,7 @@ if (interactive()) {
                                                                                       )
                                                                                     ),
                                                                                     tagAppendAttributes(
-                                                                                      id ="a_d_object",
+                                                                                      class ="a_d_object",
                                                                                       textInput(
                                                                                         "a_object_prot",
                                                                                         "Object",
@@ -477,8 +478,9 @@ if (interactive()) {
                                                                       ) # Form and column div ends
                                                                ), # main panel div
                                                                  mainPanel(style="margin-left:15px;padding-top:10px;",
-                                                                     p("Open or update the database view the latest annotations"),
+                                                                     p("Open database view the latest annotations"),
                                                                      actionButton("opendb_prot","Open"),
+                                                                     actionButton("closedb_prot","close"),
                                                                      textOutput('updatequery_prot'),
                                                                      tags$hr(),
                                                                      #mainPanel(width=12, 
@@ -521,6 +523,7 @@ if (interactive()) {
       ### Manual Annotation Blazegraph query
       #ECnumber <- '5.4.2.11'
       #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
+      
       endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
       maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
                        SELECT ?ECName ?column ?value 
@@ -537,6 +540,8 @@ if (interactive()) {
       output$ma_table <- DT::renderDataTable({
         fetch_query
       })
+      
+
       
       # Start the progression bar =================================
       withProgress(
@@ -1193,9 +1198,7 @@ if (interactive()) {
    
     observeEvent(input$delete_submit_prot,{
         subject <- isolate(input$d_subject_prot)
-        #subject <-"NP_001130025.1"
         predicate <-isolate(input$d_predicate_prot)
-        #predicate <- "auther"
         object <- isolate(shQuote(input$d_object_prot))
         
         # Contruct a delete query
@@ -1220,6 +1223,7 @@ if (interactive()) {
 
     # Open Database for both tabs protein and reaction ===================
     observeEvent (input$opendb,{
+      shinyjs::show("contents")
       query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
       fetch_query <- SPARQL(endpoint2,query)$results
       fetch_query<-as.data.frame(fetch_query)
@@ -1228,6 +1232,7 @@ if (interactive()) {
       })
     })
     observeEvent (input$opendb_prot,{
+      shinyjs::show("contents_prot")
       query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
       fetch_query <- SPARQL(endpoint2,query)$results
       fetch_query<-as.data.frame(fetch_query)
@@ -1235,6 +1240,14 @@ if (interactive()) {
         fetch_query
       })
     })
+    ### closeDB ===========================
+    observeEvent(input$closedb,{
+      hide("contents")
+    })
+    observeEvent(input$closedb_prot,{
+      hide("contents_prot")
+    })
+    
     
     # Federated query TEST ======================
     endpoint3 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
