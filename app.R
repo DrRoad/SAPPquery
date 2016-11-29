@@ -521,6 +521,7 @@ if (interactive()) {
       ### Manual Annotation Blazegraph query
       #ECnumber <- '5.4.2.11'
       #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
+      
       endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
       maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
                        SELECT ?ECName ?column ?value 
