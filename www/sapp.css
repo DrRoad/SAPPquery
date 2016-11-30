@@ -91,15 +91,9 @@
 }
 /*Styling for input fields */
 
-.a_d_subject{
-  position:relative;
+.input_feilds{
   border-radius:0 0 0 0;
 }
-@media(-webkit-min-device-pixel-ratio:0) {
- .a_d_predicate {
-   position:relative;
-   left:75px; }
-} 
 
 .a_d_predicate{
   position:relative;
@@ -115,10 +109,7 @@
 }
 #ma_submit{
   position:relative;
-  -webkit-left: 225px;
-  -moz-left: 225px;
-  left:225px;
-  top:12.5px;
+  top:50px;
   border-radius:0 0 0 0;
 }
 #ma_submit_prot{
