@@ -161,6 +161,7 @@ if (interactive()) {
                                            tags$div(class="ma",
                                                     tags$div(class = "container",style ="height:650px",
                                                              fluidRow(
+                                                               # Input feilds --------------------------------
                                                                column(3,
                                                                       mainPanel(width=12,
                                                                                 h4("Insert Data"),
@@ -200,7 +201,6 @@ if (interactive()) {
                                                                                     ),
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
-                                                                                      
                                                                                       textInput(
                                                                                         "gene",
                                                                                         "gene",
@@ -211,7 +211,6 @@ if (interactive()) {
                                                                                     ),
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
-                                                                                      
                                                                                       textInput(
                                                                                         "protein",
                                                                                         "Protein",
@@ -267,6 +266,7 @@ if (interactive()) {
                                                                                     
                                                                                   )# tags div end
                                                                                 ))),#tags from and columns ends
+                                                               # Database view -----------------------------
                                                                column (8,
                                                                        #mainPanel(style="margin-left:15px;padding-top:10px;",
                                                                                  p("Open the database view the latest annotations"),
@@ -500,10 +500,8 @@ if (interactive()) {
                                                                      actionButton("closedb_prot","close"),
                                                                      textOutput('updatequery_prot'),
                                                                      tags$hr(),
-                                                                     #mainPanel(width=12, 
                                                                      DT::dataTableOutput('contents_prot')
                                                                )
-                                                             #) # Column 12 ends
                                                       ) # Fluid row ends
                                                     ) # div container ends
                                            ) # div info ends
@@ -524,12 +522,7 @@ if (interactive()) {
     endpoint <- isolate(input$select)
     #endpoint <- 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql'
     output$value <- renderPrint({ input$select })
-    # Create a uniqe identifier
-    now <- as.numeric(Sys.time())
-    date <- Sys.Date()
-    #date
-    #now
-    
+
     # SAPP Reaction ============================
     Sappdata <- observeEvent(input$submit,{
       
@@ -547,24 +540,39 @@ if (interactive()) {
       #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
       
       endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
-      maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
-                       SELECT ?ECName ?column ?value 
-                       WHERE{<csb:ecnumber> <csb:name> ?ECName. 
-                       FILTER(contains(?ECName, '",ECnumber,"'))
-                       <csb:",ECnumber,"> ?column ?value.}",sep="")
+
+      maquery <- paste("
+          prefix ma: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno>
+          prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+          prefix dc: <http://purl.org/dc/elements/1.1/>
+
+          select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
+          where{
+          <ma:",ECnumber,"> <dc:reaction> ?ECnumber;
+          			            <dc:creator> ?Author;
+                            <dc:date> ?Date;
+                            <dc:description> ?Comment;
+                            <ma:gene> ?Gene;
+                            <dc:protein> ?Protein;
+                            <ma:goterm> ?GOterm;
+                            <dc:doi> ?Doi;
+                            <dc:url> ?Url
+          }",sep="")
       
       fetch_query <- SPARQL(endpoint2,maquery)$results
-      fetch_query<-as.data.table(fetch_query)
-      if (empty(fetch_query) == TRUE){results <- noframe()
-      }else{
-        fetch_query[,column:=sub('>','',sub('<csb:','',column))]  
+      fetch_query <-as.data.table(fetch_query)
+      
+      if (empty(fetch_query) == TRUE){fetch_query <- noframe()
       }
+      # else{
+      #   fetch_query[,column:=sub('>','',sub('<csb:','',column))]
+      # }
+      
       output$ma_table <- DT::renderDataTable({
         fetch_query
       })
       
 
-      
       # Start the progression bar =================================
       withProgress(
         message = 'Fetching data',
@@ -1071,10 +1079,10 @@ if (interactive()) {
           }) # Progress bar ends
         }) # SappprotData ends
     
-    # SAPP Annotation ==========================
-    endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
     
     # Reaction Annotation ======================
+    endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
+    
     observeEvent (input$ma_submit,{
                   # Save inputs from text fields 
 
@@ -1089,21 +1097,21 @@ if (interactive()) {
                   doi <- isolate(shQuote(input$doi))
                   url <- isolate(shQuote(input$url))
                   
-                  # Build update query
+                  #Build update query
                   update <- paste("
                     prefix ma: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
-                    INSERT DATA{  
+                    INSERT DATA{
                                 <ma:manualannotatin> <ma:a> <rdf:Class>.
-                                <ma:",ecnumber,"> <ma:a> <ma:manualannotatin>.                    
+                                <ma:",ecnumber,"> <ma:a> <ma:manualannotatin>.
                                 <ma:",ecnumber,"> <dc:creator> ",author,".
                                 <ma:",ecnumber,"> <dc:date> ",date,".
                                 <ma:",ecnumber,"> <dc:description> ",comment,".
                                 <ma:",ecnumber,"> <ma:gene> ",gene,".
-                                <ma:",ecnumber,"> <dc:protein> ",protein,".
-                                <ma:",ecnumber,"> <dc:reaction> ",reaction,".
+                                <ma:",ecnumber,"> <ma:protein> ",protein,".
+                                <ma:",ecnumber,"> <ma:reaction> ",reaction,".
                                 <ma:",ecnumber,"> <ma:goterm> ",goterm,".
-                                <ma:",ecnumber,"> <dc:doi> ",doi,".
-                                <ma:",ecnumber,"> <dc:url> ",url,"
+                                <ma:",ecnumber,"> <ma:doi> ",doi,".
+                                <ma:",ecnumber,"> <ma:url> ",url,"
                   }",sep="")
                   output$test <- renderText({
                     update
@@ -1295,7 +1303,7 @@ if (interactive()) {
         fetch_query
       })
     })
-    ### closeDB ===========================
+    # closeDB ===========================
     observeEvent(input$closedb,{
       hide("contents")
     })
