@@ -20,9 +20,9 @@ library(rstudioapi)
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 #Source hyperlink function and directories
-source('ontology_links.R')
-sapply(list.files(pattern="[.]R$", path="var/", full.names=TRUE), source);
-sapply(list.files(pattern="[.]R$", path="query/", full.names=TRUE), source);
+#source('ontology_links.R')
+sapply(list.files(pattern="[.]R$", path="var/", full.names=TRUE), source)
+sapply(list.files(pattern="[.]R$", path="query/", full.names=TRUE), source)
 
 # Point to js file
 jsfile <- "www/jsfile.js"
@@ -527,7 +527,7 @@ if (interactive()) {
     Sappdata <- observeEvent(input$submit,{
       
       ### Clear all data.frames #############################
-      results <- NULL;results_interpro <- NULL;results_priam <- NULL;results_uniprot <- NULL;swiss_table <- NULL;enzdp_table <- NULL;
+      results <- NULL;results_interpro <- NULL;results_priam <- NULL;results_uniprot <- NULL;swiss_table <- NULL;enzdp_table <- NULL;results_enzdp<-NULL;
 
       ### Variable and js scripts addCLass #############################
       shinyjs::addClass(selector = "body", class = "sidebar-collapse")
@@ -558,16 +558,14 @@ if (interactive()) {
                             <dc:doi> ?Doi;
                             <dc:url> ?Url
           }",sep="")
+
+    
       
       fetch_query <- SPARQL(endpoint2,maquery)$results
       fetch_query <-as.data.table(fetch_query)
       
-      if (empty(fetch_query) == TRUE){fetch_query <- noframe()
-      }
-      # else{
-      #   fetch_query[,column:=sub('>','',sub('<csb:','',column))]
-      # }
-      
+      if (empty(fetch_query) == TRUE){fetch_query <- noframe()}
+
       output$ma_table <- DT::renderDataTable({
         fetch_query
       })
@@ -593,11 +591,28 @@ if (interactive()) {
 
           ### Query functions #############################
           queryfun <- function(basequery, ecnumber) { return(sub('4.2.1.11', ecnumber, basequery))  }
+          rename_head <- function(x){rename(x,c("?header" = "header", "?colname" = "colname", "?value" = "value", "?feature" = "feature")) }
+          clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
           
-          results_interpro <- data.table(SPARQL(endpoint, paste(prefixes, queryfun(basequery_interpro, ECnumber)))$results)
-          results_priam <- data.table(SPARQL(endpoint, paste(prefixes, queryfun(basequery_priam, ECnumber)))$results)
-          results_enzdp <- data.table(SPARQL(endpoint, paste(prefixes, queryfun(basequery_enzdp, ECnumber)))$results)
-          results_uniprot <-data.table(SPARQL(endpoint, paste(prefixes, queryfun(basequery_uniprot, ECnumber)))$results)
+          #sparql <- source(/var/sparql.R)
+          
+          #Test the query and rename columns
+          results_interpro <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_interpro, ECnumber))))
+          results_interpro <- rename_head(results_interpro)
+          results_interpro <- clean_post(results_interpro)
+          
+          results_priam <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_priam, ECnumber))))
+          results_priam <- rename_head(results_priam)
+          results_priam <- clean_post(results_priam)
+          
+          results_uniprot <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_uniprot, ECnumber))))
+          results_uniprot <- rename_head(results_uniprot)
+          results_uniprot <- clean_post(results_uniprot)
+          
+          results_enzdp <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_enzdp, ECnumber))))
+          results_enzdp <- rename_head(results_enzdp)
+          results_enzdp <- clean_post(results_enzdp)
+
           incProgress(0.4, detail = "Fetching data")
           
           ### Check if dataframes are empty #############################
@@ -612,6 +627,7 @@ if (interactive()) {
           else{
             ### Rename columns #############################
             results <- data.table(ldply(.id = "tool",list(Interpro = results_interpro,Priam = results_priam, Blast = results_uniprot,Enzdp = results_enzdp )))
+            
             incProgress(0.6, detail = "Building tables")
             
             # in order to get nice tables we replace them.

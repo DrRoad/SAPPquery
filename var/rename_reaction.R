@@ -1,5 +1,6 @@
 library(data.table)
 
+#rename_reaction(results)
 # Create a function to clean up the protein header
 rename_reaction <- function(x){
   x[, ncbiprotein := str_match(header, '[N,X]P_[[:digit:]]+.[[:digit:]]+')]
