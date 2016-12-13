@@ -559,8 +559,6 @@ if (interactive()) {
                             <dc:url> ?Url
           }",sep="")
 
-    
-      
       fetch_query <- SPARQL(endpoint2,maquery)$results
       fetch_query <-as.data.table(fetch_query)
       
@@ -861,6 +859,7 @@ if (interactive()) {
       ### Manual Annotation Blazegraph query
       #ncbiprotein <- 'NP_001130025.1'
       #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
+      
       endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
       maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
       SELECT ?proteinName ?column ?value 
@@ -890,6 +889,12 @@ if (interactive()) {
           
           ### Start querying and load results #############################
           queryfun <- function(basequery, ncbiprotein) {return(sub('changeme', ncbiprotein, basequery))}
+          
+          #results_interpro <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_interpro, ECnumber))))
+          #results_interpro <- rename_head(results_interpro)
+          #results_interpro <- clean_post(results_interpro)
+          
+          
           res <- SPARQL(endpoint, queryfun(basequery,ncbiprotein))
           results <- data.table(res$results)
           
