@@ -162,7 +162,7 @@ if (interactive()) {
                                                     tags$div(class = "container",style ="height:650px",
                                                              fluidRow(
                                                                # Input feilds --------------------------------
-                                                               column(3,
+                                                               column(2,
                                                                       mainPanel(width=12,
                                                                                 h4("Insert Data"),
                                                                                 tags$form(
@@ -868,7 +868,7 @@ if (interactive()) {
       <csb:",ncbiprotein,"> ?column ?value.}",sep="")
       
       fetch_query <- SPARQL(endpoint2,maquery)$results
-      fetch_query<-as.data.table(fetch_query)
+      fetch_query <- as.data.table(fetch_query)
       if (empty(fetch_query) == TRUE){results <- noframe()
       }else{
         fetch_query[,column:=sub('>','',sub('<csb:','',column))]  
@@ -889,14 +889,16 @@ if (interactive()) {
           
           ### Start querying and load results #############################
           queryfun <- function(basequery, ncbiprotein) {return(sub('changeme', ncbiprotein, basequery))}
+          rename_head <- function(x){rename(x,c("?header" = "header", "?tool" = "tool","?colname" = "colname", "?value" = "value", "?feature" = "feature")) }
+          clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
           
-          #results_interpro <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_interpro, ECnumber))))
-          #results_interpro <- rename_head(results_interpro)
-          #results_interpro <- clean_post(results_interpro)
+          #res2 <- SPARQL(endpoint, queryfun(basequery,ncbiprotein))
           
+          res <- sparql(endpoint, queryfun(basequery,ncbiprotein))
           
-          res <- SPARQL(endpoint, queryfun(basequery,ncbiprotein))
-          results <- data.table(res$results)
+          res <- rename_head(res)
+          res <- clean_post(res)
+          results <- data.table(res)
           
           ### Check if dataframe is empty #############################
           if (empty(results) == TRUE) {
@@ -909,7 +911,6 @@ if (interactive()) {
           # Build dataframes and parse columns =================================
           else{
             ### Change names of results columns #############################
-            #source('var/rename_protein.R')
             results <- rename_protein(results)
             
             # Create a empty dataframe if needed
@@ -917,6 +918,7 @@ if (interactive()) {
             
             ### Blast against Swissprot and COG #############################
             incProgress(0.3, detail = "Fetching BLAST data")
+            
             blastresults <- dcast(results[tool=='Blast'],feature~colname)
             result <- blastresults[tool=='cog']
             
