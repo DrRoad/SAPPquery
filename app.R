@@ -57,7 +57,7 @@ if (interactive()) {
       # Reaction NavTab =================================
       tabPanel(
         "Reaction",
-        # Search feild ##########################
+        # Reaction Search feild ##########################
         tags$div(class = "content ",
                  tags$div(class = "container setwidth",
                           fluidRow(
@@ -89,7 +89,7 @@ if (interactive()) {
                             )
                           ))),
         tags$br(),
-        # DataTables #############################
+        # Reaction DataTables #############################
         tags$div(class = "content",
                  tags$div(class = "container tables setwidth",
                           fluidRow(
@@ -101,7 +101,7 @@ if (interactive()) {
                                 textOutput("exampleOutput"),
                                 bsAlert("alert"),
                                 tabsetPanel(
-                                  # SAPP Tab =================================
+                                  # Reaction SAPP Tab =================================
                                   tabPanel("SAPP",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -110,7 +110,7 @@ if (interactive()) {
                                                     )),
                                            DT::dataTableOutput('myTable')
                                   ),
-                                  # BLAST TAB =================================
+                                  # Reaction BLAST TAB =================================
                                   tabPanel("BLAST",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -121,7 +121,7 @@ if (interactive()) {
                                            DT::dataTableOutput('swissprot_table')
                                            
                                   ),
-                                  # PRIAM Tab =================================
+                                  # Reaction PRIAM Tab =================================
                                   tabPanel("PRIAM",
                                            tags$div(class = "info",
                                                     tags$ul(tags$li(textOutput("tool_priam")),
@@ -129,7 +129,7 @@ if (interactive()) {
                                            DT::dataTableOutput('priamdata_table')
                                            
                                   ),
-                                  # Interpro Tab =================================
+                                  # Reaction Interpro Tab =================================
                                   tabPanel("Interpro",
                                            tags$div(class = "info",
                                                     tags$ul(tags$li(textOutput("tool_interpro")),
@@ -137,7 +137,7 @@ if (interactive()) {
                                            DT::dataTableOutput('interprodata_table')
                                   ),
 
-                                  # EnzDP Tab =================================
+                                  # Reaction EnzDP Tab =================================
                                   tabPanel("EnzDP",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -146,7 +146,7 @@ if (interactive()) {
                                                     )),
                                            DT::dataTableOutput('enzdp_table')
                                   ),
-                                  # Result Summary =================================
+                                  # Reaction Result Summary =================================
                                   tabPanel("Result Summary",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -155,15 +155,15 @@ if (interactive()) {
                                                     )),
                                            DT::dataTableOutput('resultsummarydata_table')
                                   ),
-                                  # Manual Anotation =================================
+                                  # Reaction Manual Anotation =================================
                                   tabPanel("Manual Annotation",
                                            DT::dataTableOutput('ma_table'),
                                            tags$div(class="ma",
                                                     tags$div(class = "container",style ="height:650px",
                                                              fluidRow(
-                                                               # Input feilds --------------------------------
+                                                               ### Input feilds --------------------------------
                                                                column(3,
-                                                                      mainPanel(width=12,
+                                                                      mainPanel(width=3,
                                                                                 h4("Insert Data"),
                                                                                 tags$form(
                                                                                   class = "form-inline",
@@ -266,9 +266,9 @@ if (interactive()) {
                                                                                     
                                                                                   )# tags div end
                                                                                 ))),#tags from and columns ends
-                                                               # Database view -----------------------------
+                                                               # Reaction Database view -----------------------------
                                                                column (8,
-                                                                       #mainPanel(style="margin-left:15px;padding-top:10px;",
+                                                                       mainPanel(style="margin-left:15px;padding-top:10px;",
                                                                                  p("Open the database view the latest annotations"),
                                                                                  actionButton("opendb","Open"),
                                                                                  actionButton("closedb","Close"),
@@ -277,7 +277,7 @@ if (interactive()) {
                                                                                  DT::dataTableOutput('contents'),
                                                                        textOutput('test')
                                                                        
-                                                                       #) # mainPanel 
+                                                                       ) # mainPanel 
                                                                        )
 
                                            ) # Fluid row ends
@@ -400,111 +400,127 @@ if (interactive()) {
                                   ),
                                   # Manual Anotation =================================
                                   tabPanel("Manual Annotation",
-                                            DT::dataTableOutput('ma_table_prot'),
-                                            tags$div(class="ma",
-                                                    tags$div(class = "container",
-                                                              fluidRow(
-                                                                column(12,
-                                                                       # Input feilds -----------------------------------
-                                                                       mainPanel(width=12,
-                                                                                tags$br(),
+                                           DT::dataTableOutput('ma_table_prot'),
+                                           tags$div(class="ma",
+                                                    tags$div(class = "container",style ="height:650px",
+                                                             fluidRow(
+                                                               column(3,
+                                                                      # Input feilds -----------------------------------
+                                                                      mainPanel(width=3,
                                                                                 h4("Insert Data"),
                                                                                 tags$form(
                                                                                   class = "form-inline",
                                                                                   tags$div(
                                                                                     class = "form-group",
                                                                                     tagAppendAttributes(
-                                                                                      class ="a_d_subject",
+                                                                                      class ="input_feilds",
                                                                                       textInput(
-                                                                                        "a_subject_prot",
-                                                                                        "Subject",
+                                                                                        "author",
+                                                                                        "Author",
                                                                                         width = "125px",
                                                                                         value = "",
                                                                                         placeholder = NULL
                                                                                       )
                                                                                     ),
                                                                                     tagAppendAttributes(
-                                                                                      class="a_d_predicate",
+                                                                                      class ="input_feilds",
                                                                                       textInput(
-                                                                                        "a_predicate_prot",
-                                                                                        "Predicate",
+                                                                                        "date",
+                                                                                        "Date",
                                                                                         width = "125px",
                                                                                         value = "",
                                                                                         placeholder = NULL
                                                                                       )
                                                                                     ),
                                                                                     tagAppendAttributes(
-                                                                                      class ="a_d_object",
+                                                                                      class ="input_feilds",
                                                                                       textInput(
-                                                                                        "a_object_prot",
-                                                                                        "Object",
+                                                                                        "comment",
+                                                                                        "comment",
                                                                                         width = "125px",
                                                                                         value = "",
                                                                                         placeholder = NULL
                                                                                       )
                                                                                     ),
-                                                                                    `data-proxy-click` = "ma_submit_prot",
-                                                                                    actionButton("ma_submit_prot", "Insert"),
-                                                                                   tags$br() 
-                                                                                  ) # Inputboxes div Ends
-                                                                                ),
-                                                                                h4(style="padding-top:10px;", "Delete Data"),
-                                                                                p("Delete last entry"),
-                                                                                actionButton("delete_prot", "Delete"),
-                                                                                tags$div(style="padding-top:10px;",
-                                                                                p("Delete a specific entry"),
-                                                                                          tags$form(
-                                                                                            class = "form-inline",
-                                                                                            tags$div(
-                                                                                              class = "form-group",
-                                                                                              tagAppendAttributes(
-                                                                                                class ="delete_subject",
-                                                                                                textInput(
-                                                                                                  "d_subject_prot",
-                                                                                                  "Subject",
-                                                                                                  width = "125px",
-                                                                                                  value = "",
-                                                                                                  placeholder = NULL
-                                                                                                )
-                                                                                              ),
-                                                                                              tagAppendAttributes(
-                                                                                                class="delete_predicate",
-                                                                                                textInput(
-                                                                                                  "d_predicate_prot",
-                                                                                                  "Predicate",
-                                                                                                  width = "125px",
-                                                                                                  value = "",
-                                                                                                  placeholder = NULL
-                                                                                                )
-                                                                                              ),
-                                                                                              tagAppendAttributes(
-                                                                                                class ="delete_object",
-                                                                                                textInput(
-                                                                                                  "d_object_prot",
-                                                                                                  "Object",
-                                                                                                  width = "125px",
-                                                                                                  value = "",
-                                                                                                  placeholder = NULL
-                                                                                                )
-                                                                                              ),
-                                                                                              `data-proxy-click` = "delete_submit_prot",
-                                                                                              actionButton("delete_submit_prot", "Delete")
-                                                                                            )
-                                                                              ) # tags form ends
-                                                                          ) # Div tags
-                                                                      ) # Form and column div ends
-                                                               ), # main panel div
-                                                                 mainPanel(style="margin-left:15px;padding-top:10px;",
-                                                                     p("Open database view the latest annotations"),
-                                                                     actionButton("opendb_prot","Open"),
-                                                                     actionButton("closedb_prot","close"),
-                                                                     textOutput('updatequery_prot'),
-                                                                     tags$hr(),
-                                                                     DT::dataTableOutput('contents_prot')
-                                                               )
-                                                      ) # Fluid row ends
-                                                    ) # div container ends
-                                           ) # div info ends
+                                                                                    tagAppendAttributes(
+                                                                                      class ="input_feilds",
+                                                                                      textInput(
+                                                                                        "gene",
+                                                                                        "gene",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    tagAppendAttributes(
+                                                                                      class ="input_feilds",
+                                                                                      textInput(
+                                                                                        "protein",
+                                                                                        "Protein",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    tagAppendAttributes(
+                                                                                      class ="input_feilds",
+                                                                                      textInput(
+                                                                                        "reaction",
+                                                                                        "Reaction",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    tagAppendAttributes(
+                                                                                      class ="input_feilds",
+                                                                                      textInput(
+                                                                                        "goterm",
+                                                                                        "Goterm",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    tagAppendAttributes(
+                                                                                      class ="input_feilds",
+                                                                                      textInput(
+                                                                                        "doi",
+                                                                                        "Doi",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    tagAppendAttributes(
+                                                                                      class ="input_feilds",
+                                                                                      textInput(
+                                                                                        "url",
+                                                                                        "URL",
+                                                                                        width = "125px",
+                                                                                        value = "",
+                                                                                        placeholder = NULL
+                                                                                      )
+                                                                                    ),
+                                                                                    tagAppendAttributes(
+                                                                                      `data-proxy-click` = "ma_submit_prot", # Change this
+                                                                                      actionButton("ma_submit_prot", "Submit")  
+                                                                                    )
+                                                                                    
+                                                                                  )# tags div end
+                                                                                ))),#tags from and columns ends
+                                                               # Open Annotation database #########################
+                                                             mainPanel(style="margin-left:15px;padding-top:10px;",
+                                                                       p("Open database view the latest annotations"),
+                                                                       actionButton("opendb_prot","Open"),
+                                                                       actionButton("closedb_prot","close"),
+                                                                       textOutput('updatequery_prot'),
+                                                                       tags$hr(),
+                                                                       DT::dataTableOutput('contents_prot')
+                                                             )
+                                                    ) # Fluid row ends
+                                           ) # div container ends
+                                  ) # div tab panel
                                   )
                                 ) 
                               ) 
@@ -539,8 +555,9 @@ if (interactive()) {
       #ECnumber <- '5.4.2.11'
       #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
       
-      endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
-
+      #endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
+      endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
+      
       maquery <- paste("
           prefix ma: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno>
           prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -592,7 +609,7 @@ if (interactive()) {
           rename_head <- function(x){rename(x,c("?header" = "header", "?colname" = "colname", "?value" = "value", "?feature" = "feature")) }
           clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
           
-          #sparql <- source(/var/sparql.R)
+          # sparql <- source(/var/sparql.R)
           
           #Test the query and rename columns
           results_interpro <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_interpro, ECnumber))))
@@ -669,6 +686,7 @@ if (interactive()) {
            
             ### EnzDP #############################
             if ("Enzdp" %in% results$tool) {
+              
               enzdp_table <-dcast(results[tool == 'Enzdp'], ncbiprotein + feature ~ colname)
               enzdp_table[, likelihoodscore := as.numeric(likelihoodscore)]
               setorder(enzdp_table, -likelihoodscore)
