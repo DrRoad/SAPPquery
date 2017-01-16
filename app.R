@@ -57,7 +57,7 @@ if (interactive()) {
       # Reaction NavTab =================================
       tabPanel(
         "Reaction",
-        # Reaction Search feild ##########################
+        ### Reaction Search feild ##########################
         tags$div(class = "content ",
                  tags$div(class = "container setwidth",
                           fluidRow(
@@ -272,10 +272,10 @@ if (interactive()) {
                                                                                  p("Open the database view the latest annotations"),
                                                                                  actionButton("opendb","Open"),
                                                                                  actionButton("closedb","Close"),
-                                                                                 textOutput('updatequery'),
+                                                                                 #textOutput('updatequery'),
                                                                                  tags$hr(),
-                                                                                 DT::dataTableOutput('contents'),
-                                                                       textOutput('test')
+                                                                                 DT::dataTableOutput('contents')
+                                                                       #textOutput('test')
                                                                        
                                                                        ) # mainPanel 
                                                                        )
@@ -544,7 +544,8 @@ if (interactive()) {
       
       ### Clear all data.frames #############################
       results <- NULL;results_interpro <- NULL;results_priam <- NULL;results_uniprot <- NULL;swiss_table <- NULL;enzdp_table <- NULL;results_enzdp<-NULL;
-
+      fetch_query <- NULL
+      
       ### Variable and js scripts addCLass #############################
       shinyjs::addClass(selector = "body", class = "sidebar-collapse")
       # Render EC number input and render to text
@@ -552,28 +553,28 @@ if (interactive()) {
       output$text <- renderText({ECnumber})
       
       ### Manual Annotation Blazegraph query
-      #ECnumber <- '5.4.2.11'
-      #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
+      # ECnumber <- '5.4.2.11'
+      # endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
       
-      #endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
+      # endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
       endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
       
       maquery <- paste("
-          prefix ma: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno>
+          prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
           prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
           prefix dc: <http://purl.org/dc/elements/1.1/>
 
           select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
           where{
-          <ma:",ECnumber,"> <dc:reaction> ?ECnumber;
+          <ma:",ECnumber,"> <ma:reaction> ?ECnumber;
           			            <dc:creator> ?Author;
                             <dc:date> ?Date;
                             <dc:description> ?Comment;
                             <ma:gene> ?Gene;
-                            <dc:protein> ?Protein;
+                            <ma:protein> ?Protein;
                             <ma:goterm> ?GOterm;
-                            <dc:doi> ?Doi;
-                            <dc:url> ?Url
+                            <ma:doi> ?Doi;
+                            <ma:url> ?Url
           }",sep="")
 
       fetch_query <- SPARQL(endpoint2,maquery)$results
@@ -878,7 +879,8 @@ if (interactive()) {
       #ncbiprotein <- 'NP_001130025.1'
       #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
       
-      endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
+      
+      endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
       maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
       SELECT ?proteinName ?column ?value 
       WHERE{<csb:protein> <csb:name> ?proteinName. 
@@ -1120,11 +1122,10 @@ if (interactive()) {
     
     
     # Reaction Annotation ======================
-    endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
-    
+    endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
+    #prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
     observeEvent (input$ma_submit,{
                   # Save inputs from text fields 
-
                   ecnumber <- isolate(input$variable)
                   author <- isolate(shQuote(input$author))
                   date <-isolate(shQuote(input$date))
@@ -1159,7 +1160,7 @@ if (interactive()) {
                   # delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
                   #                       DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
                   # SPARQL update request using post 
-                  #SPARQL(endpoint2, update=update, curl_args = list(style="post"))
+                  SPARQL(endpoint2, update=update, curl_args = list(style="post"))
                   
                   # Render the update query
                   output$updatequery <- renderText({
@@ -1243,10 +1244,10 @@ if (interactive()) {
                   select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
       fetch_query <- SPARQL(endpoint2,query)$results
       
-      data<-as.data.frame(fetch_query)
+      fetch_query<-as.data.frame(fetch_query)
       
       output$contents_prot <- DT::renderDataTable({
-        data  
+        fetch_query  
       })
       observeEvent (input$delete_prot,{
         # Contruct a delete query
@@ -1261,10 +1262,10 @@ if (interactive()) {
                 select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
         fetch_query <- SPARQL(endpoint2,query)$results
         
-        data<-as.data.frame(fetch_query)
+        fetch_query<-as.data.frame(fetch_query)
         
         output$contents_prot <- DT::renderDataTable({
-          data  
+          fetch_query  
         })
         updateTextInput(session,'a_subject', value = "")
         updateTextInput(session,'a_object', value = "")
