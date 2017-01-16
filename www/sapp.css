@@ -109,12 +109,15 @@
 }
 #ma_submit{
   position:relative;
-  top:5px;
+  top:00px;
   border-radius:0 0 0 0;
 }
 #ma_submit_prot{
   position:relative;
-  top:5px;
+  -webkit-left: 225px;
+  -moz-left: 225px;
+  left:225px;
+  top:12.5px;
   border-radius:0 0 0 0;
 }
 #delete_submit_prot,#delete_reaction{
