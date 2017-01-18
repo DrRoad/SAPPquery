@@ -275,8 +275,8 @@ if (interactive()) {
                                                                                  actionButton("closedb","Close"),
                                                                                  #textOutput('updatequery'),
                                                                                  tags$hr(),
-                                                                                 DT::dataTableOutput('contents'),
-                                                                       textOutput('test')
+                                                                                 DT::dataTableOutput('contents')
+                                                                       #textOutput('test')
                                                                        
                                                                        ) # mainPanel 
                                                                        )
@@ -567,17 +567,15 @@ if (interactive()) {
   
           select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
           where{
-          <ma:",ECnumber,"> <id> ?id.
-             ?id <ma:uid> ?uid;
-                 <ma:ecnumber> ?ECnumber;
-          	   <dc:creator> ?Author;
-          	   <dc:date> ?Date;
-          	   <dc:description> ?Comment;
-          	   <ma:gene> ?Gene;
-          	   <ma:protein> ?Protein;
-          	   <ma:goterm> ?GOterm;
-          	   <ma:doi> ?Doi;
-          	   <ma:url> ?Url
+          <ma:",ECnumber,"> <ma:reaction> ?ECnumber;
+          			            <dc:creator> ?Author;
+                            <dc:date> ?Date;
+                            <dc:description> ?Comment;
+                            <ma:gene> ?Gene;
+                            <ma:protein> ?Protein;
+                            <ma:goterm> ?GOterm;
+                            <ma:doi> ?Doi;
+                            <ma:url> ?Url
           }",sep="")
   
       fetch_query <- SPARQL(endpoint2,maquery)$results
@@ -1128,6 +1126,7 @@ if (interactive()) {
                   reaction_name <- shQuote("N/A"); goterm <- shQuote("N/A");doi <- shQuote("N/A");url <- shQuote("N/A");
                  
                   ECnumber <- isolate(input$variable)
+                  
                   # Save inputs from text fields 
                   ecnumber <- shQuote(ECnumber)
                   reaction_name <- shQuote(input$variable)
