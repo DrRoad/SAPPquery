@@ -16,7 +16,6 @@ library(DT)
 library(stringr)
 library(plyr)
 library(rstudioapi)
-install.packages('rsconnect')
 
 # set a working directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
