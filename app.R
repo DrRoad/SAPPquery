@@ -10,6 +10,7 @@ library(shiny)
 library(shinyBS)
 library(shinyjs)
 library(SPARQL)
+library(RCurl)
 library(data.table)
 library(DT)
 library(stringr)
@@ -179,16 +180,16 @@ if (interactive()) {
                                                                                         placeholder = NULL
                                                                                       )
                                                                                     ),
-                                                                                    tagAppendAttributes(
-                                                                                      class ="input_feilds",
-                                                                                      textInput(
-                                                                                        "date",
-                                                                                        "Date",
-                                                                                        width = "125px",
-                                                                                        value = "",
-                                                                                        placeholder = NULL
-                                                                                      )
-                                                                                    ),
+                                                                                    #tagAppendAttributes(
+                                                                                     # class ="input_feilds",
+                                                                                      #textInput(
+                                                                                       # "date",
+                                                                                        #"Date",
+                                                                                        #width = "125px",
+                                                                                        #value = "",
+                                                                                        #placeholder = NULL
+                                                                                      #)
+                                                                                    #),
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
                                                                                       textInput(
@@ -422,16 +423,16 @@ if (interactive()) {
                                                                                         placeholder = NULL
                                                                                       )
                                                                                     ),
-                                                                                    tagAppendAttributes(
-                                                                                      class ="input_feilds",
-                                                                                      textInput(
-                                                                                        "date",
-                                                                                        "Date",
-                                                                                        width = "125px",
-                                                                                        value = "",
-                                                                                        placeholder = NULL
-                                                                                      )
-                                                                                    ),
+                                                                                    #tagAppendAttributes(
+                                                                                      #class ="input_feilds",
+                                                                                      #textInput(
+                                                                                        #"date",
+                                                                                        #"Date",
+                                                                                        #width = "125px",
+                                                                                       # value = "",
+                                                                                      #  placeholder = NULL
+                                                                                     # )
+                                                                                    #),
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
                                                                                       textInput(
@@ -538,7 +539,8 @@ if (interactive()) {
     endpoint <- isolate(input$select)
     #endpoint <- 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql'
     output$value <- renderPrint({ input$select })
-
+    # Get Date for Manual annotations
+    
     # SAPP Reaction ============================
     Sappdata <- observeEvent(input$submit,{
       
@@ -556,14 +558,13 @@ if (interactive()) {
       # ECnumber <- '5.4.2.11'
       # endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
       
-      # endpoint2 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
       endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
       
       maquery <- paste("
           prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
           prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
           prefix dc: <http://purl.org/dc/elements/1.1/>
-
+  
           select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
           where{
           <ma:",ECnumber,"> <ma:reaction> ?ECnumber;
@@ -576,17 +577,14 @@ if (interactive()) {
                             <ma:doi> ?Doi;
                             <ma:url> ?Url
           }",sep="")
-
+  
       fetch_query <- SPARQL(endpoint2,maquery)$results
       fetch_query <-as.data.table(fetch_query)
-      
-      if (empty(fetch_query) == TRUE){fetch_query <- noframe()}
 
       output$ma_table <- DT::renderDataTable({
         fetch_query
       })
       
-
       # Start the progression bar =================================
       withProgress(
         message = 'Fetching data',
@@ -608,9 +606,8 @@ if (interactive()) {
           ### Query functions #############################
           queryfun <- function(basequery, ecnumber) { return(sub('4.2.1.11', ecnumber, basequery))  }
           rename_head <- function(x){rename(x,c("?header" = "header", "?colname" = "colname", "?value" = "value", "?feature" = "feature")) }
+          # CLean up post requests. New sparql functing has quotes around everything
           clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
-          
-          # sparql <- source(/var/sparql.R)
           
           #Test the query and rename columns
           results_interpro <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_interpro, ECnumber))))
@@ -909,17 +906,15 @@ if (interactive()) {
           
           ### Start querying and load results #############################
           queryfun <- function(basequery, ncbiprotein) {return(sub('changeme', ncbiprotein, basequery))}
-          rename_head <- function(x){rename(x,c("?header" = "header", "?tool" = "tool","?colname" = "colname", "?value" = "value", "?feature" = "feature")) }
-          clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
           
-          #res2 <- SPARQL(endpoint, queryfun(basequery,ncbiprotein))
+          #results_interpro <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_interpro, ECnumber))))
+          #results_interpro <- rename_head(results_interpro)
+          #results_interpro <- clean_post(results_interpro)
           
-          res <- sparql(endpoint, queryfun(basequery,ncbiprotein))
+          res <- SPARQL(endpoint, queryfun(basequery,ncbiprotein))
           
-          res <- rename_head(res)
-          res <- clean_post(res)
-          results <- data.table(res)
-          
+          results <- data.table(res$results)
+
           ### Check if dataframe is empty #############################
           if (empty(results) == TRUE) {
             output$exampleOutput <- renderText({
@@ -1122,15 +1117,21 @@ if (interactive()) {
           }) # Progress bar ends
         }) # SappprotData ends
     
-    
     # Reaction Annotation ======================
     endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
     #prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
     observeEvent (input$ma_submit,{
+                  # Save N/A to all variable that will then be overriden by the user
+                  author <- shQuote("N/A"); comment<- shQuote("N/A");gene <- shQuote("N/A"); protein<- shQuote("N/A"); 
+                  reaction_name <- shQuote("N/A"); goterm <- shQuote("N/A");doi <- shQuote("N/A");url <- shQuote("N/A");
+                 
+                  ECnumber <- isolate(input$variable)
+                  
                   # Save inputs from text fields 
-                  ecnumber <- isolate(input$variable)
+                  ecnumber <- shQuote(ECnumber)
+                  reaction_name <- shQuote(input$variable)
                   author <- isolate(shQuote(input$author))
-                  date <-isolate(shQuote(input$date))
+                  date <- (shQuote(Sys.Date()))
                   comment <- isolate(shQuote(input$comment))
                   gene <- isolate(shQuote(input$gene))
                   protein <- isolate(shQuote(input$protein))
@@ -1138,34 +1139,31 @@ if (interactive()) {
                   goterm <- isolate(shQuote(input$goterm))
                   doi <- isolate(shQuote(input$doi))
                   url <- isolate(shQuote(input$url))
+                  uniqid <-  as.integer(Sys.time())
+                  nid <- shQuote(uniqid)
                   
                   #Build update query
                   update <- paste("
-                    prefix ma: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
+                    prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
                     INSERT DATA{
-                                <ma:manualannotatin> <ma:a> <rdf:Class>.
-                                <ma:",ecnumber,"> <ma:a> <ma:manualannotatin>.
-                                <ma:",ecnumber,"> <dc:creator> ",author,".
-                                <ma:",ecnumber,"> <dc:date> ",date,".
-                                <ma:",ecnumber,"> <dc:description> ",comment,".
-                                <ma:",ecnumber,"> <ma:gene> ",gene,".
-                                <ma:",ecnumber,"> <ma:protein> ",protein,".
-                                <ma:",ecnumber,"> <ma:reaction> ",reaction,".
-                                <ma:",ecnumber,"> <ma:goterm> ",goterm,".
-                                <ma:",ecnumber,"> <ma:doi> ",doi,".
-                                <ma:",ecnumber,"> <ma:url> ",url,"
+                                <ma:",ECnumber,"> <id> <ma:",uniqid,">.
+                                <ma:",uniqid,"> <ma:uid> ",nid,";
+                                            <ma:ecnumber> ",ecnumber,";
+                                            <ma:reaction> ",reaction_name,";
+                                            <dc:creator> ",author,";
+                                            <dc:date> ",date,";
+                                            <dc:description> ",comment,";
+                                            <ma:gene> ",gene,";
+                                            <ma:protein> ",protein,";
+                                            <ma:goterm> ",goterm,";
+                                            <ma:doi> ",doi,";
+                                            <ma:url> ",url,"
                   }",sep="")
-                  output$test <- renderText({
-                    update
-                  })
-                  # Contruct a delete query
-                  # delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
-                  #                       DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+                  
                   # SPARQL update request using post 
                   SPARQL(endpoint2, update=update, curl_args = list(style="post"))
                   
-                  # Render the update query
-                  output$updatequery <- renderText({
+                  output$test <- renderText({
                     update
                   })
                   
@@ -1175,16 +1173,8 @@ if (interactive()) {
                   # Aloow users to Delete data
                   # set up a button remove last query
                   # Fix Div structure in Manual anno, the tables is off
+                  # Add a sign that update worked or failed
                   
-                  # query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
-                  # select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
-                  # fetch_query <- SPARQL(endpoint2,query)$results
-                  # 
-                  # data<-as.data.frame(fetch_query)
-                  # 
-                  # output$contents <- DT::renderDataTable({
-                  #   data  
-                  # })
                   observeEvent (input$delete,{
                     # Contruct a delete query
                     delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
@@ -1197,18 +1187,22 @@ if (interactive()) {
                     select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
                     fetch_query <- SPARQL(endpoint2,query)$results
                     
-                    data<-as.data.frame(fetch_query)
+                    fetch_query<-as.data.frame(fetch_query)
                     
                     output$contents <- DT::renderDataTable({
-                      data  
+                      fetch_query  
                     })
                   })
                   
-                  
                   # Update text field after a submition and set value to empty
-                  updateTextInput(session,'a_subject', value = "")
-                  updateTextInput(session,'a_object', value = "")
-                  updateTextInput(session,'a_predicate', value = "")
+                  updateTextInput(session,'author', value = "")
+                  updateTextInput(session,'comment', value = "")
+                  updateTextInput(session,'gene', value = "")
+                  updateTextInput(session,'protein', value = "")
+                  updateTextInput(session,'reaction', value = "")
+                  updateTextInput(session,'goterm', value = "")
+                  updateTextInput(session,'doi', value = "")
+                  updateTextInput(session,'url', value = "")
     })
     
     # Protein Annotation =======================
