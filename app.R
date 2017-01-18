@@ -567,15 +567,17 @@ if (interactive()) {
   
           select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
           where{
-          <ma:",ECnumber,"> <ma:reaction> ?ECnumber;
-          			            <dc:creator> ?Author;
-                            <dc:date> ?Date;
-                            <dc:description> ?Comment;
-                            <ma:gene> ?Gene;
-                            <ma:protein> ?Protein;
-                            <ma:goterm> ?GOterm;
-                            <ma:doi> ?Doi;
-                            <ma:url> ?Url
+          <ma:",ECnumber,"> <id> ?id.
+             ?id <ma:uid> ?uid;
+                 <ma:ecnumber> ?ECnumber;
+          	    <dc:creator> ?Author;
+          	    <dc:date> ?Date;
+          	    <dc:description> ?Comment;
+          	    <ma:gene> ?Gene;
+          	    <ma:protein> ?Protein;
+          	    <ma:goterm> ?GOterm;
+          	    <ma:doi> ?Doi;
+          	    <ma:url> ?Url
           }",sep="")
   
       fetch_query <- SPARQL(endpoint2,maquery)$results
