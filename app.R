@@ -16,6 +16,7 @@ library(DT)
 library(stringr)
 library(plyr)
 library(rstudioapi)
+install.packages('rsconnect')
 
 # set a working directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -36,7 +37,8 @@ if (interactive()) {
       tags$title("SAPP query"),
       #tags$script(HTML(jscode)),
       tags$script(src = 'jsfile.js'),
-      tags$link(rel = "stylesheet", type = "text/css", href = "sapp.css")
+      tags$link(rel = "stylesheet", type = "text/css", href = "sapp.css"),
+      tags$script(src = "message-handler.js")
     ),
     tags$div(class = "Header",
              tags$div(
@@ -164,8 +166,8 @@ if (interactive()) {
                                                              fluidRow(
                                                                ### Input feilds --------------------------------
                                                                column(3,
+                                                                      h4("Insert Data"),
                                                                       mainPanel(width=3,
-                                                                                h4("Insert Data"),
                                                                                 tags$form(
                                                                                   class = "form-inline",
                                                                                   tags$div(
@@ -194,7 +196,7 @@ if (interactive()) {
                                                                                       class ="input_feilds",
                                                                                       textInput(
                                                                                         "comment",
-                                                                                        "comment",
+                                                                                        "Comment",
                                                                                         width = "125px",
                                                                                         value = "",
                                                                                         placeholder = NULL
@@ -204,7 +206,7 @@ if (interactive()) {
                                                                                       class ="input_feilds",
                                                                                       textInput(
                                                                                         "gene",
-                                                                                        "gene",
+                                                                                        "Gene",
                                                                                         width = "125px",
                                                                                         value = "",
                                                                                         placeholder = NULL
@@ -284,11 +286,12 @@ if (interactive()) {
                                            ) # Fluid row ends
                                   ) # div container ends
                                 ) # div info ends
-                                ), # tabPanel
-                                tabPanel("Federated query",
-                                       actionButton("fd","Submit"),
-                                       DT::dataTableOutput('federated_table')
-                                       )
+                                )
+                                # , # tabPanel
+                                # tabPanel("Federated query",
+                                #        actionButton("fd","Submit"),
+                                #        DT::dataTableOutput('federated_table')
+                                #        )
                                 ) # tabset ends
                               ) # main panael ends
                             )
@@ -299,7 +302,7 @@ if (interactive()) {
       # Protein NavTab =================================
       tabPanel(
         "Protein",
-        # Search Feild ###########################
+        # Protein Search Feild ###########################
         tags$div(class = "content",
                  tags$div(class = "container setwidth",
                           fluidRow(
@@ -331,7 +334,7 @@ if (interactive()) {
                             )
                           ))),
         tags$br(),
-        # DataTables #############################
+        # Protein DataTables #############################
         tags$div(class = "content",
                  tags$div(class = "container tables setwidth",
                           fluidRow(
@@ -343,7 +346,7 @@ if (interactive()) {
                                 textOutput("exampleOutput2"),
                                 bsAlert("alert2"),
                                 tabsetPanel(
-                                  # SAPP Tab =================================
+                                  # Protein SAPP Tab =================================
                                   tabPanel("SAPP",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -352,7 +355,7 @@ if (interactive()) {
                                                     )),
                                            DT::dataTableOutput('myTableprot')
                                   ),
-                                  # BLAST TAB =================================
+                                  # Protein BLAST TAB =================================
                                   tabPanel("BLAST",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -362,7 +365,7 @@ if (interactive()) {
                                            DT::dataTableOutput('blastresult_table')
                                   ),
 
-                                  # PRIAM =================================
+                                  # Protein PRIAM =================================
                                   tabPanel("PRIAM",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -371,7 +374,7 @@ if (interactive()) {
                                                     )),
                                            DT::dataTableOutput('priamprot_table')
                                   ),
-                                  # SIGNAL IP Tab =================================
+                                  # Protein SIGNAL IP Tab =================================
                                   tabPanel("SIGNALP",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -381,7 +384,7 @@ if (interactive()) {
                                            
                                            DT::dataTableOutput('signalIP_table')
                                   ),
-                                  # Interpro Tab =================================
+                                  # Protein Interpro Tab =================================
                                   tabPanel("Interpro",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -390,7 +393,7 @@ if (interactive()) {
                                                     )),
                                            DT::dataTableOutput('ipr_table')
                                   ),
-                                  # Interpro Domains Tab =================================
+                                  # Protein Interpro Domains Tab =================================
                                   tabPanel("Interpro Domains ",
                                            tags$div(class = "info",
                                                     tags$ul(
@@ -399,16 +402,16 @@ if (interactive()) {
                                                     )),
                                            DT::dataTableOutput('interpro_table')
                                   ),
-                                  # Manual Anotation =================================
+                                  # Protein Manual Anotation =================================
                                   tabPanel("Manual Annotation",
                                            DT::dataTableOutput('ma_table_prot'),
                                            tags$div(class="ma",
                                                     tags$div(class = "container",style ="height:650px",
                                                              fluidRow(
+                                                               h4("Insert Data"),
                                                                column(3,
                                                                       # Input feilds -----------------------------------
                                                                       mainPanel(width=3,
-                                                                                h4("Insert Data"),
                                                                                 tags$form(
                                                                                   class = "form-inline",
                                                                                   tags$div(
@@ -416,7 +419,7 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
                                                                                       textInput(
-                                                                                        "author",
+                                                                                        "author_prot",
                                                                                         "Author",
                                                                                         width = "125px",
                                                                                         value = "",
@@ -426,7 +429,7 @@ if (interactive()) {
                                                                                     #tagAppendAttributes(
                                                                                       #class ="input_feilds",
                                                                                       #textInput(
-                                                                                        #"date",
+                                                                                        #"date_prot",
                                                                                         #"Date",
                                                                                         #width = "125px",
                                                                                        # value = "",
@@ -436,7 +439,7 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
                                                                                       textInput(
-                                                                                        "comment",
+                                                                                        "comment_prot",
                                                                                         "comment",
                                                                                         width = "125px",
                                                                                         value = "",
@@ -446,8 +449,8 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
                                                                                       textInput(
-                                                                                        "gene",
-                                                                                        "gene",
+                                                                                        "gene_prot",
+                                                                                        "Gene",
                                                                                         width = "125px",
                                                                                         value = "",
                                                                                         placeholder = NULL
@@ -456,7 +459,7 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
                                                                                       textInput(
-                                                                                        "protein",
+                                                                                        "protein_prot",
                                                                                         "Protein",
                                                                                         width = "125px",
                                                                                         value = "",
@@ -466,7 +469,7 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
                                                                                       textInput(
-                                                                                        "reaction",
+                                                                                        "reaction_prot",
                                                                                         "Reaction",
                                                                                         width = "125px",
                                                                                         value = "",
@@ -476,7 +479,7 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
                                                                                       textInput(
-                                                                                        "goterm",
+                                                                                        "goterm_prot",
                                                                                         "Goterm",
                                                                                         width = "125px",
                                                                                         value = "",
@@ -486,7 +489,7 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
                                                                                       textInput(
-                                                                                        "doi",
+                                                                                        "doi_prot",
                                                                                         "Doi",
                                                                                         width = "125px",
                                                                                         value = "",
@@ -496,7 +499,7 @@ if (interactive()) {
                                                                                     tagAppendAttributes(
                                                                                       class ="input_feilds",
                                                                                       textInput(
-                                                                                        "url",
+                                                                                        "url_prot",
                                                                                         "URL",
                                                                                         width = "125px",
                                                                                         value = "",
@@ -515,9 +518,9 @@ if (interactive()) {
                                                                        p("Open database view the latest annotations"),
                                                                        actionButton("opendb_prot","Open"),
                                                                        actionButton("closedb_prot","close"),
-                                                                       textOutput('updatequery_prot'),
-                                                                       tags$hr(),
-                                                                       DT::dataTableOutput('contents_prot')
+                                                                       #textOutput('updatequery_prot'),
+                                                                       tags$hr()
+                                                                       #DT::dataTableOutput('contents_prot')
                                                              )
                                                     ) # Fluid row ends
                                            ) # div container ends
@@ -551,9 +554,10 @@ if (interactive()) {
       ### Variable and js scripts addCLass #############################
       shinyjs::addClass(selector = "body", class = "sidebar-collapse")
       # Render EC number input and render to text
-      ECnumber <- input$variable
-      output$text <- renderText({ECnumber})
       
+      ### Open manual annotation blazegraph ###########################
+      ECnumber <- input$variable
+
       ### Manual Annotation Blazegraph query
       # ECnumber <- '5.4.2.11'
       # endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
@@ -581,8 +585,8 @@ if (interactive()) {
           }",sep="")
   
       fetch_query <- SPARQL(endpoint2,maquery)$results
+      
       fetch_query <-as.data.table(fetch_query)
-
       output$ma_table <- DT::renderDataTable({
         fetch_query
       })
@@ -878,24 +882,46 @@ if (interactive()) {
       #ncbiprotein <- 'NP_001130025.1'
       #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
       
-      
       endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
-      maquery <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
-      SELECT ?proteinName ?column ?value 
-      WHERE{<csb:protein> <csb:name> ?proteinName. 
-      FILTER(contains(?proteinName, '",ncbiprotein,"'))
-      <csb:",ncbiprotein,"> ?column ?value.}",sep="")
       
+      maquery <- paste("
+          prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                       prefix dc: <http://purl.org/dc/elements/1.1/>
+                       
+                       select ?NCBIprotein ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
+                       where{
+                       <ma:",ncbiprotein,"> <id> ?id.
+                       ?id <ma:uid> ?uid;
+                       <ma:ncbinumber> ?NCBIprotein;
+                       <dc:creator> ?Author;
+                       <dc:date> ?Date;
+                       <dc:description> ?Comment;
+                       <ma:gene> ?Gene;
+                       <ma:protein> ?Protein;
+                       <ma:goterm> ?GOterm;
+                       <ma:doi> ?Doi;
+                       <ma:url> ?Url
+                       }",sep="")
+  
       fetch_query <- SPARQL(endpoint2,maquery)$results
-      fetch_query <- as.data.table(fetch_query)
-      if (empty(fetch_query) == TRUE){results <- noframe()
-      }else{
-        fetch_query[,column:=sub('>','',sub('<csb:','',column))]  
-      }
+      
+      fetch_query <-as.data.table(fetch_query)
       output$ma_table_prot <- DT::renderDataTable({
         fetch_query
       })
       
+      # fetch_query <- SPARQL(endpoint2,maquery)$results
+      # fetch_query <- as.data.table(fetch_query)
+      # 
+      # if (empty(fetch_query) == TRUE){results <- noframe()
+      # }else{
+      #   fetch_query[,column:=sub('>','',sub('<csb:','',column))]  
+      # }
+      # output$ma_table_prot <- DT::renderDataTable({
+      #   fetch_query
+      # })
+      # 
       
       # Start the progression bar =================================
       withProgress(
@@ -1123,152 +1149,236 @@ if (interactive()) {
     endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
     #prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
     observeEvent (input$ma_submit,{
-                  # Save N/A to all variable that will then be overriden by the user
-                  author <- shQuote("N/A"); comment<- shQuote("N/A");gene <- shQuote("N/A"); protein<- shQuote("N/A"); 
-                  reaction_name <- shQuote("N/A"); goterm <- shQuote("N/A");doi <- shQuote("N/A");url <- shQuote("N/A");
-                 
-                  ECnumber <- isolate(input$variable)
-                  
-                  # Save inputs from text fields 
-                  ecnumber <- shQuote(ECnumber)
-                  reaction_name <- shQuote(input$variable)
-                  author <- isolate(shQuote(input$author))
-                  date <- (shQuote(Sys.Date()))
-                  comment <- isolate(shQuote(input$comment))
-                  gene <- isolate(shQuote(input$gene))
-                  protein <- isolate(shQuote(input$protein))
-                  reaction <- isolate(shQuote(input$reaction))
-                  goterm <- isolate(shQuote(input$goterm))
-                  doi <- isolate(shQuote(input$doi))
-                  url <- isolate(shQuote(input$url))
-                  uniqid <-  as.integer(Sys.time())
-                  nid <- shQuote(uniqid)
-                  
-                  #Build update query
-                  update <- paste("
-                    prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
-                    INSERT DATA{
-                                <ma:",ECnumber,"> <id> <ma:",uniqid,">.
-                                <ma:",uniqid,"> <ma:uid> ",nid,";
-                                            <ma:ecnumber> ",ecnumber,";
-                                            <ma:reaction> ",reaction_name,";
-                                            <dc:creator> ",author,";
-                                            <dc:date> ",date,";
-                                            <dc:description> ",comment,";
-                                            <ma:gene> ",gene,";
-                                            <ma:protein> ",protein,";
-                                            <ma:goterm> ",goterm,";
-                                            <ma:doi> ",doi,";
-                                            <ma:url> ",url,"
-                  }",sep="")
-                  
-                  # SPARQL update request using post 
-                  SPARQL(endpoint2, update=update, curl_args = list(style="post"))
-                  
-                  output$test <- renderText({
-                    update
-                  })
-                  
-                  ### Fetch database and explore -----------------------------
-                  # Idea put in a check to see if the data entry worked.
-                  # Allow user to choose prefixes
-                  # Aloow users to Delete data
-                  # set up a button remove last query
-                  # Fix Div structure in Manual anno, the tables is off
-                  # Add a sign that update worked or failed
-                  
-                  observeEvent (input$delete,{
-                    # Contruct a delete query
-                    delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
-                    output$updatequery <- renderText({
-                      delete_query
-                    })
-                    SPARQL(endpoint2, update=delete_query, curl_args = list(style="post"))
-                    
-                    query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno//> 
-                    select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
-                    fetch_query <- SPARQL(endpoint2,query)$results
-                    
-                    fetch_query<-as.data.frame(fetch_query)
-                    
-                    output$contents <- DT::renderDataTable({
-                      fetch_query  
-                    })
-                  })
-                  
-                  # Update text field after a submition and set value to empty
-                  updateTextInput(session,'author', value = "")
-                  updateTextInput(session,'comment', value = "")
-                  updateTextInput(session,'gene', value = "")
-                  updateTextInput(session,'protein', value = "")
-                  updateTextInput(session,'reaction', value = "")
-                  updateTextInput(session,'goterm', value = "")
-                  updateTextInput(session,'doi', value = "")
-                  updateTextInput(session,'url', value = "")
-    })
-    
-    # Protein Annotation =======================
-    observeEvent (input$ma_submit_prot,{
-      # Save inputs from text fields 
-      subject <- isolate(input$a_subject_prot)
-      predicate <-isolate(input$a_predicate_prot)
-      object <- isolate(shQuote(input$a_object_prot))
+      # Save N/A to all variable that will then be overriden by the user
+      author <- shQuote("N/A"); comment<- shQuote("N/A");gene <- shQuote("N/A"); protein<- shQuote("N/A"); 
+      reaction_name <- shQuote("N/A"); goterm <- shQuote("N/A");doi <- shQuote("N/A");url <- shQuote("N/A");
+      date <- shQuote(as.integer(Sys.Date()))
       
-      # Build update query
-      update <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
-                      INSERT DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
-      # Contruct a delete query
-      delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
-                            DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
-      # SPARQL update request using post 
-      SPARQL(endpoint2, update=update, curl_args = list(style="post"))
+      ### Save inputs from text fields, reactions #################
+      ECnumber <- isolate(input$variableprot)
+      ecnumber <- shQuote(ECnumber)
+      reaction_name <- shQuote(input$reaction)
+      author <- isolate(shQuote(input$author))
+      date <- (shQuote(Sys.Date()))
+      comment <- isolate(shQuote(input$comment))
+      gene <- isolate(shQuote(input$gene))
+      protein <- isolate(shQuote(input$protein))
+      reaction <- isolate(shQuote(input$reaction))
+      goterm <- isolate(shQuote(input$goterm))
+      doi <- isolate(shQuote(input$doi))
+      url <- isolate(shQuote(input$url))
+      uniqid <-  as.integer(Sys.time())
+      nid <- shQuote(uniqid)
       
-      # REnder the update query
-      output$updatequery_prot <- renderText({
-        update
+      #Build update query
+      update <- paste("
+                      prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                      INSERT DATA{
+                      <ma:",ECnumber,"> <id> <ma:",uniqid,">.
+                      <ma:",uniqid,"> <ma:uid> ",nid,";
+                      <ma:ecnumber> ",ecnumber,";
+                      <ma:reaction> ",reaction_name,";
+                      <dc:creator> ",author,";
+                      <dc:date> ",date,";
+                      <dc:description> ",comment,";
+                      <ma:gene> ",gene,";
+                      <ma:protein> ",protein,";
+                      <ma:goterm> ",goterm,";
+                      <ma:doi> ",doi,";
+                      <ma:url> ",url,"
+                      }",sep="")
+                  
+      # SPARQL update request using post. using tryCatch to grab the error if any.
+      out <- tryCatch (SPARQL(endpoint2, update=update, curl_args = list(style="post")), error = function(e) e)
+      if (any(class(out) =="error") == FALSE) {
+        # Alert message if the upload works
+        alert("Data uploaded to Blazegraph succesfull") 
+      }else{
+        # Alert message if the upload fails
+        alert("Data upload failed")  
+      }
+      # update the table
+      endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
+      
+      maquery <- paste("
+                       prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                       prefix dc: <http://purl.org/dc/elements/1.1/>
+                       
+                       select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
+                       where{
+                       <ma:",ECnumber,"> <id> ?id.
+                       ?id <ma:uid> ?uid;
+                       <ma:ecnumber> ?ECnumber;
+                       <dc:creator> ?Author;
+                       <dc:date> ?Date;
+                       <dc:description> ?Comment;
+                       <ma:gene> ?Gene;
+                       <ma:protein> ?Protein;
+                       <ma:goterm> ?GOterm;
+                       <ma:doi> ?Doi;
+                       <ma:url> ?Url
+                       }",sep="")
+                  
+      fetch_query <- SPARQL(endpoint2,maquery)$results
+      
+      fetch_query <-as.data.table(fetch_query)
+      output$ma_table <- DT::renderDataTable({
+        fetch_query
       })
       
       ### Fetch database and explore -----------------------------
       # Idea put in a check to see if the data entry worked.
-      # Allow user to choose prefixes
       # Aloow users to Delete data
       # set up a button remove last query
-      # Fix Div structure in Manual anno, the tables is off
-      # Add a link creation for GeneID and Pubmed fx.
-      # remove <csb: > using regexp
-      # Have pre defined predicates and ability to create new ones.
       
-      query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
-                  select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
-      fetch_query <- SPARQL(endpoint2,query)$results
-      
-      fetch_query<-as.data.frame(fetch_query)
-      
-      output$contents_prot <- DT::renderDataTable({
-        fetch_query  
-      })
-      observeEvent (input$delete_prot,{
+      observeEvent (input$delete,{
         # Contruct a delete query
-        delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
-                              DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
-        output$updatequery_prot <- renderText({
+        delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+        output$updatequery <- renderText({
           delete_query
         })
         SPARQL(endpoint2, update=delete_query, curl_args = list(style="post"))
         
-        query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> 
-                select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+        query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno//> 
+        select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
         fetch_query <- SPARQL(endpoint2,query)$results
         
         fetch_query<-as.data.frame(fetch_query)
         
-        output$contents_prot <- DT::renderDataTable({
+        output$contents <- DT::renderDataTable({
           fetch_query  
         })
-        updateTextInput(session,'a_subject', value = "")
-        updateTextInput(session,'a_object', value = "")
-        updateTextInput(session,'a_object', value = "")
       })
+      
+      # Update text field after a submition and set value to empty
+      updateTextInput(session,'author', value = "")
+      updateTextInput(session,'comment', value = "")
+      updateTextInput(session,'gene', value = "")
+      updateTextInput(session,'protein', value = "")
+      updateTextInput(session,'reaction', value = "")
+      updateTextInput(session,'goterm', value = "")
+      updateTextInput(session,'doi', value = "")
+      updateTextInput(session,'url', value = "")
+      
+      # Update the manual annotation table
+      
+    })
+    
+    # Protein Annotation =======================
+    observeEvent (input$ma_submit_prot,{
+      # Save N/A to all variable that will then be overriden by the user
+      author <- shQuote("N/A"); comment<- shQuote("N/A");gene <- shQuote("N/A"); protein<- shQuote("N/A"); 
+      reaction_name <- shQuote("N/A"); goterm <- shQuote("N/A");doi <- shQuote("N/A");url <- shQuote("N/A");
+      date <- shQuote(as.integer(Sys.Date()))
+      
+      ### Save inputs from text fields ########################
+      ncbiprotein <- isolate(input$variableprot)
+      ncbinumber <- shQuote(ncbiprotein)
+      reaction_name <- shQuote(input$reaction_prot)
+      author <- isolate(shQuote(input$author_prot))
+      date <- (shQuote(Sys.Date()))
+      comment <- isolate(shQuote(input$comment_prot))
+      gene <- isolate(shQuote(input$gene_prot))
+      protein <- isolate(shQuote(input$protein_prot))
+      reaction <- isolate(shQuote(input$reaction_prot))
+      goterm <- isolate(shQuote(input$goterm_prot))
+      doi <- isolate(shQuote(input$doi_prot))
+      url <- isolate(shQuote(input$url_prot))
+      uniqid <-  as.integer(Sys.time())
+      nid <- shQuote(uniqid)
+      
+      #Build update query
+      update <- paste("
+                      prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                      INSERT DATA{
+                      <ma:",ncbiprotein,"> <id> <ma:",uniqid,">.
+                      <ma:",uniqid,"> <ma:uid> ",nid,";
+                      <ma:ncbinumber> ",ncbinumber,";
+                      <ma:reaction> ",reaction_name,";
+                      <dc:creator> ",author,";
+                      <dc:date> ",date,";
+                      <dc:description> ",comment,";
+                      <ma:gene> ",gene,";
+                      <ma:protein> ",protein,";
+                      <ma:goterm> ",goterm,";
+                      <ma:doi> ",doi,";
+                      <ma:url> ",url,"
+     }",sep="")
+                  
+      # SPARQL update request using post. using tryCatch to grab the error if any.
+      out <- tryCatch (SPARQL(endpoint2, update=update, curl_args = list(style="post")), error = function(e) e)
+      if (any(class(out) =="error") == FALSE) {
+        # Alert message if the upload works
+        alert("Data uploaded to Blazegraph succesfull") 
+      }else{
+        # Alert message if the upload fails
+        alert("Data upload failed")  
+      }
+      # update the table
+      endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
+      
+      maquery <- paste("
+          prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                       prefix dc: <http://purl.org/dc/elements/1.1/>
+                       
+                       select ?NCBIprotein ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
+                       where{
+                       <ma:",ncbiprotein,"> <id> ?id.
+                       ?id <ma:uid> ?uid;
+                       <ma:ncbinumber> ?NCBIprotein;
+                       <dc:creator> ?Author;
+                       <dc:date> ?Date;
+                       <dc:description> ?Comment;
+                       <ma:gene> ?Gene;
+                       <ma:protein> ?Protein;
+                       <ma:goterm> ?GOterm;
+                       <ma:doi> ?Doi;
+                       <ma:url> ?Url
+                       }",sep="")
+                  
+      fetch_query <- SPARQL(endpoint2,maquery)$results
+      
+      fetch_query <-as.data.table(fetch_query)
+      output$ma_table_prot <- DT::renderDataTable({
+        fetch_query
+      })
+      
+      ### Fetch database and explore -----------------------------
+      # Idea put in a check to see if the data entry worked.
+      # Aloow users to Delete data
+      # set up a button remove last query
+      
+      observeEvent (input$delete,{
+        # Contruct a delete query
+        delete_query <- paste("prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/> DELETE DATA{ <csb:",subject,"> <csb:",predicate,"> ",object,". }",sep="")
+        output$updatequery <- renderText({
+          delete_query
+        })
+        SPARQL(endpoint2, update=delete_query, curl_args = list(style="post"))
+        
+        query <- "prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno//> 
+        select ?subject ?predicate ?object where {?subject ?predicate ?object.}"
+        fetch_query <- SPARQL(endpoint2,query)$results
+        
+        fetch_query<-as.data.frame(fetch_query)
+        
+        output$contents <- DT::renderDataTable({
+          fetch_query  
+        })
+      })
+      
+      # Update text field after a submition and set value to empty
+      updateTextInput(session,'author', value = "")
+      updateTextInput(session,'comment', value = "")
+      updateTextInput(session,'gene', value = "")
+      updateTextInput(session,'protein', value = "")
+      updateTextInput(session,'reaction', value = "")
+      updateTextInput(session,'goterm', value = "")
+      updateTextInput(session,'doi', value = "")
+      updateTextInput(session,'url', value = "")
+    
   })
     
     # Delete a specific entry ==================  
@@ -1351,36 +1461,36 @@ if (interactive()) {
     
     
     # Federated query TEST ======================
-    endpoint3 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
-    observeEvent(input$fd,{
-      
-    query_fed <-" 
-    prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
-    prefix ssb: <http://csb.wur.nl/genome/>
-    select ?header ?tool ?feature ?colname ?value ?header2 ?tool2 ?feature2 ?colname2 ?value2 {      
-      <csb:protein> <csb:name> ?header.
-      FILTER(contains(?header, 'NP_001133193.1'))
-      <csb:NP_001130025.1> <csb:tool> ?tool.
-      <csb:NP_001130025.1> <csb:hasGeneid> ?feature .
-      ?s ?colname '100192341'.
-      <csb:NP_001130025.1> <csb:PubmedID> ?value .    
-        service <http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql> {      
-          ?cds ssb:header ?header2.
-          FILTER(contains(?header2,'NP_001130025.1'))
-          ?cds ssb:protein ?protein.
-          ?protein ssb:feature ?feature2.
-          ?feature2 a ?tool2.
-        ?feature2 ?colname2 ?value2.
-      }
-    } "
-
-    fetch_query <- SPARQL(endpoint3,query=query_fed)$results
-    fetch_query <-as.data.frame(fetch_query)
-    output$federated_table <- DT::renderDataTable(
-      fetch_query,
-      extensions = 'Responsive'
-      )
-    })
+    # endpoint3 <- "http://localhost:9999/blazegraph/namespace/ManualAnno/sparql"
+    # observeEvent(input$fd,{
+    #   
+    # query_fed <-" 
+    # prefix csb: <http://128.39.179.17:9999/blazegraph/namspace/ManualAnno/>
+    # prefix ssb: <http://csb.wur.nl/genome/>
+    # select ?header ?tool ?feature ?colname ?value ?header2 ?tool2 ?feature2 ?colname2 ?value2 {      
+    #   <csb:protein> <csb:name> ?header.
+    #   FILTER(contains(?header, 'NP_001133193.1'))
+    #   <csb:NP_001130025.1> <csb:tool> ?tool.
+    #   <csb:NP_001130025.1> <csb:hasGeneid> ?feature .
+    #   ?s ?colname '100192341'.
+    #   <csb:NP_001130025.1> <csb:PubmedID> ?value .    
+    #     service <http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql> {      
+    #       ?cds ssb:header ?header2.
+    #       FILTER(contains(?header2,'NP_001130025.1'))
+    #       ?cds ssb:protein ?protein.
+    #       ?protein ssb:feature ?feature2.
+    #       ?feature2 a ?tool2.
+    #     ?feature2 ?colname2 ?value2.
+    #   }
+    # } "
+    # 
+    # fetch_query <- SPARQL(endpoint3,query=query_fed)$results
+    # fetch_query <-as.data.frame(fetch_query)
+    # output$federated_table <- DT::renderDataTable(
+    #   fetch_query,
+    #   extensions = 'Responsive'
+    #   )
+    # })
     
   }
   shinyApp(ui, server)
