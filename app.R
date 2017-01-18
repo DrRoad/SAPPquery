@@ -1126,23 +1126,13 @@ if (interactive()) {
                   # Save N/A to all variable that will then be overriden by the user
                   author <- shQuote("N/A"); comment<- shQuote("N/A");gene <- shQuote("N/A"); protein<- shQuote("N/A"); 
                   reaction_name <- shQuote("N/A"); goterm <- shQuote("N/A");doi <- shQuote("N/A");url <- shQuote("N/A");
-                 
-                  ECnumber <- isolate(input$variable)
-                  
-                  # Save inputs from text fields 
-                  ecnumber <- shQuote(ECnumber)
-                  reaction_name <- shQuote(input$variable)
-                  author <- isolate(shQuote(input$author))
-                  date <- (shQuote(Sys.Date()))
-                  comment <- isolate(shQuote(input$comment))
-                  gene <- isolate(shQuote(input$gene))
-                  protein <- isolate(shQuote(input$protein))
-                  reaction <- isolate(shQuote(input$reaction))
-                  goterm <- isolate(shQuote(input$goterm))
-                  doi <- isolate(shQuote(input$doi))
-                  url <- isolate(shQuote(input$url))
-                  uniqid <-  as.integer(Sys.time())
-                  nid <- shQuote(uniqid)
+
+                  # Save inputs from text fields
+                  ECnumber <- isolate(input$variable);ecnumber <- shQuote(ECnumber);reaction_name <- shQuote(input$variable)
+                  author <- isolate(shQuote(input$author));date <- (shQuote(Sys.Date()));comment <- isolate(shQuote(input$comment))
+                  gene <- isolate(shQuote(input$gene));protein <- isolate(shQuote(input$protein));reaction <- isolate(shQuote(input$reaction))
+                  goterm <- isolate(shQuote(input$goterm));doi <- isolate(shQuote(input$doi));url <- isolate(shQuote(input$url))
+                  uniqid <-  as.integer(Sys.time());nid <- shQuote(uniqid)
                   
                   #Build update query
                   update <- paste("
