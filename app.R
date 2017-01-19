@@ -16,9 +16,7 @@ library(DT)
 library(stringr)
 library(plyr)
 library(rstudioapi)
-library(rsconnect)
-#rsconnect::deployApp
-#deployApp()
+
 # set a working directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
