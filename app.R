@@ -15,12 +15,11 @@ library(data.table)
 library(DT)
 library(stringr)
 library(plyr)
-library(rstudioapi)
+#library(rstudioapi)
 library(rsconnect)
-#rsconnect::deployApp
-#deployApp()
+
 # set a working directory
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+#setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 #Source hyperlink function and directories
 #source('ontology_links.R')
@@ -536,7 +535,8 @@ if (interactive()) {
 
     ) # Navbar page
   ) # FluidPAge
-  # Server ---------------------------------
+  
+# Server -----------------------------
   server <- function(input,output,session){
     
     # Database endpoint
