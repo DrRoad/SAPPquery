@@ -1,7 +1,7 @@
 # install missing pacakges if needed
-list.of.packages <- c("shiny", "shinyBS","shinyjs","SPARQL","data.table","DT","stringr","plyr","rstudioapi")
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+#list.of.packages <- c("shiny", "shinyBS","shinyjs","SPARQL","data.table","DT","stringr","plyr","rstudioapi")
+#new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+#if(length(new.packages)) install.packages(new.packages)
 
 #####FOR DEVonly
 #.libPaths("C:/Rstudio/Library")
@@ -16,9 +16,7 @@ library(DT)
 library(stringr)
 library(plyr)
 library(rstudioapi)
-library(rsconnect)
-#rsconnect::deployApp
-#deployApp()
+
 # set a working directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
@@ -713,34 +711,34 @@ if (interactive()) {
             results_summary <-dcast(results_summary,Ncbiprotein + header ~ tool,fill = NA,fun.aggregate = paste,collapse = " ")
             
             #map salmon ncbiproteinid to ncbigeneid
-            if (file.exists('ncbilink.RData'))
-              {load('ncbilink.RData')}
-            else{
-            #download Salmon gff from NCBI 
-            gff_url <- 'ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF_000233375.1_ICSASG_v2/GCF_000233375.1_ICSASG_v2_genomic.gff.gz'
-            gff_name <- 'GCF_000233375.1_ICSASG_v2_genomic.gff.gz'
-            if (!file.exists(gff_name))
-              #downlod using curl, for some reason the default method is slow in Rstudio but not plain R (both on orion cn5) 
-              download.file(gff_url,gff_name,method='curl') 
-            
-            #process CDS lines from GFF file
-            gff <- fread(paste('zgrep [[:space:]]CDS[[:space:]]',gff_name))
-            gff <- gff[V3=='CDS']
-            ncbigene <- sub('GeneID:','',str_match(gff$V9,'GeneID:[0-9]*'))
-            ncbiname <- sub('gene=','',str_match(gff$V9,'gene=[a-z,A-Z,0-9]*'))
-            ncbiprotein <- sub('protein_id=','',str_match(gff$V9,'protein_id=[N,X]P_[0-9]*\\.[0-9]*'))
-            ncbilink <- data.table(ncbigene,ncbiprotein,ncbiname)
-            setnames(ncbilink,c('ncbigene','ncbiprotein','ncbiname'))
-            ncbilink <- unique(ncbilink[!is.na(ncbiprotein)])
-            save(ncbilink,file='ncbilink.RData')
-            }
+            # if (file.exists('ncbilink.RData'))
+            #   {load('ncbilink.RData')}
+            # else{
+            # #download Salmon gff from NCBI 
+            # gff_url <- 'ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF_000233375.1_ICSASG_v2/GCF_000233375.1_ICSASG_v2_genomic.gff.gz'
+            # gff_name <- 'GCF_000233375.1_ICSASG_v2_genomic.gff.gz'
+            # if (!file.exists(gff_name))
+            #   #downlod using curl, for some reason the default method is slow in Rstudio but not plain R (both on orion cn5) 
+            #   download.file(gff_url,gff_name,method='curl') 
+            # 
+            # #process CDS lines from GFF file
+            # gff <- fread(paste('zgrep [[:space:]]CDS[[:space:]]',gff_name))
+            # gff <- gff[V3=='CDS']
+            # ncbigene <- sub('GeneID:','',str_match(gff$V9,'GeneID:[0-9]*'))
+            # ncbiname <- sub('gene=','',str_match(gff$V9,'gene=[a-z,A-Z,0-9]*'))
+            # ncbiprotein <- sub('protein_id=','',str_match(gff$V9,'protein_id=[N,X]P_[0-9]*\\.[0-9]*'))
+            # ncbilink <- data.table(ncbigene,ncbiprotein,ncbiname)
+            # setnames(ncbilink,c('ncbigene','ncbiprotein','ncbiname'))
+            # ncbilink <- unique(ncbilink[!is.na(ncbiprotein)])
+            # save(ncbilink,file='ncbilink.RData')
+            # }
             # Adjust types of columns if they are present
             try(results_summary[, Interpro := as.numeric(Interpro)])
             try(results_summary[, Blast := as.numeric(Blast)])
             try(results_summary[is.na(Interpro), Interpro := 0])
             try(results_summary[is.na(Blast), Blast := 0])
             
-            results_summary <- merge(ncbilink,results_summary,by.y='Ncbiprotein',by.x='ncbiprotein',all.y=T)
+            # results_summary <- merge(ncbilink,results_summary,by.y='Ncbiprotein',by.x='ncbiprotein',all.y=T)
             results_summary[,ncbiprotein:=NULL]
             try(setorder(results_summary, -Enzdp))
             
