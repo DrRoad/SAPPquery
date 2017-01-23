@@ -112,31 +112,31 @@ if (!require(testthat)) {
 } else {
   # Ontology url
   ou <- function(s, format="url", prefix="http://identifiers.org") o(s, format, prefix=prefix)
-  
+
   # Helper function to save typing
   df <- function(...) data.frame(..., check.names=FALSE, stringsAsFactors=FALSE)
-  
+
   test_that("ou() produces correct urls", {
     expect_that(ou("test/that"), equals("http://identifiers.org/test/that"))
     expect_that(ou("test"),      equals("http://identifiers.org/test"))
   })
-  
+
   test_that("o() produces correct markdown links", {
     expect_equal(o("test/that"), "[that](http://identifiers.org/test/that)")
     expect_equal(o("test"), "[test](http://identifiers.org/test)")
     expect_equal(o("test/that", verbose=TRUE), "[test/that](http://identifiers.org/test/that)")
   })
-  
+
   test_that("o() handles data frame input", {
     expect_equal(o(df(onto="term")),
                  df(`[onto](http://identifiers.org/onto)`="[term](http://identifiers.org/onto/term)"))
   })
-  
+
   test_that("o() handles data table input with list-valued columns", {
     expect_equal(o(data.table(onto=list(c("term1", "term2"), "term3"))),
                  df(`[onto](http://identifiers.org/onto)`=c("[term1](http://identifiers.org/onto/term1) &bull; [term2](http://identifiers.org/onto/term2)", "[term3](http://identifiers.org/onto/term3)")))
   })
-  
+
   test_that("o() can be told which columns to process", {
     expect_equal(o(data.table(onto="term", data=123), do.link="onto"),
                  df(`[onto](http://identifiers.org/onto)`="[term](http://identifiers.org/onto/term)", data=123))
@@ -147,16 +147,16 @@ if (!require(testthat)) {
     expect_equal(o(data.table(onto="term", data=123), do.link=c(ontology="onto")),
                  df(`[onto](http://identifiers.org/ontology)`="[term](http://identifiers.org/ontology/term)", data=123))
     expect_equal(o(data.table(onto="term", data=123), do.link=c(ontology="onto", "data")),
-                 df(`[onto](http://identifiers.org/ontology)`="[term](http://identifiers.org/ontology/term)", 
+                 df(`[onto](http://identifiers.org/ontology)`="[term](http://identifiers.org/ontology/term)",
                     `[data](http://identifiers.org/data)`="[123](http://identifiers.org/data/123)"))
   })
   test_that("names(do.link) can remap multiple variable names to the same other ontology", {
     expect_equal(o(data.table(onto="term", data=123), do.link=c(ontology="onto", ontology="data")),
-                 df(`[onto](http://identifiers.org/ontology)`="[term](http://identifiers.org/ontology/term)", 
+                 df(`[onto](http://identifiers.org/ontology)`="[term](http://identifiers.org/ontology/term)",
                     `[data](http://identifiers.org/ontology)`="[123](http://identifiers.org/ontology/123)"))
     expect_equal(o(data.table(name="test", onto="term", data=123), do.link=c(ontology="onto", ontology="data")),
                  df(name="test",
-                    `[onto](http://identifiers.org/ontology)`="[term](http://identifiers.org/ontology/term)", 
+                    `[onto](http://identifiers.org/ontology)`="[term](http://identifiers.org/ontology/term)",
                     `[data](http://identifiers.org/ontology)`="[123](http://identifiers.org/ontology/123)"))
   })
   test_that("Names in list-valued columns can be used as labels", {
@@ -165,24 +165,24 @@ if (!require(testthat)) {
   })
   test_that("We escape URI scheme prefixes to work around an rmarkdown bug", {
     # https://github.com/rstudio/rmarkdown/issues/521
-    
+
     expect_equal(o("test/im:that"), "[im\\:that](http://identifiers.org/test/im:that)")
     expect_equal(o("test/im:that", verbose=TRUE), "[test/im\\:that](http://identifiers.org/test/im:that)")
-    
+
     expect_equal(o(df(onto="im:term")),
                  df(`[onto](http://identifiers.org/onto)`="[im\\:term](http://identifiers.org/onto/im:term)"))
-    
+
     expect_equal(o(data.table(onto=list(c("term1", "im:term2"), "term3"))),
                  df(`[onto](http://identifiers.org/onto)`=c("[term1](http://identifiers.org/onto/term1) &bull; [im\\:term2](http://identifiers.org/onto/im:term2)", "[term3](http://identifiers.org/onto/term3)")))
-    
+
   })
-  
+
   test_that("List-valued columns don't cause 'arguments imply differing number of rows' error", {
     d <- data.frame(a=1:2)
     d$b <- list(3:4, 5:7)
     expect_equal(d, o(d, do.link=NA))
   })
-  
+
   test_that("We can change prefix to link elsewhere than http://identifiers.org", {
     warning("Skipping test_that: We can change prefix to link elsewhere than http://identifiers.org")
     return(TRUE)
@@ -193,8 +193,8 @@ if (!require(testthat)) {
     # Headers still link to identifiers.org, and the scalar column does not get customized.
     # Also, we might want to customize the prefix per column, so might allow a named vector as for do.link and dont.link.
   })
-  
-  
+
+
   ### Demo (generate notebook in RStudio with Control-Shift-K):
   # kable(o(iris))
 }
