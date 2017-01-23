@@ -9,14 +9,15 @@
 library(shiny)
 library(shinyBS)
 #library(shinyjs)
- library(SPARQL)
- library(RCurl)
- library(data.table)
- library(DT)
- library(stringr)
- library(plyr)
+library(SPARQL)
+library(RCurl)
+library(data.table)
+library(DT)
+library(stringr)
+library(plyr)
 #library(rstudioapi)
 library(rsconnect)
+
 
 # set a working directory
 #setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
