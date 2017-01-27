@@ -1,8 +1,3 @@
-# install missing pacakges if needed
-#list.of.packages <- c("shiny", "shinyBS","shinyjs","SPARQL","data.table","DT","stringr","plyr","rstudioapi")
-#new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-#if(length(new.packages)) install.packages(new.packages)
-
 library(shiny)
 library(RCurl)
 library(shinyBS)
@@ -12,7 +7,7 @@ library(DT)
 library(stringr)
 library(plyr)
 
-#Source hyperlink function and directories
+# Source hyperlink function and directories
 sapply(list.files(pattern="[.]R$", path="var/", full.names=TRUE), source)
 sapply(list.files(pattern="[.]R$", path="query/", full.names=TRUE), source)
 
@@ -25,24 +20,12 @@ ui <- fluidPage(
     tags$meta(charset = "UTF-8"),
     tags$title("SAPP query"),
     tags$script(src = 'jsfile.js'),
-    tags$link(rel = "stylesheet", type = "text/css", href = "sapp.css")
-  ),
+    tags$link(rel = "stylesheet", type = "text/css", href = "sapp.css") ),
+  
   tags$div(class = "Header",
-           tags$div(
-             class = "banner",
-             tags$img(
-               src = "CIGENE.png",
-               width = 'auto',
-               height = "50px"
-             ),
-             tags$img(
-               src = "DS.png",
-               width = 'auto',
-               style = 'position:relative;left:50px;',
-               height = "50px"
-             )
-           )
-  ),
+           tags$div(class = "banner", tags$img( src = "CIGENE.png", width = 'auto', height = "50px" ),
+             tags$img( src = "DS.png", width = 'auto', style = 'position:relative;left:50px;', height = "50px" ) ) ),
+  
   navbarPage (
     "SAPP Query",
     # Reaction NavTab =================================
@@ -86,12 +69,12 @@ ui <- fluidPage(
                            12,
                              mainPanel(
                               width = 12,
-                               style = "height=100%;width:100%",
-                               textOutput("exampleOutput"),
-                               bsAlert("alert"),
-                            tabsetPanel(
-                               # Reaction SAPP Tab =================================
-                               tabPanel("SAPP",
+                              style = "height=100%;width:100%",
+                              textOutput("exampleOutput"),
+                              bsAlert("alert"),
+                              tabsetPanel(
+                                # Reaction SAPP Tab =================================
+                                tabPanel("SAPP",
                                          tags$div(class = "info",
                                                   tags$ul(
                                                     tags$li(""),
@@ -277,7 +260,7 @@ ui <- fluidPage(
         )
       ) # Div ends Content
     ), # Tab Panel reaction ends
-      # Protein NavTab =================================
+    # Protein NavTab =================================
       tabPanel(
         "Protein",
         # Protein Search Feild ###########################
@@ -524,13 +507,16 @@ ui <- fluidPage(
                                                     tags$li("")
                                                   )),
                                          dataTableOutput('myTableGene'))
+
                                 )
                               )
                             )
                           )
                         )
-               )
-    )
+               
+      ) # Gene tabPanel ends
+     
+    ) # TabsetPanel ends
   ) # Navbar page
 )# FluidPAge
 
@@ -567,7 +553,6 @@ server <- function(input,output,session){
     ### Manual Annotation Blazegraph query
     # ECnumber <- '5.4.2.11'
     # endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
-
     maquery <- paste("
                      prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
                      prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -594,7 +579,6 @@ server <- function(input,output,session){
     output$ma_table <- renderDataTable({
       fetch_query
     })
-
     withProgress(
       message = 'Fetching data',
       detail = 'This may take a few minutes',
@@ -1159,7 +1143,6 @@ server <- function(input,output,session){
         }
         }) # Progress bar ends
   }) # SappprotData ends
-
   # Reaction Annotation ======================
       observeEvent (input$ma_submit,{
         # Save N/A to all variable that will then be overriden by the user
@@ -1261,7 +1244,6 @@ server <- function(input,output,session){
       updateTextInput(session,'doi', value = "")
       updateTextInput(session,'url', value = "")
     })
-
   # Protein Annotation =======================
   observeEvent (input$ma_submit_prot,{
     # Save N/A to all variable that will then be overriden by the user
@@ -1342,8 +1324,6 @@ server <- function(input,output,session){
     output$ma_table_prot <- renderDataTable({
       fetch_query
     })
-
-
     # Update text field after a submition and set value to empty
     updateTextInput(session,'author', value = "")
     updateTextInput(session,'comment', value = "")
@@ -1356,4 +1336,4 @@ server <- function(input,output,session){
 
   })
 }
-  shinyApp(ui=ui, server=server)
+shinyApp(ui, server)
