@@ -1,24 +1,13 @@
-# install missing pacakges if needed
-#list.of.packages <- c("shiny", "shinyBS","shinyjs","SPARQL","data.table","DT","stringr","plyr","rstudioapi")
-#new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-#if(length(new.packages)) install.packages(new.packages)
-
 library(shiny)
-library(shinyBS)
-#library(shinyjs)
-library(SPARQL)
 library(RCurl)
+library(shinyBS)
+library(SPARQL)
 library(data.table)
 library(DT)
 library(stringr)
 library(plyr)
-#library(rstudioapi)
 
-# set a working directory
-#setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
-#Source hyperlink function and directories
-#source('ontology_links.R')
+# Source hyperlink function and directories
 sapply(list.files(pattern="[.]R$", path="var/", full.names=TRUE), source)
 sapply(list.files(pattern="[.]R$", path="query/", full.names=TRUE), source)
 
@@ -27,37 +16,21 @@ jsfile <- "www/jsfile.js"
 
 # UI ----------------------------------------------------------------------
 ui <- fluidPage(
-  # useShinyjs(),
   tags$head(
     tags$meta(charset = "UTF-8"),
     tags$title("SAPP query"),
     tags$script(src = 'jsfile.js'),
-    tags$link(rel = "stylesheet", type = "text/css", href = "sapp.css")
-  ),
+    tags$link(rel = "stylesheet", type = "text/css", href = "sapp.css") ),
+  
   tags$div(class = "Header",
-           tags$div(
-             class = "banner",
-             tags$img(
-               src = "CIGENE.png",
-               width = 'auto',
-               height = "50px"
-             ),
-             tags$img(
-               src = "DS.png",
-               width = 'auto',
-               style = 'position:relative;left:50px;',
-               height = "50px"
-             )
-           )
-  ),
-  navbarPage( 
+           tags$div(class = "banner", tags$img( src = "CIGENE.png", width = 'auto', height = "50px" ),
+                    tags$img( src = "DS.png", width = 'auto', style = 'position:relative;left:50px;', height = "50px" ) ) ),
+  
+  navbarPage (
     "SAPP Query",
-   
     # Reaction NavTab =================================
-    
     tabPanel(
       "Reaction",
-      # Reaction Search feild ##########################
       tags$div(class = "content",
                tags$div(class = "container setwidth",
                         fluidRow(
@@ -84,213 +57,209 @@ ui <- fluidPage(
                                              choices = list(
                                                "Salmon Salar" = 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql',
                                                "Zebrafish" = 'http://10.209.0.227:7955/blazegraph/namespace/ZebraDB/sparql' ),
-                                             selected = 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql')
-                                 
-                          )
-                        ))),
-      tags$br(),
-      # Reaction DataTables #############################
-      tags$div(class = "content",
-               tags$div(class = "container tables setwidth",
-                        fluidRow(
-                          column(
-                            12,
-                            mainPanel(
-                              width = 12,
-                              style = "height=100%;width:100%",
-                              textOutput("exampleOutput"),
-                              bsAlert("alert"),
-                              tabsetPanel(
-                                # Reaction SAPP Tab =================================
-                                tabPanel("SAPP",
-                                         tags$div(class = "info",
-                                                  tags$ul(
-                                                    tags$li(""),
-                                                    tags$li("")
-                                                  )),
-                                         dataTableOutput('myTable')
-                                ),
-                                # Reaction BLAST TAB =================================
-                                tabPanel("BLAST",
-                                         tags$div(class = "info",
-                                                  tags$ul(
-                                                    tags$li(textOutput("tool")),
-                                                    tags$li(textOutput("version"))
-                                                  )),
+                                             selected = 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql'))
+                        ) # Fluid Row ends
+               ), # Div container setwidth
+               tags$br(),
+               # Reaction DataTables #############################
+               tags$div(class = "content",
+                        tags$div(class = "container tables setwidth",
+                                 fluidRow(
+                                   column(
+                                     12,
+                                     mainPanel(
+                                       width = 12,
+                                       style = "height=100%;width:100%",
+                                       textOutput("exampleOutput"),
+                                       bsAlert("alert"),
+                                       tabsetPanel(
+                                         # Reaction SAPP Tab =================================
+                                         tabPanel("SAPP",
+                                                  tags$div(class = "info",
+                                                           tags$ul(
+                                                             tags$li(""),
+                                                             tags$li("")
+                                                           )),
+                                                  dataTableOutput('myTable')
+                                         ),
+                                         # Reaction BLAST TAB =================================
+                                         tabPanel("BLAST",
+                                                  tags$div(class = "info",
+                                                           tags$ul(
+                                                             tags$li(textOutput("tool")),
+                                                             tags$li(textOutput("version"))
+                                                           )),
+                                                  
+                                                  dataTableOutput('swissprot_table')
+                                                  
+                                         ),
+                                         # Reaction PRIAM Tab =================================
+                                         tabPanel("PRIAM",
+                                                  tags$div(class = "info",
+                                                           tags$ul(tags$li(textOutput("tool_priam")),
+                                                                   tags$li(textOutput("version_priam")))),
+                                                  dataTableOutput('priamdata_table')
+                                                  
+                                         ),
+                                         # Reaction Interpro Tab =================================
+                                         tabPanel("Interpro",
+                                                  tags$div(class = "info",
+                                                           tags$ul(tags$li(textOutput("tool_interpro")),
+                                                                   tags$li(textOutput("version_interpro")))),
+                                                  dataTableOutput('interprodata_table')
+                                         ),
                                          
-                                         dataTableOutput('swissprot_table')
-                                         
-                                ),
-                                # Reaction PRIAM Tab =================================
-                                tabPanel("PRIAM",
-                                         tags$div(class = "info",
-                                                  tags$ul(tags$li(textOutput("tool_priam")),
-                                                          tags$li(textOutput("version_priam")))),
-                                         dataTableOutput('priamdata_table')
-                                         
-                                ),
-                                # Reaction Interpro Tab =================================
-                                tabPanel("Interpro",
-                                         tags$div(class = "info",
-                                                  tags$ul(tags$li(textOutput("tool_interpro")),
-                                                          tags$li(textOutput("version_interpro")))),
-                                         dataTableOutput('interprodata_table')
-                                ),
-                                
-                                # Reaction EnzDP Tab =================================
-                                tabPanel("EnzDP",
-                                         tags$div(class = "info",
-                                                  tags$ul(
-                                                    tags$li(textOutput("tool_enzdp")),
-                                                    tags$li(textOutput("version_enzdp"))
-                                                  )),
-                                         dataTableOutput('enzdp_table')
-                                ),
-                                # Reaction Result Summary =================================
-                                tabPanel("Result Summary",
-                                         tags$div(class = "info",
-                                                  tags$ul(
-                                                    tags$li(""),
-                                                    tags$li("")
-                                                  )),
-                                         dataTableOutput('resultsummarydata_table')
-                                ),
-                                # Reaction Manual Anotation =================================
-                                tabPanel("Manual Annotation",
-                                         dataTableOutput('ma_table'),
-                                         tags$div(class="ma",
-                                                  tags$div(class = "container",style ="height:650px",
-                                                           fluidRow(
-                                                             ### Input feilds --------------------------------
-                                                             column(3,
-                                                                    h4("Insert Data"),
-                                                                    mainPanel(width=3,
-                                                                              tags$form(
-                                                                                class = "form-inline",
-                                                                                tags$div(
-                                                                                  class = "form-group",
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "author",
-                                                                                      "Author",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  #tagAppendAttributes(
-                                                                                  # class ="input_feilds",
-                                                                                  #textInput(
-                                                                                  # "date",
-                                                                                  #"Date",
-                                                                                  #width = "125px",
-                                                                                  #value = "",
-                                                                                  #placeholder = NULL
-                                                                                  #)
-                                                                                  #),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "comment",
-                                                                                      "Comment",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "gene",
-                                                                                      "Gene",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "protein",
-                                                                                      "Protein",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "reaction",
-                                                                                      "Reaction",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "goterm",
-                                                                                      "Goterm",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "doi",
-                                                                                      "Doi",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "url",
-                                                                                      "URL",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    `data-proxy-click` = "ma_submit",
-                                                                                    actionButton("ma_submit", "Submit")
-                                                                                  )
-                                                                                  
-                                                                                )# tags div end
-                                                                              ))),#tags from and columns ends
-                                                             # Reaction Database view -----------------------------
-                                                             column (8,
-                                                                     mainPanel(style="margin-left:15px;padding-top:10px;",
-                                                                               p("Open the database view the latest annotations"),
-                                                                               actionButton("opendb","Open"),
-                                                                               actionButton("closedb","Close"),
-                                                                               #textOutput('updatequery'),
-                                                                               tags$hr(),
-                                                                               dataTableOutput('contents')
-                                                                               #textOutput('test')
-                                                                               
-                                                                     ) # mainPanel
-                                                             )
-                                                             
-                                                           ) # Fluid row ends
-                                                  ) # div container ends
-                                         ) # div info ends
-                                )
-                              ) # tabset ends
-                            ) # main panael ends
-                          )
-                        )
+                                         # Reaction EnzDP Tab =================================
+                                         tabPanel("EnzDP",
+                                                  tags$div(class = "info",
+                                                           tags$ul(
+                                                             tags$li(textOutput("tool_enzdp")),
+                                                             tags$li(textOutput("version_enzdp"))
+                                                           )),
+                                                  dataTableOutput('enzdp_table')
+                                         ),
+                                         # Reaction Result Summary =================================
+                                         tabPanel("Result Summary",
+                                                  tags$div(class = "info",
+                                                           tags$ul(
+                                                             tags$li(""),
+                                                             tags$li("")
+                                                           )),
+                                                  dataTableOutput('resultsummarydata_table')
+                                         ),
+                                         # Reaction Manual Anotation =================================
+                                         tabPanel("Manual Annotation",
+                                                  dataTableOutput('ma_table'),
+                                                  tags$div(class="ma",
+                                                           tags$div(class = "container",style ="height:650px",
+                                                                    fluidRow(
+                                                                      ### Input feilds --------------------------------
+                                                                      column(3,
+                                                                             h4("Insert Data"),
+                                                                             mainPanel(width=3,
+                                                                                       tags$form(
+                                                                                         class = "form-inline",
+                                                                                         tags$div(
+                                                                                           class = "form-group",
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "author",
+                                                                                               "Author",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           #tagAppendAttributes(
+                                                                                           # class ="input_feilds",
+                                                                                           #textInput(
+                                                                                           # "date",
+                                                                                           #"Date",
+                                                                                           #width = "125px",
+                                                                                           #value = "",
+                                                                                           #placeholder = NULL
+                                                                                           #)
+                                                                                           #),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "comment",
+                                                                                               "Comment",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "gene",
+                                                                                               "Gene",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "protein",
+                                                                                               "Protein",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "reaction",
+                                                                                               "Reaction",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "goterm",
+                                                                                               "Goterm",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "doi",
+                                                                                               "Doi",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "url",
+                                                                                               "URL",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             `data-proxy-click` = "ma_submit",
+                                                                                             actionButton("ma_submit", "Submit")
+                                                                                           )
+                                                                                           
+                                                                                         )# tags div end
+                                                                                       ))),#tags from and columns ends
+                                                                      # Reaction Database view -----------------------------
+                                                                      column (8,
+                                                                              mainPanel(style="margin-left:15px;padding-top:10px;",
+                                                                                        p("Open the database view the latest annotations"),
+                                                                                        actionButton("opendb","Open"),
+                                                                                        actionButton("closedb","Close"),
+                                                                                        #textOutput('updatequery'),
+                                                                                        tags$hr(),
+                                                                                        dataTableOutput('contents')) # mainPanel
+                                                                      )
+                                                                    ) # Fluid row ends
+                                                           ) # div container ends
+                                                  ) # div info ends
+                                         )
+                                       ) # tabset ends
+                                     ) # main panael ends
+                                   ) # column ends
+                                 ) # Fluid Row
+                        ) # Div container tables setwidth ends
                )
-      )
-    ),
+      ) # Div ends Content
+    ), # Tab Panel reaction ends
     # Protein NavTab =================================
     tabPanel(
       "Protein",
@@ -502,7 +471,7 @@ ui <- fluidPage(
                                                                                     `data-proxy-click` = "ma_submit_prot", # Change this
                                                                                     actionButton("ma_submit_prot", "Submit")
                                                                                   )
-
+                                                                                  
                                                                                 )# tags div end
                                                                               )))#tags from and columns ends
                                                            ) # Fluid row ends
@@ -515,21 +484,56 @@ ui <- fluidPage(
                         ) # Fluid Row ends
                )
       )
+    ),    # TabsetPanel ends
+    # Gene DataTables #############################
+    tabPanel(
+      "Gene",
+      tags$div(class = "content",
+               tags$div(class = "container tables setwidth",
+                        fluidRow(
+                          column(
+                            12,
+                            mainPanel(
+                              width = 12,
+                              style = "height=100%;width:100%",
+                              bsAlert("alert2"),
+                              tabsetPanel(
+                                # Protein SAPP Tab =================================
+                                # tabPanel("Manual Annotation",
+                                # tags$div(class = "info",
+                                # tags$ul(
+                                #   tags$li(""),
+                                #    tags$li("")
+                                #  )),
+                                dataTableOutput('myTableGene'))
+                              
+                              #)
+                            )
+                          )
+                        )
+               )
+               
+      ) # Gene tabPanel ends
+      
     ) # TabsetPanel ends
   ) # Navbar page
-) # FluidPAge
+)# FluidPAge
 
 # Server ---------------------------------
 
 server <- function(input,output,session){
-  
-  # endpoint <- 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql'
-  # ECnumber <- '5.4.2.11'
-  
   # Database endpoint
   endpoint <- isolate(input$select)
+  endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
+  
+  #endpoint <- 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql'
+  #ncbiprotein <- 'NP_001130025.1'
+  #ECnumber <- '5.4.2.11'
+  
+  
   output$value <- renderPrint({ input$select })
-
+  # Get Date for Manual annotations
+  
   # SAPP Reaction ============================
   observeEvent(input$submit,{
     
@@ -540,12 +544,14 @@ server <- function(input,output,session){
     results <- NULL;results_interpro <- NULL;results_priam <- NULL;results_uniprot <- NULL;swiss_table <- NULL;enzdp_table <- NULL;results_enzdp<-NULL;
     fetch_query <- NULL
     
+    ### Variable and js scripts addCLass #############################
+    #shinyjs::addClass(selector = "body", class = "sidebar-collapse")
+    # Render EC number input and render to text
+    
     ### Open manual annotation blazegraph ###########################
     ECnumber <- input$variable
     
-    ### Manual Annotation Blazegraph query ###########################
-    endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
-
+    ### Manual Annotation Blazegraph query
     maquery <- paste("
                      prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
                      prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -566,11 +572,19 @@ server <- function(input,output,session){
                      <ma:url> ?Url
                      }",sep="")
 
-    fetch_query <- sparql("http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql",maquery)
-
-    fetch_query <- as.data.table( fetch_query )
-    output$ma_table <- renderDataTable( { fetch_query } )
+    fetch_query <- sparql(endpoint2,maquery)
+    rename_manual <- function(x){rename(x,c("?ECnumber" = "ECnumber", "?Author" = "Author", "?Date" = "Date", "?Comment" = "Comment", 
+                                            "?Gene" = "Gene","?Protein" = "Protein", "?GOterm" = "GOterm","?Doi" = "Doi","?Url" = "Url") ) }
+    # Clean up post requests. New sparql functing has quotes around everything
+    clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
     
+    fetch_query <- rename_manual(fetch_query)
+    #fetch_query <- clean_post(fetch_query)
+    
+    fetch_query <-as.data.table(fetch_query)
+    output$ma_table <- renderDataTable({
+      fetch_query
+    })
     withProgress(
       message = 'Fetching data',
       detail = 'This may take a few minutes',
@@ -581,7 +595,6 @@ server <- function(input,output,session){
         
         # Grab queries from source file
         prefixes_all <- source('query/prefixes_reactive.R')
-        
         # Extract relevant data from the list.
         prefixes <- prefixes_all$value[1]
         basequery_interpro <- prefixes_all$value[2]
@@ -592,12 +605,17 @@ server <- function(input,output,session){
         ### Query functions #############################
         queryfun <- function(basequery, ecnumber) { return(sub('4.2.1.11', ecnumber, basequery))  }
         rename_head <- function(x){rename(x,c("?header" = "header", "?colname" = "colname", "?value" = "value", "?feature" = "feature")) }
-        
         # CLean up post requests. New sparql functing has quotes around everything
         clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
         
         #Test the query and rename columns
-        results_interpro <- isolate({ data.table(sparql(endpoint, paste(prefixes, queryfun(basequery_interpro, ECnumber))))})
+        results_interpro <- isolate({
+          data.table(sparql(
+            #endpoint,
+            "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql",
+            paste(prefixes, queryfun(basequery_interpro, ECnumber))
+          ))
+        })
         results_interpro <- rename_head(results_interpro)
         results_interpro <- clean_post(results_interpro)
         
@@ -683,7 +701,6 @@ server <- function(input,output,session){
             
             # Drop the tool and variable
             enzdp_table <- enzdp_table[,.(ncbiprotein,ECurl,likelihoodscore,maxbitscore)]
-            
           } else {enzdp_tool <- "N/A"; enzdp_version <- "N/A"; enzdp_table <- noframe();}
           
           ### Comparing results across tools #############################
@@ -694,40 +711,59 @@ server <- function(input,output,session){
           results_summary <-dcast(results_summary,Ncbiprotein + header ~ tool,fill = NA,fun.aggregate = paste,collapse = " ")
           
           # map salmon ncbiproteinid to ncbigeneid
-          if (file.exists('ncbilink.RData')){
-            load('ncbilink.RData')
-          }
+          if (file.exists('ncbilink.RData'))
+          {load('ncbilink.RData')}
           else{
             # download Salmon gff from NCBI
             gff_url <- 'ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF_000233375.1_ICSASG_v2/GCF_000233375.1_ICSASG_v2_genomic.gff.gz'
             gff_name <- 'GCF_000233375.1_ICSASG_v2_genomic.gff.gz'
-          
+            
             if (!file.exists(gff_name))
               #downlod using curl, for some reason the default method is slow in Rstudio but not plain R (both on orion cn5)
               download.file(gff_url,gff_name,method='curl')
-
-              #process CDS lines from GFF file
-              gff <- fread(paste('zgrep [[:space:]]CDS[[:space:]]',gff_name))
-              gff <- gff[V3=='CDS']
-              ncbigene <- sub('GeneID:','',str_match(gff$V9,'GeneID:[0-9]*'))
-              ncbiname <- sub('gene=','',str_match(gff$V9,'gene=[a-z,A-Z,0-9]*'))
-              ncbiprotein <- sub('protein_id=','',str_match(gff$V9,'protein_id=[N,X]P_[0-9]*\\.[0-9]*'))
-              ncbilink <- data.table(ncbigene,ncbiprotein,ncbiname)
-              setnames(ncbilink,c('ncbigene','ncbiprotein','ncbiname'))
-              ncbilink <- unique(ncbilink[!is.na(ncbiprotein)])
-              save(ncbilink,file='ncbilink.RData')
+            
+            #process CDS lines from GFF file
+            gff <- fread(paste('zgrep [[:space:]]CDS[[:space:]]',gff_name))
+            gff <- gff[V3=='CDS']
+            ncbigene <- sub('GeneID:','',str_match(gff$V9,'GeneID:[0-9]*'))
+            ncbiname <- sub('gene=','',str_match(gff$V9,'gene=[a-z,A-Z,0-9]*'))
+            ncbiprotein <- sub('protein_id=','',str_match(gff$V9,'protein_id=[N,X]P_[0-9]*\\.[0-9]*'))
+            ncbilink <- data.table(ncbigene,ncbiprotein,ncbiname)
+            setnames(ncbilink,c('ncbigene','ncbiprotein','ncbiname'))
+            ncbilink <- unique(ncbilink[!is.na(ncbiprotein)])
+            save(ncbilink,file='ncbilink.RData')
           }
-
+          if (file.exists('ncbilink.RData'))
+          {load('ncbilink.RData')}
+          else{
+            #download Salmon gff from NCBI
+            gff_url <- 'ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF_000233375.1_ICSASG_v2/GCF_000233375.1_ICSASG_v2_genomic.gff.gz'
+            gff_name <- 'GCF_000233375.1_ICSASG_v2_genomic.gff.gz'
+            if (!file.exists(gff_name))
+              #downlod using curl, for some reason the default method is slow in Rstudio but not plain R (both on orion cn5)
+              download.file(gff_url,gff_name,method='curl')
+            #process CDS lines from GFF file
+            gff <- fread(paste('zgrep [[:space:]]CDS[[:space:]]',gff_name))
+            gff <- gff[V3=='CDS']
+            ncbigene <- sub('GeneID:','',str_match(gff$V9,'GeneID:[0-9]*'))
+            ncbiname <- sub('gene=','',str_match(gff$V9,'gene=[a-z,A-Z,0-9]*'))
+            ncbiprotein <- sub('protein_id=','',str_match(gff$V9,'protein_id=[N,X]P_[0-9]*\\.[0-9]*'))
+            ncbilink <- data.table(ncbigene,ncbiprotein,ncbiname)
+            setnames(ncbilink,c('ncbigene','ncbiprotein','ncbiname'))
+            ncbilink <- unique(ncbilink[!is.na(ncbiprotein)])
+            save(ncbilink,file='ncbilink.RData')
+          }
           # Adjust types of columns if they are present
           try(results_summary[, Interpro := as.numeric(Interpro)])
           try(results_summary[, Blast := as.numeric(Blast)])
           try(results_summary[is.na(Interpro), Interpro := 0])
           try(results_summary[is.na(Blast), Blast := 0])
           
-          results_summary <- merge(ncbilink,results_summary,by.y='Ncbiprotein',by.x='ncbiprotein',all.y=T)
-          results_summary[,ncbiprotein:=NULL]
+          # results_summary <- merge(ncbilink,results_summary,by.y='Ncbiprotein',by.x='ncbiprotein',all.y=T)
+          # results_summary[,ncbiprotein:=NULL]
           try(setorder(results_summary, -Enzdp))
           
+          ### Isolate the variables to be renderd #############################
           # Send the versions and tools name to header
           isolate ({
             output$tool <- renderText({ paste("Tool: ",swiss_tool)})
@@ -844,30 +880,24 @@ server <- function(input,output,session){
             )
           )
           incProgress(1, detail = "Done")
-          }
-                }) # With progress bar ends
-        }) # ObserveEvent ends
-
+                }
+        }) # With progress bar ends
+      }) # ObserveEvent ends
+  
   # SAPP Protein =============================
-  Sappdataprot <- observeEvent(input$submitprot, {
+  observeEvent(input$submitprot, {
     
     ### Clear all data.frames #############################
     results <- NULL;result <- NULL;blastresults <- NULL;signalIP <- NULL;ipr <- NULL;
     priam_table_prot <- NULL;iprresults <- NULL;
     
     ### Variable and js scripts addCLass #############################
-    #shinyjs::addClass(selector = "body", class = "sidebar-collapse")
     ncbiprotein <- input$variableprot
     
     ### Run the basequery #############################
     basequery <- source('query/protein_query.R')$value
     
     ### Manual Annotation Blazegraph query
-    #ncbiprotein <- 'NP_001130025.1'
-    #endpoint <- "http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql"
-    
-    endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
-    
     maquery <- paste("
                      prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
                      prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -888,20 +918,13 @@ server <- function(input,output,session){
                      <ma:url> ?Url
                      }",sep="")
 
-    fetch_query <- SPARQL(endpoint2,maquery)$results
+    #fetch_query <- SPARQL(endpoint2,maquery)$results
+    fetch_query <- sparql(endpoint2,maquery)
     
     fetch_query <-as.data.table(fetch_query)
     output$ma_table_prot <- renderDataTable({
       fetch_query
     })
-    
-    fetch_query <- SPARQL(endpoint2,maquery)$results
-    fetch_query <- as.data.table(fetch_query)
-    
-    output$ma_table_prot <- renderDataTable({
-      fetch_query
-    })
-    
     
     # Start the progression bar =================================
     withProgress(
@@ -965,14 +988,10 @@ server <- function(input,output,session){
           # Get tool and verison information
           priam_tool_prot <- toupper(priam_table_prot$tool[1])
           priam_version_prot <- priam_table_prot$version[1]
-          priam_table_prot <- rename(priam_table_prot,c("<http://www.biopax.org/release/bp-level3.owl#xref" = "xref"))
-          
+          priam_table_prot <-rename(priam_table_prot,c("<http://www.biopax.org/release/bp-level3.owl#xref" = "xref"))
           # rename the headers in the priam table
-          priam_table_prot <- rename(
-            priam_table_prot,c(
-              "align_length" = "aln","bit_score" = "bs","evalue" = "e","is_best_overlap" = "isb","positive_hit_probability" = "php",
-              "profile_from" = "pf","profile_length" = "pl","profile_proportion" = "pp","profile_to" = "pt","query_from" = "qf",
-              "query_length" = "ql","query_strand" = "qs","query_to" = "qt"))
+          priam_table_prot <-rename(priam_table_prot,c("align_length" = "aln","bit_score" = "bs","evalue" = "e","is_best_overlap" = "isb","positive_hit_probability" = "php",
+                                                       "profile_from" = "pf","profile_length" = "pl","profile_proportion" = "pp","profile_to" = "pt","query_from" = "qf","query_length" = "ql","query_strand" = "qs","query_to" = "qt"))
           priam_table_prot <- priam_table_prot[,.(ncbiprotein,xref,aln,bs,e,isb,php,profile_ID,pf,pl,pp,pt,qf,ql,qs,qt)]
           
           #priam_table_prot <- priam_protein_rename(priam_table_prot)
@@ -988,7 +1007,6 @@ server <- function(input,output,session){
           
           ### Interproscan #############################
           ipr <- dcast(results[tool=='Interpro'],feature~colname)
-          
           # Grab tool and version varibles
           interpro_tool_prot <- toupper(ipr$tool[1])
           interpro_version_prot <- ipr$version[1]
@@ -1131,101 +1149,106 @@ server <- function(input,output,session){
   }) # SappprotData ends
   
   # Reaction Annotation ======================
-  endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
-      observeEvent (input$ma_submit,{
-      # Save N/A to all variable that will then be overriden by the user
-      author <- shQuote("N/A"); comment<- shQuote("N/A");gene <- shQuote("N/A"); protein<- shQuote("N/A");
-      reaction_name <- shQuote("N/A"); goterm <- shQuote("N/A");doi <- shQuote("N/A");url <- shQuote("N/A");
-      date <- shQuote(as.integer(Sys.Date()))
-      
-      ### Save inputs from text fields, reactions #################
-      ECnumber <- isolate(input$variableprot)
-      ecnumber <- shQuote(ECnumber)
-      reaction_name <- shQuote(input$reaction)
-      author <- isolate(shQuote(input$author))
-      date <- (shQuote(Sys.Date()))
-      comment <- isolate(shQuote(input$comment))
-      gene <- isolate(shQuote(input$gene))
-      protein <- isolate(shQuote(input$protein))
-      reaction <- isolate(shQuote(input$reaction))
-      goterm <- isolate(shQuote(input$goterm))
-      doi <- isolate(shQuote(input$doi))
-      url <- isolate(shQuote(input$url))
-      uniqid <-  as.integer(Sys.time())
-      nid <- shQuote(uniqid)
-      
-      #Build update query
-      update <- paste("
-                      prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
-                      INSERT DATA{
-                      <ma:",ECnumber,"> <id> <ma:",uniqid,">.
-                      <ma:",uniqid,"> <ma:uid> ",nid,";
-                      <ma:ecnumber> ",ecnumber,";
-                      <ma:reaction> ",reaction_name,";
-                      <dc:creator> ",author,";
-                      <dc:date> ",date,";
-                      <dc:description> ",comment,";
-                      <ma:gene> ",gene,";
-                      <ma:protein> ",protein,";
-                      <ma:goterm> ",goterm,";
-                      <ma:doi> ",doi,";
-                      <ma:url> ",url,"
-                      }",sep="")
+  observeEvent (input$ma_submit,{
+    # Save N/A to all variable that will then be overriden by the user
+    author <- shQuote("N/A"); comment<- shQuote("N/A");gene <- shQuote("N/A"); protein<- shQuote("N/A");
+    reaction_name <- shQuote("N/A"); goterm <- shQuote("N/A");doi <- shQuote("N/A");url <- shQuote("N/A");
+    date <- shQuote(as.integer(Sys.Date()))
+    
+    ### Save inputs from text fields, reactions #################
+    ECnumber <- isolate(input$variableprot)
+    ecnumber <- shQuote(ECnumber)
+    reaction_name <- shQuote(input$reaction)
+    author <- isolate(shQuote(input$author))
+    date <- (shQuote(Sys.Date()))
+    comment <- isolate(shQuote(input$comment))
+    gene <- isolate(shQuote(input$gene))
+    protein <- isolate(shQuote(input$protein))
+    reaction <- isolate(shQuote(input$reaction))
+    goterm <- isolate(shQuote(input$goterm))
+    doi <- isolate(shQuote(input$doi))
+    url <- isolate(shQuote(input$url))
+    uniqid <-  as.integer(Sys.time())
+    nid <- shQuote(uniqid)
+    
+    #Build update query
+    update <- paste("
+                    prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                    INSERT DATA{
+                    <ma:",ECnumber,"> <id> <ma:",uniqid,">.
+                    <ma:",uniqid,"> <ma:uid> ",nid,";
+                    <ma:ecnumber> ",ecnumber,";
+                    <ma:reaction> ",reaction_name,";
+                    <dc:creator> ",author,";
+                    <dc:date> ",date,";
+                    <dc:description> ",comment,";
+                    <ma:gene> ",gene,";
+                    <ma:protein> ",protein,";
+                    <ma:goterm> ",goterm,";
+                    <ma:doi> ",doi,";
+                    <ma:url> ",url,"
+                    }",sep="")
 
-      # SPARQL update request using post. using tryCatch to grab the error if any.
-      SPARQL(endpoint2, update=update, curl_args = list(style="post"))
-      out <- tryCatch (SPARQL("http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql",
-                              update=update, curl_args = list(style="post")), error = function(e) e)
-      
-      if (any(class(out) =="error") == FALSE) {
-        # Alert message if the upload works
-        #alert("Data uploaded to Blazegraph succesfull")
-      }else{
-        # Alert message if the upload fails
-        alert("Data upload failed")
-      }
-      
-      # update the table
-      endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
-      
-      maquery <- paste("
-                       prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
-                       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                       prefix dc: <http://purl.org/dc/elements/1.1/>
-                       
-                       select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
-                       where{
-                       <ma:",ECnumber,"> <id> ?id.
-                       ?id <ma:uid> ?uid;
-                       <ma:ecnumber> ?ECnumber;
-                       <dc:creator> ?Author;
-                       <dc:date> ?Date;
-                       <dc:description> ?Comment;
-                       <ma:gene> ?Gene;
-                       <ma:protein> ?Protein;
-                       <ma:goterm> ?GOterm;
-                       <ma:doi> ?Doi;
-                       <ma:url> ?Url
-                        }"
-                 ,sep="")
+    # SPARQL update request using post. using tryCatch to grab the error if any.
+    #SPARQL(endpoint2, update=update, curl_args = list(style="post"))
+    out <- tryCatch (SPARQL("http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql",
+                            update=update, curl_args = list(style="post")), error = function(e) e)
+    
+    if ( any( class ( out ) == "error" ) == FALSE ) {
+      # Alert message if the upload works
+      alert("Data uploaded to Blazegraph succesfull")
+    }else{
+      # Alert message if the upload fails
+      alert("Data upload failed")
+    }
+    
+    # update the table
+    maquery <- paste("
+                     prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                     prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                     prefix dc: <http://purl.org/dc/elements/1.1/>
+                     
+                     select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
+                     where{
+                     <ma:",ECnumber,"> <id> ?id.
+                     ?id <ma:uid> ?uid;
+                     <ma:ecnumber> ?ECnumber;
+                     <dc:creator> ?Author;
+                     <dc:date> ?Date;
+                     <dc:description> ?Comment;
+                     <ma:gene> ?Gene;
+                     <ma:protein> ?Protein;
+                     <ma:goterm> ?GOterm;
+                     <ma:doi> ?Doi;
+                     <ma:url> ?Url
+                     }",sep="")
 
-      fetch_query <- SPARQL(endpoint2,maquery)$results
-      
-      fetch_query <-as.data.table(fetch_query)
-      output$ma_table <- renderDataTable({
-        fetch_query
-      })
-      
-     # Update text field after a submition and set value to empty
-      updateTextInput(session,'author', value = "")
-      updateTextInput(session,'comment', value = "")
-      updateTextInput(session,'gene', value = "")
-      updateTextInput(session,'protein', value = "")
-      updateTextInput(session,'reaction', value = "")
-      updateTextInput(session,'goterm', value = "")
-      updateTextInput(session,'doi', value = "")
-      updateTextInput(session,'url', value = "")
+    fetch_query <- SPARQL(endpoint2,maquery)$results
+    rename_manual <- function(x){rename(x,c("?ECnumber" = "ECnumber", "?Author" = "Author", "?Date" = "Date", "?Comment" = "Comment", 
+                                            "?Gene" = "Gene","?Protein" = "Protein", "?GOterm" = "GOterm","?Doi" = "Doi","?Url" = "Url") ) }
+    # CLean up post requests. New sparql functing has quotes around everything
+    clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
+    
+    
+    fetch_query <- rename_head(results_interpro)
+    fetch_query <- clean_post(results_interpro)
+    
+    
+    fetch_query <-as.data.table(fetch_query)
+    output$ma_table <- renderDataTable({
+      fetch_query
     })
+    
+    # Update text field after a submition and set value to empty
+    updateTextInput(session,'author', value = "")
+    updateTextInput(session,'comment', value = "")
+    updateTextInput(session,'gene', value = "")
+    updateTextInput(session,'protein', value = "")
+    updateTextInput(session,'reaction', value = "")
+    updateTextInput(session,'goterm', value = "")
+    updateTextInput(session,'doi', value = "")
+    updateTextInput(session,'url', value = "")
+  })
   
   # Protein Annotation =======================
   observeEvent (input$ma_submit_prot,{
@@ -1235,19 +1258,19 @@ server <- function(input,output,session){
     date <- shQuote(as.integer(Sys.Date()))
     
     ### Save inputs from text fields ########################
-    reaction_name <- shQuote(input$reaction_prot)
     ncbiprotein <- isolate(input$variableprot)
     ncbinumber <- shQuote(ncbiprotein)
-    reaction <- isolate(shQuote(input$reaction_prot))
-    protein <- isolate(shQuote(input$protein_prot))
-    comment <- isolate(shQuote(input$comment_prot))
+    reaction_name <- shQuote(input$reaction_prot)
     author <- isolate(shQuote(input$author_prot))
-    goterm <- isolate(shQuote(input$goterm_prot))
-    uniqid <-  as.integer(Sys.time())
     date <- (shQuote(Sys.Date()))
+    comment <- isolate(shQuote(input$comment_prot))
     gene <- isolate(shQuote(input$gene_prot))
+    protein <- isolate(shQuote(input$protein_prot))
+    reaction <- isolate(shQuote(input$reaction_prot))
+    goterm <- isolate(shQuote(input$goterm_prot))
     doi <- isolate(shQuote(input$doi_prot))
     url <- isolate(shQuote(input$url_prot))
+    uniqid <-  as.integer(Sys.time())
     nid <- shQuote(uniqid)
     
     #Build update query
@@ -1306,8 +1329,6 @@ server <- function(input,output,session){
     output$ma_table_prot <- renderDataTable({
       fetch_query
     })
-    
-    
     # Update text field after a submition and set value to empty
     updateTextInput(session,'author', value = "")
     updateTextInput(session,'comment', value = "")
@@ -1319,5 +1340,46 @@ server <- function(input,output,session){
     updateTextInput(session,'url', value = "")
     
   })
-}
-  shinyApp(ui, server)
+  # Manual Annotation ========================
+  # observeEvent(input$submit_manual,{
+  # The possible insert structure
+  # prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+  #   INSERT DATA{
+  #     <ma:100192341> <gene> <ma:1000003>.
+  #     <ma:1000003> <ma:uid> "1000003";
+  #     <ma:ecnumber> "";
+  #     <ma:reaction> "";
+  #     <dc:creator> "M. Leaver";
+  #     <dc:date> "2015-1112";
+  #     <dc:description> "Last elongation step for LC-PUFA biosynthesis (experimentally supported). Probably important for efficient DHA and EPA biosynthesis. Not found in Acanthopterygians, but present in zebrafish. Reference: Morais,S., Monroig,O., Zheng,X., Leaver,M.J. and Tocher,D.R.Highly unsaturated fatty acid synthesis in Atlantic salmon:characterization of ELOVL5- and ELOVL2-like elongases. Mar. Biotechnol. 11 (5), 627-639 (2009)";
+  #     <ma:gene> "elovl2";
+  #     <ma:protein> "NP_001130025";
+  #     <ma:goterm> "";
+  #     <ma:doi> "";
+  #     <ma:url> "http://identifiers.org/ncbigene/100192341"
+  #   }
+  # 
+  #})
+  # Possible query structure
+  magquery <- paste( "select ?GeneId ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
+                     where{
+                     ?genes <gene> ?id.
+                     ?id <ma:uid> ?uid;
+                     <ma:genename> ?GeneId;
+                     <ma:ecnumber> ?ECnumber;
+                     <dc:creator> ?Author;
+                     <dc:date> ?Date;
+                     <dc:description> ?Comment;
+                     <ma:gene> ?Gene;
+                     <ma:protein> ?Protein;
+                     <ma:goterm> ?GOterm;
+                     <ma:doi> ?Doi;
+                     <ma:url> ?Url
+                     }",sep = " ")
+  fetch_query <- SPARQL(endpoint2,magquery)$results
+  
+  output$myTableGene <- renderDataTable(
+    fetch_query
+  )
+  }
+shinyApp(ui, server)
