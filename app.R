@@ -1,6 +1,7 @@
 library(shiny)
 library(RCurl)
 library(shinyBS)
+library(shinyjs)
 library(SPARQL)
 library(data.table)
 library(DT)
@@ -16,6 +17,7 @@ jsfile <- "www/jsfile.js"
 
 # UI ----------------------------------------------------------------------
 ui <- fluidPage(
+  shinyjs::useShinyjs(),
   tags$head(
     tags$meta(charset = "UTF-8"),
     tags$title("SAPP query"),
@@ -133,129 +135,133 @@ ui <- fluidPage(
                                       tabsetPanel(
                                         tabPanel("Input Annotations",
                                                  tags$div(class="ma",
-                                                          tags$div(class = "container",style ="height:650px",
-                                                                   fluidRow(
-                                                                     ### Input feilds ##########################
-                                                                     column(12,
-                                                                            #h4("Insert Data"),
-                                                                           # mainPanel(width=12,
-                                                                                      tags$form(class = "form-inline",
-                                                                                        tags$div(class = "form-group",
-                                                                                          tags$div(class="information_top",
-                                                                                            h4("Personal information and institute"),
-                                                                                            tags$hr(),
-                                                                                            tagAppendAttributes(
-                                                                                              class ="input_feilds",
-                                                                                              textInput(
-                                                                                                "author", #id
-                                                                                                "Author",
-                                                                                                width = "125px",
-                                                                                                value = "",
-                                                                                                placeholder = NULL
-                                                                                              )
-                                                                                            ),
-                                                                                            tags$div(class="selector_feild",
-                                                                                            selectInput(
-                                                                                              "selectInst", label = ("Select Institute"),
-                                                                                              choices = list(
-                                                                                                "NMBU" = 'Norges miljø- og biovitenskapelige universitet',
-                                                                                                "University of Sterling" = 'University of Sterling', 
-                                                                                                "Wageningen University" = 'Wageningen University' ),
-                                                                                              selected = 'Norges miljø- og biovitenskapelige universitet'
-                                                                                            )
-                                                                                            )
-                                                                                          ),
-                                                                                          tags$div(class="information_mid",
-                                                                                             tagAppendAttributes(
-                                                                                               class ="input_feilds",
-                                                                                               textInput(
-                                                                                                 "comment",
-                                                                                                 "Comment",
-                                                                                                 width = "250px",
-                                                                                                 value = "",
-                                                                                                 placeholder = NULL
-                                                                                               )
-                                                                                             )
-                                                                                          ),
+                                                      tags$div(class = "container",style ="height:650px",
+                                                           fluidRow(
+                                                             ### Input feilds ##########################
+                                                             column(12,
+                                                                      tags$form(class = "form-inline",
+                                                                        tags$div( #class = "form-group",
+                                                                          tags$div(class="information_top",
+                                                                            h4("Personal information and institute"),
+                                                                            tags$hr(),
+                                                                            tagAppendAttributes(
+                                                                              class ="input_feilds",
+                                                                              textInput(
+                                                                                "author", #id
+                                                                                "Author",
+                                                                                width = "125px",
+                                                                                value = "",
+                                                                                placeholder = NULL
+                                                                              )
+                                                                            ),
+                                                                            tags$div(class="selector_feild",
+                                                                              selectInput(
+                                                                                "selectInst", label = ("Select Institute"),
+                                                                                choices = list(
+                                                                                  "NMBU" = 'Norges miljø- og biovitenskapelige universitet',
+                                                                                  "University of Sterling" = 'University of Sterling', 
+                                                                                  "Wageningen University" = 'Wageningen University' ),
+                                                                                selected = 'Norges miljø- og biovitenskapelige universitet'
+                                                                              )
+                                                                            )
+                                                                          ),
+                                                                          tags$div(class="information_mid",
+                                                                            h4("Annotation information"),
+                                                                            tags$hr(),
+                                                                            tagAppendAttributes(
+                                                                              class ="input_feilds",
+                                                                              textInput(
+                                                                                "comment",
+                                                                                "Comment",
+                                                                                width = "250px",
+                                                                                value = "",
+                                                                                placeholder = NULL
+                                                                              )
+                                                                            ),
+                                                                            tags$div(class="GPR",
+                                                                              tagAppendAttributes(
+                                                                                class ="input_feilds gene",
+                                                                                textInput(
+                                                                                  "gene",
+                                                                                  "Gene",
+                                                                                  width = "125px",
+                                                                                  value = "",
+                                                                                  placeholder = NULL
+                                                                                )
+                                                                              ),
+                                                                              tagAppendAttributes(
+                                                                                class ="input_feilds protein",
+                                                                                textInput(
+                                                                                  "protein",
+                                                                                  "Protein",
+                                                                                  width = "125px",
+                                                                                  value = "",
+                                                                                  placeholder = NULL
+                                                                                )
+                                                                              ),
+                                                                              tagAppendAttributes(
+                                                                                class ="input_feilds reaction",
+                                                                                textInput(
+                                                                                  "reaction",
+                                                                                  "Reaction",
+                                                                                  width = "125px",
+                                                                                  value = "",
+                                                                                  placeholder = NULL
+                                                                                )
+                                                                              )
+                                                                            )
+                                                                          ),
+                                                                          tags$div(class="information_bottom",
+                                                                            tagAppendAttributes(
+                                                                              class ="input_feilds goterm",
+                                                                              textInput(
+                                                                                "goterm",
+                                                                                "Goterm",
+                                                                                width = "125px",
+                                                                                value = "",
+                                                                                placeholder = NULL
+                                                                              )
+                                                                            ),
+                                                                            tagAppendAttributes(
+                                                                              class ="input_feilds doi",
+                                                                              textInput(
+                                                                                "doi",
+                                                                                "Doi",
+                                                                                width = "125px",
+                                                                                value = "",
+                                                                                placeholder = NULL
+                                                                              )
+                                                                            ),
+                                                                            tagAppendAttributes(
+                                                                              class ="input_feilds url",
+                                                                              textInput(
+                                                                                "url",
+                                                                                "URL",
+                                                                                width = "125px",
+                                                                                value = "",
+                                                                                placeholder = NULL
+                                                                              )
+                                                                            )
+                                                                          ),
 
-                                                                                          tagAppendAttributes(
-                                                                                            class ="input_feilds",
-                                                                                            textInput(
-                                                                                              "gene",
-                                                                                              "Gene",
-                                                                                              width = "125px",
-                                                                                              value = "",
-                                                                                              placeholder = NULL
-                                                                                            )
-                                                                                          ),
-                                                                                          tagAppendAttributes(
-                                                                                            class ="input_feilds",
-                                                                                            textInput(
-                                                                                              "protein",
-                                                                                              "Protein",
-                                                                                              width = "125px",
-                                                                                              value = "",
-                                                                                              placeholder = NULL
-                                                                                            )
-                                                                                          ),
-                                                                                          tagAppendAttributes(
-                                                                                            class ="input_feilds",
-                                                                                            textInput(
-                                                                                              "reaction",
-                                                                                              "Reaction",
-                                                                                              width = "125px",
-                                                                                              value = "",
-                                                                                              placeholder = NULL
-                                                                                            )
-                                                                                          ),
-                                                                                          tagAppendAttributes(
-                                                                                            class ="input_feilds",
-                                                                                            textInput(
-                                                                                              "goterm",
-                                                                                              "Goterm",
-                                                                                              width = "125px",
-                                                                                              value = "",
-                                                                                              placeholder = NULL
-                                                                                            )
-                                                                                          ),
-                                                                                          tagAppendAttributes(
-                                                                                            class ="input_feilds",
-                                                                                            textInput(
-                                                                                              "doi",
-                                                                                              "Doi",
-                                                                                              width = "125px",
-                                                                                              value = "",
-                                                                                              placeholder = NULL
-                                                                                            )
-                                                                                          ),
-                                                                                          tagAppendAttributes(
-                                                                                            class ="input_feilds",
-                                                                                            textInput(
-                                                                                              "url",
-                                                                                              "URL",
-                                                                                              width = "125px",
-                                                                                              value = "",
-                                                                                              placeholder = NULL
-                                                                                            )
-                                                                                          ),
-                                                                                          tagAppendAttributes(
-                                                                                            `data-proxy-click` = "ma_submit",
-                                                                                            actionButton("ma_submit", "Submit")
-                                                                                          )
-                                                                                          
-                                                                                        )# tags div end
-                                                                                      )
-                                                                                      #) #mainpanel ends
-                                                                            ),#tags from and columns ends
-                                                                     ### Reaction Database view ###########################
-                                                                     column (8,
-                                                                             mainPanel(style="margin-left:15px;padding-top:10px;",
-                                                                                       tags$hr(),
-                                                                                       dataTableOutput('contents')) # mainPanel
-                                                                     )
-                                                                   ) # Fluid row ends
-                                                          ) # div container ends
-                                                 ) # div info ends
+                                                                          tagAppendAttributes(
+                                                                            `data-proxy-click` = "ma_submit",
+                                                                            actionButton("ma_submit", "Submit")
+                                                                          )
+                                                                          
+                                                                        )# tags div end
+                                                                      )
+                                                                      #) #mainpanel ends
+                                                            ),#tags from and columns ends
+                                                     ### Reaction Database view ###########################
+                                                     column (8,
+                                                             mainPanel(style="margin-left:15px;padding-top:10px;",
+                                                                       tags$hr(),
+                                                                       dataTableOutput('contents')) # mainPanel
+                                                     )
+                                                   ) # Fluid row ends
+                                                  ) # div container ends
+                                         ) # div info ends
                                         ),
                                         # Viewing the manual annotation output
                                         tabPanel("View",
@@ -1189,21 +1195,22 @@ server <- function(input,output,session){
     
     #Build update query
     update <- paste("
-                    prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
-                    INSERT DATA{
-                    <ma:",ECnumber,"> <id> <ma:",uniqid,">.
-                    <ma:",uniqid,"> <ma:uid> ",nid,";
-                    <ma:ecnumber> ",ecnumber,";
-                    <ma:reaction> ",reaction_name,";
-                    <dc:creator> ",author,";
-                    <dc:date> ",date,";
-                    <dc:description> ",comment,";
-                    <ma:gene> ",gene,";
-                    <ma:protein> ",protein,";
-                    <ma:goterm> ",goterm,";
-                    <ma:doi> ",doi,";
-                    <ma:url> ",url,"
-                    }",sep="")
+        prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+        INSERT DATA{
+        <ma:",ECnumber,"> <id> <ma:",uniqid,">.
+        <ma:",uniqid,"> <ma:uid> ",nid,";
+        <ma:ecnumber> ",ecnumber,";
+        <ma:reaction> ",reaction_name,";
+        <dc:creator> ",author,";
+        <dc:date> ",date,";
+        <dc:description> ",comment,";
+        <ma:gene> ",gene,";
+        <ma:protein> ",protein,";
+        <ma:goterm> ",goterm,";
+        <ma:doi> ",doi,";
+        <ma:url> ",url,"
+        }",
+      sep="")
 
     # SPARQL update request using post. using tryCatch to grab the error if any.
     #SPARQL(endpoint2, update=update, curl_args = list(style="post"))
@@ -1212,32 +1219,33 @@ server <- function(input,output,session){
     
     if ( any( class ( out ) == "error" ) == FALSE ) {
       # Alert message if the upload works
-      alert("Data uploaded to Blazegraph succesfull")
+      shinyjs::alert("Data uploaded to Blazegraph succesfull")
     }else{
       # Alert message if the upload fails
-      alert("Data upload failed")
+      shinyjs::alert("Data upload failed")
     }
     
     # update the table
     maquery <- paste("
-                     prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
-                     prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                     prefix dc: <http://purl.org/dc/elements/1.1/>
-                     
-                     select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
-                     where{
-                     <ma:",ECnumber,"> <id> ?id.
-                     ?id <ma:uid> ?uid;
-                     <ma:ecnumber> ?ECnumber;
-                     <dc:creator> ?Author;
-                     <dc:date> ?Date;
-                     <dc:description> ?Comment;
-                     <ma:gene> ?Gene;
-                     <ma:protein> ?Protein;
-                     <ma:goterm> ?GOterm;
-                     <ma:doi> ?Doi;
-                     <ma:url> ?Url
-                     }",sep="")
+       prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+       prefix dc: <http://purl.org/dc/elements/1.1/>
+       
+       select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
+       where{
+       <ma:",ECnumber,"> <id> ?id.
+       ?id <ma:uid> ?uid;
+       <ma:ecnumber> ?ECnumber;
+       <dc:creator> ?Author;
+       <dc:date> ?Date;
+       <dc:description> ?Comment;
+       <ma:gene> ?Gene;
+       <ma:protein> ?Protein;
+       <ma:goterm> ?GOterm;
+       <ma:doi> ?Doi;
+       <ma:url> ?Url
+       }",
+    sep="")
 
     fetch_query <- SPARQL(endpoint2,maquery)$results
     rename_manual <- function(x){rename(x,c("?ECnumber" = "ECnumber", "?Author" = "Author", "?Date" = "Date", "?Comment" = "Comment", 
@@ -1311,14 +1319,12 @@ server <- function(input,output,session){
     out <- tryCatch (SPARQL(endpoint2, update=update, curl_args = list(style="post")), error = function(e) e)
     if (any(class(out) =="error") == FALSE) {
       # Alert message if the upload works
-      alert("Data uploaded to Blazegraph succesfull")
+      shinyjs::alert("Data uploaded to Blazegraph succesfull")
     }else{
       # Alert message if the upload fails
-      alert("Data upload failed")
+      shinyjs::alert("Data upload failed")
     }
     # update the table
-    endpoint2 <- "http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql"
-    
     maquery <- paste("
                      prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
                      prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
