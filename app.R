@@ -63,221 +63,219 @@ ui <- fluidPage(
                         ) # Fluid Row ends
                ) # Div container setwidth
       ), # Div ends Content
-         # Reaction DataTables ===============================
-         tags$div(class = "content",
-                  tags$div(class = "container tables setwidth",
-                           fluidRow(
-                             column(
-                               12,
-                               mainPanel(
-                                 width = 12,
-                                 style = "height=100%;width:100%",
-                                 textOutput("exampleOutput"),
-                                 bsAlert("alert"),
-                                 tabsetPanel(
-                                   # Reaction SAPP Tab
-                                   tabPanel("SAPP",
-                                            tags$div(class = "info",
-                                                     tags$ul(
-                                                       tags$li(""),
-                                                       tags$li("")
-                                                     )),
-                                            dataTableOutput('myTable')
-                                   ),
-                                   # Reaction BLAST TAB 
-                                   tabPanel("BLAST",
-                                            tags$div(class = "info",
-                                                     tags$ul(
-                                                       tags$li(textOutput("tool")),
-                                                       tags$li(textOutput("version"))
-                                                     )),
-
-                                            dataTableOutput('swissprot_table')
-
-                                   ),
-                                   # Reaction PRIAM Tab 
-                                   tabPanel("PRIAM",
-                                            tags$div(class = "info",
-                                                     tags$ul(tags$li(textOutput("tool_priam")),
-                                                             tags$li(textOutput("version_priam")))),
-                                            dataTableOutput('priamdata_table')
-
-                                   ),
-                                   # Reaction Interpro Tab
-                                   tabPanel("Interpro",
-                                            tags$div(class = "info",
-                                                     tags$ul(tags$li(textOutput("tool_interpro")),
-                                                             tags$li(textOutput("version_interpro")))),
-                                            dataTableOutput('interprodata_table')
-                                   ),
-
-                                   # Reaction EnzDP Tab 
-                                   tabPanel("EnzDP",
-                                            tags$div(class = "info",
-                                                     tags$ul(
-                                                       tags$li(textOutput("tool_enzdp")),
-                                                       tags$li(textOutput("version_enzdp"))
-                                                     )),
-                                            dataTableOutput('enzdp_table')
-                                   ),
-                                   # Reaction Result Summary 
-                                   tabPanel("Result Summary",
-                                            tags$div(class = "info",
-                                                     tags$ul(
-                                                       tags$li(""),
-                                                       tags$li("")
-                                                     )),
-                                            dataTableOutput('resultsummarydata_table')
-                                   ),
-                                   # Reaction Manual Anotation 
-                                   tabPanel("Manual Annotation",
-                                     mainPanel(
-                                      tabsetPanel(
-                                        tabPanel("Input Annotations",
-                                                 tags$div(class="ma",
-                                                      tags$div(class = "container",style ="height:650px",
-                                                           fluidRow(
-                                                             ### Input feilds
-                                                             column(12,
-                                                                      tags$form(class = "form-inline",
-                                                                        tags$div( #class = "form-group",
-                                                                          tags$div(class="information_top",
-                                                                            h4("Personal information and institute"),
-                                                                            tags$hr(),
-                                                                            tagAppendAttributes(
-                                                                              class ="input_feilds",
-                                                                              textInput(
-                                                                                "author", #id
-                                                                                "Author",
-                                                                                width = "125px",
-                                                                                value = "",
-                                                                                placeholder = NULL
-                                                                              )
-                                                                            ),
-                                                                            tags$div(class="selector_feild",
-                                                                              selectInput(
-                                                                                "selectInst", label = ("Select Institute"),
-                                                                                choices = list(
-                                                                                  "NMBU" = 'Norges miljø- og biovitenskapelige universitet',
-                                                                                  "University of Sterling" = 'University of Sterling', 
-                                                                                  "Wageningen University" = 'Wageningen University' ),
-                                                                                selected = 'Norges miljø- og biovitenskapelige universitet'
-                                                                              )
-                                                                            )
-                                                                          ),
-                                                                          tags$div(class="information_mid",
-                                                                            h4("Annotation information"),
-                                                                            tags$hr(),
-                                                                            tagAppendAttributes(
-                                                                              class ="input_feilds",
-                                                                              textInput(
-                                                                                "comment",
-                                                                                "Comment",
-                                                                                width = "250px",
-                                                                                value = "",
-                                                                                placeholder = NULL
-                                                                              )
-                                                                            ),
-                                                                            tags$div(class="GPR",
-                                                                              tagAppendAttributes(
-                                                                                class ="input_feilds gene",
-                                                                                textInput(
-                                                                                  "gene",
-                                                                                  "Gene",
-                                                                                  width = "125px",
-                                                                                  value = "",
-                                                                                  placeholder = NULL
-                                                                                )
-                                                                              ),
-                                                                              tagAppendAttributes(
-                                                                                class ="input_feilds protein",
-                                                                                textInput(
-                                                                                  "protein",
-                                                                                  "Protein",
-                                                                                  width = "125px",
-                                                                                  value = "",
-                                                                                  placeholder = NULL
-                                                                                )
-                                                                              ),
-                                                                              tagAppendAttributes(
-                                                                                class ="input_feilds reaction",
-                                                                                textInput(
-                                                                                  "reaction",
-                                                                                  "Reaction",
-                                                                                  width = "125px",
-                                                                                  value = "",
-                                                                                  placeholder = NULL
-                                                                                )
-                                                                              )
-                                                                            )
-                                                                          ),
-                                                                          tags$div(class="information_bottom",
-                                                                            tagAppendAttributes(
-                                                                              class ="input_feilds goterm",
-                                                                              textInput(
-                                                                                "goterm",
-                                                                                "Goterm",
-                                                                                width = "125px",
-                                                                                value = "",
-                                                                                placeholder = NULL
-                                                                              )
-                                                                            ),
-                                                                            tagAppendAttributes(
-                                                                              class ="input_feilds doi",
-                                                                              textInput(
-                                                                                "doi",
-                                                                                "Doi",
-                                                                                width = "125px",
-                                                                                value = "",
-                                                                                placeholder = NULL
-                                                                              )
-                                                                            ),
-                                                                            tagAppendAttributes(
-                                                                              class ="input_feilds url",
-                                                                              textInput(
-                                                                                "url",
-                                                                                "URL",
-                                                                                width = "125px",
-                                                                                value = "",
-                                                                                placeholder = NULL
-                                                                              )
-                                                                            )
-                                                                          ),
-
-                                                                          tagAppendAttributes(
-                                                                            `data-proxy-click` = "ma_submit",
-                                                                            actionButton("ma_submit", "Submit")
+      # Reaction DataTables ===============================
+      tags$div(class = "content",
+               tags$div(class = "container tables setwidth",
+                        fluidRow(
+                          column(
+                            12,
+                            mainPanel(
+                              width = 12,
+                              style = "height=100%;width:100%",
+                              textOutput("exampleOutput"),
+                              bsAlert("alert"),
+                              tabsetPanel(
+                                # Reaction SAPP Tab
+                                tabPanel("SAPP",
+                                         tags$div(class = "info",
+                                                  tags$ul(
+                                                    tags$li(""),
+                                                    tags$li("")
+                                                  )),
+                                         dataTableOutput('myTable')
+                                ),
+                                # Reaction BLAST TAB 
+                                tabPanel("BLAST",
+                                         tags$div(class = "info",
+                                                  tags$ul(
+                                                    tags$li(textOutput("tool")),
+                                                    tags$li(textOutput("version"))
+                                                  )),
+                                         
+                                         dataTableOutput('swissprot_table')
+                                         
+                                ),
+                                # Reaction PRIAM Tab 
+                                tabPanel("PRIAM",
+                                         tags$div(class = "info",
+                                                  tags$ul(tags$li(textOutput("tool_priam")),
+                                                          tags$li(textOutput("version_priam")))),
+                                         dataTableOutput('priamdata_table')
+                                         
+                                ),
+                                # Reaction Interpro Tab
+                                tabPanel("Interpro",
+                                         tags$div(class = "info",
+                                                  tags$ul(tags$li(textOutput("tool_interpro")),
+                                                          tags$li(textOutput("version_interpro")))),
+                                         dataTableOutput('interprodata_table')
+                                ),
+                                
+                                # Reaction EnzDP Tab 
+                                tabPanel("EnzDP",
+                                         tags$div(class = "info",
+                                                  tags$ul(
+                                                    tags$li(textOutput("tool_enzdp")),
+                                                    tags$li(textOutput("version_enzdp"))
+                                                  )),
+                                         dataTableOutput('enzdp_table')
+                                ),
+                                # Reaction Result Summary 
+                                tabPanel("Result Summary",
+                                         tags$div(class = "info",
+                                                  tags$ul(
+                                                    tags$li(""),
+                                                    tags$li("")
+                                                  )),
+                                         dataTableOutput('resultsummarydata_table')
+                                ),
+                                # Reaction Manual Anotation 
+                                tabPanel("Manual Annotation",
+                                         mainPanel(
+                                           tabsetPanel(
+                                             tabPanel("Input Annotations",
+                                                      tags$div(class="ma",
+                                                               tags$div(class = "container",style ="height:650px",
+                                                                        fluidRow(
+                                                                          ### Input feilds
+                                                                          column(12,
+                                                                                 tags$form(class = "form-inline",
+                                                                                           tags$div( #class = "form-group",
+                                                                                             tags$div(class="information_top",
+                                                                                                      h4("Personal information and institute"),
+                                                                                                      tags$hr(),
+                                                                                                      tagAppendAttributes(
+                                                                                                        class ="input_feilds",
+                                                                                                        textInput(
+                                                                                                          "author", 
+                                                                                                          "Author",
+                                                                                                          width = "125px",
+                                                                                                          value = "",
+                                                                                                          placeholder = NULL
+                                                                                                        )
+                                                                                                      ),
+                                                                                                      tags$div(class="selector_feild",
+                                                                                                               selectInput(
+                                                                                                                 "selectInst", label = ("Select Institute"),
+                                                                                                                 choices = list(
+                                                                                                                   "NMBU" = 'Norges miljø- og biovitenskapelige universitet',
+                                                                                                                   "University of Sterling" = 'University of Sterling', 
+                                                                                                                   "Wageningen University" = 'Wageningen University' ),
+                                                                                                                 selected = 'Norges miljø- og biovitenskapelige universitet'
+                                                                                                               )
+                                                                                                      )
+                                                                                             ),
+                                                                                             tags$div(class="information_mid",
+                                                                                                      h4("Annotation information"),
+                                                                                                      tags$hr(),
+                                                                                                      tagAppendAttributes(
+                                                                                                        class ="input_feilds",
+                                                                                                        textInput(
+                                                                                                          "comment",
+                                                                                                          "Comment",
+                                                                                                          width = "250px",
+                                                                                                          value = "",
+                                                                                                          placeholder = NULL
+                                                                                                        )
+                                                                                                      ),
+                                                                                                      tags$div(class="GPR",
+                                                                                                               tagAppendAttributes(
+                                                                                                                 class ="input_feilds gene",
+                                                                                                                 textInput(
+                                                                                                                   "gene",
+                                                                                                                   "Gene",
+                                                                                                                   width = "125px",
+                                                                                                                   value = "",
+                                                                                                                   placeholder = NULL
+                                                                                                                 )
+                                                                                                               ),
+                                                                                                               tagAppendAttributes(
+                                                                                                                 class ="input_feilds protein",
+                                                                                                                 textInput(
+                                                                                                                   "protein",
+                                                                                                                   "Protein",
+                                                                                                                   width = "125px",
+                                                                                                                   value = "",
+                                                                                                                   placeholder = NULL
+                                                                                                                 )
+                                                                                                               ),
+                                                                                                               tagAppendAttributes(
+                                                                                                                 class ="input_feilds reaction",
+                                                                                                                 textInput(
+                                                                                                                   "reaction",
+                                                                                                                   "Reaction",
+                                                                                                                   width = "125px",
+                                                                                                                   value = "",
+                                                                                                                   placeholder = NULL
+                                                                                                                 )
+                                                                                                               )
+                                                                                                      )
+                                                                                             ),
+                                                                                             tags$div(class="information_bottom",
+                                                                                                      tagAppendAttributes(
+                                                                                                        class ="input_feilds goterm",
+                                                                                                        textInput(
+                                                                                                          "goterm",
+                                                                                                          "Goterm",
+                                                                                                          width = "125px",
+                                                                                                          value = "",
+                                                                                                          placeholder = NULL
+                                                                                                        )
+                                                                                                      ),
+                                                                                                      tagAppendAttributes(
+                                                                                                        class ="input_feilds doi",
+                                                                                                        textInput(
+                                                                                                          "doi",
+                                                                                                          "Doi",
+                                                                                                          width = "125px",
+                                                                                                          value = "",
+                                                                                                          placeholder = NULL
+                                                                                                        )
+                                                                                                      ),
+                                                                                                      tagAppendAttributes(
+                                                                                                        class ="input_feilds url",
+                                                                                                        textInput(
+                                                                                                          "url",
+                                                                                                          "URL",
+                                                                                                          width = "125px",
+                                                                                                          value = "",
+                                                                                                          placeholder = NULL
+                                                                                                        )
+                                                                                                      )
+                                                                                             ),
+                                                                                             
+                                                                                             tagAppendAttributes(
+                                                                                               `data-proxy-click` = "ma_submit",
+                                                                                               actionButton("ma_submit", "Submit")
+                                                                                             )
+                                                                                             
+                                                                                           )# tags div end
+                                                                                 )
+                                                                          ),#tags from and columns ends
+                                                                          ### Reaction Database view 
+                                                                          column (8,
+                                                                                  mainPanel(style="margin-left:15px;padding-top:10px;",
+                                                                                            tags$hr(),
+                                                                                            dataTableOutput('contents')) # mainPanel
                                                                           )
-                                                                          
-                                                                        )# tags div end
-                                                                      )
-                                                                      #) #mainpanel ends
-                                                            ),#tags from and columns ends
-                                                     ### Reaction Database view #
-                                                     column (8,
-                                                             mainPanel(style="margin-left:15px;padding-top:10px;",
-                                                                       tags$hr(),
-                                                                       dataTableOutput('contents')) # mainPanel
-                                                     )
-                                                   ) # Fluid row ends
-                                                  ) # div container ends
-                                         ) # div info ends
-                                        ),
-                                        # Viewing the manual annotation output
-                                        tabPanel("View",
-                                                 dataTableOutput('ma_table')
-                                                 
-                                        )
-                                      )
-                                    )
-
-                                   )
-                                 ) # tabset ends
-                               ) # main panael ends
-                             ) # column ends
-                           ) # Fluid Row
-                  ) # Div container tables setwidth ends
-         )
+                                                                        ) # Fluid row ends
+                                                               ) # div container ends
+                                                      ) # div info ends
+                                             ),
+                                             # Viewing the manual annotation output
+                                             tabPanel("View",
+                                                      dataTableOutput('ma_table')
+                                                      
+                                             )
+                                           )
+                                         )
+                                )
+                              ) # tabset ends
+                            ) # main panael ends
+                          ) # column ends
+                        ) # Fluid Row
+               ) # Div container tables setwidth ends
+      )
     ), # Tab Panel reaction ends
     # Protein NavTab =================================
     tabPanel(
@@ -315,190 +313,190 @@ ui <- fluidPage(
                         ))),
       # Protein DataTables 
       tags$div(class = "content",
-         tags$div(class = "container tables setwidth",
-                  fluidRow(
-                    column(
-                      12,
-                      mainPanel(
-                        width = 12,
-                        style = "height=100%;width:100%",
-                        textOutput("exampleOutput2"),
-                        bsAlert("alert2"),
-                        tabsetPanel(
-                          # Protein SAPP Tab 
-                          tabPanel("SAPP",
-                                   tags$div(class = "info",
-                                            tags$ul(
-                                              tags$li(""),
-                                              tags$li("")
-                                            )),
-                                   dataTableOutput('myTableprot')
-                          ),
-                          # Protein BLAST TAB
-                          tabPanel("BLAST",
-                                   tags$div(class = "info",
-                                            tags$ul(
-                                              tags$li(textOutput("tool_blast")),
-                                              tags$li(textOutput("version_blast"))
-                                            )),
-                                   dataTableOutput('blastresult_table')
-                          ),
-                          
-                          # Protein PRIAM 
-                          tabPanel("PRIAM",
-                                   tags$div(class = "info",
-                                            tags$ul(
-                                              tags$li(textOutput("tool_priam_prot")),
-                                              tags$li(textOutput("version_priam_prot"))
-                                            )),
-                                   dataTableOutput('priamprot_table')
-                          ),
-                          # Protein SIGNAL IP Tab
-                          tabPanel("SIGNALP",
-                                   tags$div(class = "info",
-                                            tags$ul(
-                                              tags$li(textOutput("tool_signalIP")),
-                                              tags$li(textOutput("version_signalIP"))
-                                            )),
-                                   
-                                   dataTableOutput('signalIP_table')
-                          ),
-                          # Protein Interpro Tab
-                          tabPanel("Interpro",
-                                   tags$div(class = "info",
-                                            tags$ul(
-                                              tags$li(textOutput("tool_interpro_prot")),
-                                              tags$li(textOutput("version_interpro_prot"))
-                                            )),
-                                   dataTableOutput('ipr_table')
-                          ),
-                          # Protein Interpro Domains Tab
-                          tabPanel("Interpro Domains ",
-                                   tags$div(class = "info",
-                                            tags$ul(
-                                              tags$li(""),
-                                              tags$li("")
-                                            )),
-                                   dataTableOutput('interpro_table')
-                          ),
-                          # Protein Manual Anotation
-                          tabPanel("Manual Annotation",
-                            mainPanel( 
+               tags$div(class = "container tables setwidth",
+                        fluidRow(
+                          column(
+                            12,
+                            mainPanel(
+                              width = 12,
+                              style = "height=100%;width:100%",
+                              textOutput("exampleOutput2"),
+                              bsAlert("alert2"),
                               tabsetPanel(
-                                 tabPanel("Input Annotations",
-                                   tags$div(class="ma",
-                                     tags$div(class = "container",style ="height:650px",
-                                        fluidRow(
-                                          h4("Insert Data"),
-                                          column(12,
-                                           # Input feilds
-                                           mainPanel(width=12,
-                                             tags$form(
-                                               class = "form-inline",
-                                               tags$div(
-                                                 class = "form-group",
-                                                 tagAppendAttributes(
-                                                   class ="input_feilds",
-                                                   textInput(
-                                                     "author_prot",
-                                                     "Author",
-                                                     width = "125px",
-                                                     value = "",
-                                                     placeholder = NULL
-                                                   )
-                                                 ),
-                                                 tagAppendAttributes(
-                                                   class ="input_feilds",
-                                                   textInput(
-                                                     "comment_prot",
-                                                     "comment",
-                                                     width = "125px",
-                                                     value = "",
-                                                     placeholder = NULL
-                                                   )
-                                                 ),
-                                                 tagAppendAttributes(
-                                                   class ="input_feilds",
-                                                   textInput(
-                                                     "gene_prot",
-                                                     "Gene",
-                                                     width = "125px",
-                                                     value = "",
-                                                     placeholder = NULL
-                                                   )
-                                                 ),
-                                                 tagAppendAttributes(
-                                                   class ="input_feilds",
-                                                   textInput(
-                                                     "protein_prot",
-                                                     "Protein",
-                                                     width = "125px",
-                                                     value = "",
-                                                     placeholder = NULL
-                                                   )
-                                                 ),
-                                                 tagAppendAttributes(
-                                                   class ="input_feilds",
-                                                   textInput(
-                                                     "reaction_prot",
-                                                     "Reaction",
-                                                     width = "125px",
-                                                     value = "",
-                                                     placeholder = NULL
-                                                   )
-                                                 ),
-                                                 tagAppendAttributes(
-                                                   class ="input_feilds",
-                                                   textInput(
-                                                     "goterm_prot",
-                                                     "Goterm",
-                                                     width = "125px",
-                                                     value = "",
-                                                     placeholder = NULL
-                                                   )
-                                                 ),
-                                                 tagAppendAttributes(
-                                                   class ="input_feilds",
-                                                   textInput(
-                                                     "doi_prot",
-                                                     "Doi",
-                                                     width = "125px",
-                                                     value = "",
-                                                     placeholder = NULL
-                                                   )
-                                                 ),
-                                                 tagAppendAttributes(
-                                                   class ="input_feilds",
-                                                   textInput(
-                                                     "url_prot",
-                                                     "URL",
-                                                     width = "125px",
-                                                     value = "",
-                                                     placeholder = NULL
-                                                   )
-                                                 ),
-                                                 tagAppendAttributes(
-                                                   `data-proxy-click` = "ma_submit_prot", # Change this
-                                                   actionButton("ma_submit_prot", "Submit")
-                                                 )
-                                                 
-                                               )# tags div end
-                                                     )))#tags from and columns ends
-                                        ) # Fluid row ends
-                                     ) # div container ends
-                                    ) # div tab panel
-                                    ),
-                                 # TabPanel for viewing dataTable
-                                 tabPanel("View",
-                                          dataTableOutput('ma_table_prot')
-                                 )
-                          )) # tabsetpanel ends and main panel
+                                # Protein SAPP Tab 
+                                tabPanel("SAPP",
+                                         tags$div(class = "info",
+                                                  tags$ul(
+                                                    tags$li(""),
+                                                    tags$li("")
+                                                  )),
+                                         dataTableOutput('myTableprot')
+                                ),
+                                # Protein BLAST TAB
+                                tabPanel("BLAST",
+                                         tags$div(class = "info",
+                                                  tags$ul(
+                                                    tags$li(textOutput("tool_blast")),
+                                                    tags$li(textOutput("version_blast"))
+                                                  )),
+                                         dataTableOutput('blastresult_table')
+                                ),
+                                
+                                # Protein PRIAM 
+                                tabPanel("PRIAM",
+                                         tags$div(class = "info",
+                                                  tags$ul(
+                                                    tags$li(textOutput("tool_priam_prot")),
+                                                    tags$li(textOutput("version_priam_prot"))
+                                                  )),
+                                         dataTableOutput('priamprot_table')
+                                ),
+                                # Protein SIGNAL IP Tab
+                                tabPanel("SIGNALP",
+                                         tags$div(class = "info",
+                                                  tags$ul(
+                                                    tags$li(textOutput("tool_signalIP")),
+                                                    tags$li(textOutput("version_signalIP"))
+                                                  )),
+                                         
+                                         dataTableOutput('signalIP_table')
+                                ),
+                                # Protein Interpro Tab
+                                tabPanel("Interpro",
+                                         tags$div(class = "info",
+                                                  tags$ul(
+                                                    tags$li(textOutput("tool_interpro_prot")),
+                                                    tags$li(textOutput("version_interpro_prot"))
+                                                  )),
+                                         dataTableOutput('ipr_table')
+                                ),
+                                # Protein Interpro Domains Tab
+                                tabPanel("Interpro Domains ",
+                                         tags$div(class = "info",
+                                                  tags$ul(
+                                                    tags$li(""),
+                                                    tags$li("")
+                                                  )),
+                                         dataTableOutput('interpro_table')
+                                ),
+                                # Protein Manual Anotation
+                                tabPanel("Manual Annotation",
+                                         mainPanel( 
+                                           tabsetPanel(
+                                             tabPanel("Input Annotations",
+                                                      tags$div(class="ma",
+                                                               tags$div(class = "container",style ="height:650px",
+                                                                        fluidRow(
+                                                                          h4("Insert Data"),
+                                                                          column(12,
+                                                                                 # Input feilds
+                                                                                 mainPanel(width=12,
+                                                                                           tags$form(
+                                                                                             class = "form-inline",
+                                                                                             tags$div(
+                                                                                               class = "form-group",
+                                                                                               tagAppendAttributes(
+                                                                                                 class ="input_feilds",
+                                                                                                 textInput(
+                                                                                                   "author_prot",
+                                                                                                   "Author",
+                                                                                                   width = "125px",
+                                                                                                   value = "",
+                                                                                                   placeholder = NULL
+                                                                                                 )
+                                                                                               ),
+                                                                                               tagAppendAttributes(
+                                                                                                 class ="input_feilds",
+                                                                                                 textInput(
+                                                                                                   "comment_prot",
+                                                                                                   "comment",
+                                                                                                   width = "125px",
+                                                                                                   value = "",
+                                                                                                   placeholder = NULL
+                                                                                                 )
+                                                                                               ),
+                                                                                               tagAppendAttributes(
+                                                                                                 class ="input_feilds",
+                                                                                                 textInput(
+                                                                                                   "gene_prot",
+                                                                                                   "Gene",
+                                                                                                   width = "125px",
+                                                                                                   value = "",
+                                                                                                   placeholder = NULL
+                                                                                                 )
+                                                                                               ),
+                                                                                               tagAppendAttributes(
+                                                                                                 class ="input_feilds",
+                                                                                                 textInput(
+                                                                                                   "protein_prot",
+                                                                                                   "Protein",
+                                                                                                   width = "125px",
+                                                                                                   value = "",
+                                                                                                   placeholder = NULL
+                                                                                                 )
+                                                                                               ),
+                                                                                               tagAppendAttributes(
+                                                                                                 class ="input_feilds",
+                                                                                                 textInput(
+                                                                                                   "reaction_prot",
+                                                                                                   "Reaction",
+                                                                                                   width = "125px",
+                                                                                                   value = "",
+                                                                                                   placeholder = NULL
+                                                                                                 )
+                                                                                               ),
+                                                                                               tagAppendAttributes(
+                                                                                                 class ="input_feilds",
+                                                                                                 textInput(
+                                                                                                   "goterm_prot",
+                                                                                                   "Goterm",
+                                                                                                   width = "125px",
+                                                                                                   value = "",
+                                                                                                   placeholder = NULL
+                                                                                                 )
+                                                                                               ),
+                                                                                               tagAppendAttributes(
+                                                                                                 class ="input_feilds",
+                                                                                                 textInput(
+                                                                                                   "doi_prot",
+                                                                                                   "Doi",
+                                                                                                   width = "125px",
+                                                                                                   value = "",
+                                                                                                   placeholder = NULL
+                                                                                                 )
+                                                                                               ),
+                                                                                               tagAppendAttributes(
+                                                                                                 class ="input_feilds",
+                                                                                                 textInput(
+                                                                                                   "url_prot",
+                                                                                                   "URL",
+                                                                                                   width = "125px",
+                                                                                                   value = "",
+                                                                                                   placeholder = NULL
+                                                                                                 )
+                                                                                               ),
+                                                                                               tagAppendAttributes(
+                                                                                                 `data-proxy-click` = "ma_submit_prot", # Change this
+                                                                                                 actionButton("ma_submit_prot", "Submit")
+                                                                                               )
+                                                                                               
+                                                                                             )# tags div end
+                                                                                           )))#tags from and columns ends
+                                                                        ) # Fluid row ends
+                                                               ) # div container ends
+                                                      ) # div tab panel
+                                             ),
+                                             # TabPanel for viewing dataTable
+                                             tabPanel("View",
+                                                      dataTableOutput('ma_table_prot')
+                                             )
+                                           )) # tabsetpanel ends and main panel
+                                )
+                              )
+                            )
                           )
-                        )
-                      )
-                    )
-                  ) # Fluid Row ends
-         )
+                        ) # Fluid Row ends
+               )
       )
     ),    # TabsetPanel ends
     # Gene DataTables #############################
@@ -528,9 +526,7 @@ ui <- fluidPage(
                           )
                         )
                )
-               
       ) # Gene tabPanel ends
-      
     ) # TabsetPanel ends
   ) # Navbar page
 )# FluidPAge
@@ -587,7 +583,7 @@ server <- function(input,output,session){
     #                  <ma:url> ?Url
     #                  }",sep=""
     #                  )
-
+    
     fetch_query <- sparql( endpoint2,maquery )
     rename_manual <- function(x){rename(x,c("?ECnumber" = "ECnumber", "?Author" = "Author", "?Date" = "Date", "?Comment" = "Comment", 
                                             "?Gene" = "Gene","?Protein" = "Protein", "?GOterm" = "GOterm","?Doi" = "Doi","?Url" = "Url") ) }
@@ -948,9 +944,9 @@ server <- function(input,output,session){
         ### Start querying and load results #############################
         queryfun <- function(basequery, ncbiprotein) {return(sub('changeme', ncbiprotein, basequery))}
         
-        #results_interpro <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_interpro, ECnumber))))
-        #results_interpro <- rename_head(results_interpro)
-        #results_interpro <- clean_post(results_interpro)
+        # results_interpro <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_interpro, ECnumber))))
+        # results_interpro <- rename_head(results_interpro)
+        # results_interpro <- clean_post(results_interpro)
         
         res <- SPARQL(endpoint, queryfun(basequery,ncbiprotein))
         
@@ -1088,7 +1084,7 @@ server <- function(input,output,session){
             )
           )
           output$blastresult_table <- renderDataTable(
-            #This is the BLAST result(s)
+            #This is the BLAST results
             result,
             options = list(
               iDisplayLength = 10,
@@ -1184,23 +1180,23 @@ server <- function(input,output,session){
     
     #Build update query
     update <- paste("
-        prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
-        INSERT DATA{
-        <ma:",ECnumber,"> <id> <ma:",uniqid,">.
-        <ma:",uniqid,"> <ma:uid> ",nid,";
-        <ma:ecnumber> ",ecnumber,";
-        <ma:reaction> ",reaction_name,";
-        <dc:creator> ",author,";
-        <dc:date> ",date,";
-        <dc:description> ",comment,";
-        <ma:gene> ",gene,";
-        <ma:protein> ",protein,";
-        <ma:goterm> ",goterm,";
-        <ma:doi> ",doi,";
-        <ma:url> ",url,"
-        }",
+                    prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                    INSERT DATA{
+                    <ma:",ECnumber,"> <id> <ma:",uniqid,">.
+                    <ma:",uniqid,"> <ma:uid> ",nid,";
+                    <ma:ecnumber> ",ecnumber,";
+                    <ma:reaction> ",reaction_name,";
+                    <dc:creator> ",author,";
+                    <dc:date> ",date,";
+                    <dc:description> ",comment,";
+                    <ma:gene> ",gene,";
+                    <ma:protein> ",protein,";
+                    <ma:goterm> ",goterm,";
+                    <ma:doi> ",doi,";
+                    <ma:url> ",url,"
+                    }",
       sep="")
-
+    
     # SPARQL update request using post. using tryCatch to grab the error if any.
     #SPARQL(endpoint2, update=update, curl_args = list(style="post"))
     out <- tryCatch (SPARQL("http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql",
@@ -1216,26 +1212,26 @@ server <- function(input,output,session){
     
     # update the table
     maquery <- paste("
-       prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
-       prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-       prefix dc: <http://purl.org/dc/elements/1.1/>
-       
-       select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
-       where{
-       <ma:",ECnumber,"> <id> ?id.
-       ?id <ma:uid> ?uid;
-       <ma:ecnumber> ?ECnumber;
-       <dc:creator> ?Author;
-       <dc:date> ?Date;
-       <dc:description> ?Comment;
-       <ma:gene> ?Gene;
-       <ma:protein> ?Protein;
-       <ma:goterm> ?GOterm;
-       <ma:doi> ?Doi;
-       <ma:url> ?Url
-       }",
+                     prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                     prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                     prefix dc: <http://purl.org/dc/elements/1.1/>
+                     
+                     select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
+                     where{
+                     <ma:",ECnumber,"> <id> ?id.
+                     ?id <ma:uid> ?uid;
+                     <ma:ecnumber> ?ECnumber;
+                     <dc:creator> ?Author;
+                     <dc:date> ?Date;
+                     <dc:description> ?Comment;
+                     <ma:gene> ?Gene;
+                     <ma:protein> ?Protein;
+                     <ma:goterm> ?GOterm;
+                     <ma:doi> ?Doi;
+                     <ma:url> ?Url
+                     }",
     sep="")
-
+    
     fetch_query <- SPARQL(endpoint2,maquery)$results
     rename_manual <- function(x){rename(x,c("?ECnumber" = "ECnumber", "?Author" = "Author", "?Date" = "Date", "?Comment" = "Comment", 
                                             "?Gene" = "Gene","?Protein" = "Protein", "?GOterm" = "GOterm","?Doi" = "Doi","?Url" = "Url") ) }
@@ -1372,20 +1368,20 @@ server <- function(input,output,session){
   #})
   # Possible query structure
   magquery <- paste( "select ?GeneId ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
-       where{
-          ?genes <gene> ?id.
-          ?id <ma:uid> ?uid;
-          <ma:genename> ?GeneId;
-          <ma:ecnumber> ?ECnumber;
-          <dc:creator> ?Author;
-          <dc:date> ?Date;
-          <dc:description> ?Comment;
-          <ma:gene> ?Gene;
-          <ma:protein> ?Protein;
-          <ma:goterm> ?GOterm;
-          <ma:doi> ?Doi;
-          <ma:url> ?Url
-        }",sep = " ")
+                     where{
+                     ?genes <gene> ?id.
+                     ?id <ma:uid> ?uid;
+                     <ma:genename> ?GeneId;
+                     <ma:ecnumber> ?ECnumber;
+                     <dc:creator> ?Author;
+                     <dc:date> ?Date;
+                     <dc:description> ?Comment;
+                     <ma:gene> ?Gene;
+                     <ma:protein> ?Protein;
+                     <ma:goterm> ?GOterm;
+                     <ma:doi> ?Doi;
+                     <ma:url> ?Url
+                     }",sep = " ")
   fetch_query <- SPARQL(endpoint2,magquery)$results
   
   output$myTableGene <- renderDataTable(
