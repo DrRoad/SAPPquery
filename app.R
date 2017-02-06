@@ -129,124 +129,142 @@ ui <- fluidPage(
                                    ),
                                    # Reaction Manual Anotation =================================
                                    tabPanel("Manual Annotation",
-                                    dataTableOutput('ma_table'),
-                                    tags$div(class="ma",
-                                             tags$div(class = "container",style ="height:650px",
-                                                      fluidRow(
-                                                        ### Input feilds ##########################
-                                                        column(3,
-                                                               h4("Insert Data"),
-                                                               mainPanel(width=3,
-                                                                         tags$form(
-                                                                           class = "form-inline",
-                                                                           tags$div(
-                                                                             class = "form-group",
-                                                                             tagAppendAttributes(
-                                                                               class ="input_feilds",
-                                                                               textInput(
-                                                                                 "author",
-                                                                                 "Author",
-                                                                                 width = "125px",
-                                                                                 value = "",
-                                                                                 placeholder = NULL
-                                                                               )
-                                                                             ),
-                                                                             #tagAppendAttributes(
-                                                                             # class ="input_feilds",
-                                                                             #textInput(
-                                                                             # "date",
-                                                                             #"Date",
-                                                                             #width = "125px",
-                                                                             #value = "",
-                                                                             #placeholder = NULL
-                                                                             #)
-                                                                             #),
-                                                                             tagAppendAttributes(
-                                                                               class ="input_feilds",
-                                                                               textInput(
-                                                                                 "comment",
-                                                                                 "Comment",
-                                                                                 width = "125px",
-                                                                                 value = "",
-                                                                                 placeholder = NULL
-                                                                               )
-                                                                             ),
-                                                                             tagAppendAttributes(
-                                                                               class ="input_feilds",
-                                                                               textInput(
-                                                                                 "gene",
-                                                                                 "Gene",
-                                                                                 width = "125px",
-                                                                                 value = "",
-                                                                                 placeholder = NULL
-                                                                               )
-                                                                             ),
-                                                                             tagAppendAttributes(
-                                                                               class ="input_feilds",
-                                                                               textInput(
-                                                                                 "protein",
-                                                                                 "Protein",
-                                                                                 width = "125px",
-                                                                                 value = "",
-                                                                                 placeholder = NULL
-                                                                               )
-                                                                             ),
-                                                                             tagAppendAttributes(
-                                                                               class ="input_feilds",
-                                                                               textInput(
-                                                                                 "reaction",
-                                                                                 "Reaction",
-                                                                                 width = "125px",
-                                                                                 value = "",
-                                                                                 placeholder = NULL
-                                                                               )
-                                                                             ),
-                                                                             tagAppendAttributes(
-                                                                               class ="input_feilds",
-                                                                               textInput(
-                                                                                 "goterm",
-                                                                                 "Goterm",
-                                                                                 width = "125px",
-                                                                                 value = "",
-                                                                                 placeholder = NULL
-                                                                               )
-                                                                             ),
-                                                                             tagAppendAttributes(
-                                                                               class ="input_feilds",
-                                                                               textInput(
-                                                                                 "doi",
-                                                                                 "Doi",
-                                                                                 width = "125px",
-                                                                                 value = "",
-                                                                                 placeholder = NULL
-                                                                               )
-                                                                             ),
-                                                                             tagAppendAttributes(
-                                                                               class ="input_feilds",
-                                                                               textInput(
-                                                                                 "url",
-                                                                                 "URL",
-                                                                                 width = "125px",
-                                                                                 value = "",
-                                                                                 placeholder = NULL
-                                                                               )
-                                                                             ),
-                                                                             tagAppendAttributes(
-                                                                               `data-proxy-click` = "ma_submit",
-                                                                               actionButton("ma_submit", "Submit")
-                                                                             )
+                                     mainPanel(
+                                      tabsetPanel(
+                                        tabPanel("Input Annotations",
+                                                 tags$div(class="ma",
+                                                          tags$div(class = "container",style ="height:650px",
+                                                                   fluidRow(
+                                                                     ### Input feilds ##########################
+                                                                     column(12,
+                                                                            #h4("Insert Data"),
+                                                                           # mainPanel(width=12,
+                                                                                      tags$form(class = "form-inline",
+                                                                                        tags$div(class = "form-group",
+                                                                                          tags$div(class="information_top",
+                                                                                            h4("Personal information and institute"),
+                                                                                            tags$hr(),
+                                                                                            tagAppendAttributes(
+                                                                                              class ="input_feilds",
+                                                                                              textInput(
+                                                                                                "author", #id
+                                                                                                "Author",
+                                                                                                width = "125px",
+                                                                                                value = "",
+                                                                                                placeholder = NULL
+                                                                                              )
+                                                                                            ),
+                                                                                            tags$div(class="selector_feild",
+                                                                                            selectInput(
+                                                                                              "selectInst", label = ("Select Institute"),
+                                                                                              choices = list(
+                                                                                                "NMBU" = 'Norges miljø- og biovitenskapelige universitet',
+                                                                                                "University of Sterling" = 'University of Sterling', 
+                                                                                                "Wageningen University" = 'Wageningen University' ),
+                                                                                              selected = 'Norges miljø- og biovitenskapelige universitet'
+                                                                                            )
+                                                                                            )
+                                                                                          ),
+                                                                                          tags$div(class="information_mid",
+                                                                                             tagAppendAttributes(
+                                                                                               class ="input_feilds",
+                                                                                               textInput(
+                                                                                                 "comment",
+                                                                                                 "Comment",
+                                                                                                 width = "250px",
+                                                                                                 value = "",
+                                                                                                 placeholder = NULL
+                                                                                               )
+                                                                                             )
+                                                                                          ),
 
-                                                                           )# tags div end
-                                                                         ))),#tags from and columns ends
-                                                        ### Reaction Database view ###########################
-                                                        column (8,
-                                                                mainPanel(style="margin-left:15px;padding-top:10px;",
-                                                                          tags$hr(),
-                                                                          dataTableOutput('contents')) # mainPanel
-                                                        )
-                                                      ) # Fluid row ends
-                                             ) # div container ends
-                                    ) # div info ends
+                                                                                          tagAppendAttributes(
+                                                                                            class ="input_feilds",
+                                                                                            textInput(
+                                                                                              "gene",
+                                                                                              "Gene",
+                                                                                              width = "125px",
+                                                                                              value = "",
+                                                                                              placeholder = NULL
+                                                                                            )
+                                                                                          ),
+                                                                                          tagAppendAttributes(
+                                                                                            class ="input_feilds",
+                                                                                            textInput(
+                                                                                              "protein",
+                                                                                              "Protein",
+                                                                                              width = "125px",
+                                                                                              value = "",
+                                                                                              placeholder = NULL
+                                                                                            )
+                                                                                          ),
+                                                                                          tagAppendAttributes(
+                                                                                            class ="input_feilds",
+                                                                                            textInput(
+                                                                                              "reaction",
+                                                                                              "Reaction",
+                                                                                              width = "125px",
+                                                                                              value = "",
+                                                                                              placeholder = NULL
+                                                                                            )
+                                                                                          ),
+                                                                                          tagAppendAttributes(
+                                                                                            class ="input_feilds",
+                                                                                            textInput(
+                                                                                              "goterm",
+                                                                                              "Goterm",
+                                                                                              width = "125px",
+                                                                                              value = "",
+                                                                                              placeholder = NULL
+                                                                                            )
+                                                                                          ),
+                                                                                          tagAppendAttributes(
+                                                                                            class ="input_feilds",
+                                                                                            textInput(
+                                                                                              "doi",
+                                                                                              "Doi",
+                                                                                              width = "125px",
+                                                                                              value = "",
+                                                                                              placeholder = NULL
+                                                                                            )
+                                                                                          ),
+                                                                                          tagAppendAttributes(
+                                                                                            class ="input_feilds",
+                                                                                            textInput(
+                                                                                              "url",
+                                                                                              "URL",
+                                                                                              width = "125px",
+                                                                                              value = "",
+                                                                                              placeholder = NULL
+                                                                                            )
+                                                                                          ),
+                                                                                          tagAppendAttributes(
+                                                                                            `data-proxy-click` = "ma_submit",
+                                                                                            actionButton("ma_submit", "Submit")
+                                                                                          )
+                                                                                          
+                                                                                        )# tags div end
+                                                                                      )
+                                                                                      #) #mainpanel ends
+                                                                            ),#tags from and columns ends
+                                                                     ### Reaction Database view ###########################
+                                                                     column (8,
+                                                                             mainPanel(style="margin-left:15px;padding-top:10px;",
+                                                                                       tags$hr(),
+                                                                                       dataTableOutput('contents')) # mainPanel
+                                                                     )
+                                                                   ) # Fluid row ends
+                                                          ) # div container ends
+                                                 ) # div info ends
+                                        ),
+                                        # Viewing the manual annotation output
+                                        tabPanel("View",
+                                                 dataTableOutput('ma_table')
+                                                 
+                                        )
+                                      )
+                                    )
+
                                    )
                                  ) # tabset ends
                                ) # main panael ends
@@ -359,118 +377,126 @@ ui <- fluidPage(
                                 ),
                                 # Protein Manual Anotation =================================
                                 tabPanel("Manual Annotation",
-                                         dataTableOutput('ma_table_prot'),
-                                         tags$div(class="ma",
-                                                  tags$div(class = "container",style ="height:650px",
-                                                           fluidRow(
-                                                             h4("Insert Data"),
-                                                             column(3,
-                                                                    # Input feilds -----------------------------------
-                                                                    mainPanel(width=3,
-                                                                              tags$form(
-                                                                                class = "form-inline",
-                                                                                tags$div(
-                                                                                  class = "form-group",
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "author_prot",
-                                                                                      "Author",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  #tagAppendAttributes(
-                                                                                  #class ="input_feilds",
-                                                                                  #textInput(
-                                                                                  #"date_prot",
-                                                                                  #"Date",
-                                                                                  #width = "125px",
-                                                                                  # value = "",
-                                                                                  #  placeholder = NULL
-                                                                                  # )
-                                                                                  #),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "comment_prot",
-                                                                                      "comment",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "gene_prot",
-                                                                                      "Gene",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "protein_prot",
-                                                                                      "Protein",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "reaction_prot",
-                                                                                      "Reaction",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "goterm_prot",
-                                                                                      "Goterm",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "doi_prot",
-                                                                                      "Doi",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    class ="input_feilds",
-                                                                                    textInput(
-                                                                                      "url_prot",
-                                                                                      "URL",
-                                                                                      width = "125px",
-                                                                                      value = "",
-                                                                                      placeholder = NULL
-                                                                                    )
-                                                                                  ),
-                                                                                  tagAppendAttributes(
-                                                                                    `data-proxy-click` = "ma_submit_prot", # Change this
-                                                                                    actionButton("ma_submit_prot", "Submit")
-                                                                                  )
-                                                                                  
-                                                                                )# tags div end
-                                                                              )))#tags from and columns ends
-                                                           ) # Fluid row ends
-                                                  ) # div container ends
-                                         ) # div tab panel
+                                    mainPanel( 
+                                      tabsetPanel(
+                                         tabPanel("Input Annotations",
+                                                  tags$div(class="ma",
+                                                           tags$div(class = "container",style ="height:650px",
+                                                                    fluidRow(
+                                                                      h4("Insert Data"),
+                                                                      column(3,
+                                                                             # Input feilds -----------------------------------
+                                                                             mainPanel(width=3,
+                                                                                       tags$form(
+                                                                                         class = "form-inline",
+                                                                                         tags$div(
+                                                                                           class = "form-group",
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "author_prot",
+                                                                                               "Author",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           #tagAppendAttributes(
+                                                                                           #class ="input_feilds",
+                                                                                           #textInput(
+                                                                                           #"date_prot",
+                                                                                           #"Date",
+                                                                                           #width = "125px",
+                                                                                           # value = "",
+                                                                                           #  placeholder = NULL
+                                                                                           # )
+                                                                                           #),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "comment_prot",
+                                                                                               "comment",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "gene_prot",
+                                                                                               "Gene",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "protein_prot",
+                                                                                               "Protein",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "reaction_prot",
+                                                                                               "Reaction",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "goterm_prot",
+                                                                                               "Goterm",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "doi_prot",
+                                                                                               "Doi",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             class ="input_feilds",
+                                                                                             textInput(
+                                                                                               "url_prot",
+                                                                                               "URL",
+                                                                                               width = "125px",
+                                                                                               value = "",
+                                                                                               placeholder = NULL
+                                                                                             )
+                                                                                           ),
+                                                                                           tagAppendAttributes(
+                                                                                             `data-proxy-click` = "ma_submit_prot", # Change this
+                                                                                             actionButton("ma_submit_prot", "Submit")
+                                                                                           )
+                                                                                           
+                                                                                         )# tags div end
+                                                                                       )))#tags from and columns ends
+                                                                    ) # Fluid row ends
+                                                           ) # div container ends
+                                                  ) # div tab panel
+                                                  ),
+                                         # TabPanel for viewing dataTable
+                                         tabPanel("View",
+                                                  dataTableOutput('ma_table_prot')
+                                         )
+                                  )) # tabsetpanel ends and main panel
                                 )
                               )
                             )
