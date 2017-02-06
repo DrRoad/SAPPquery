@@ -95,6 +95,50 @@
 .input_feilds{
   border-radius:0 0 0 0;
 }
+#author{
+  position:relative;
+  margin-top:-5px;
+}
+#selectInst{
+  position:relative;
+  left:10px;
+}
+.information_top > hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-top: 1px solid black;
+}
+.gene{
+  position:relative;
+}
+.protein{
+  position:relative;
+  left:100px;
+}
+.reaction{
+  position:relative;
+  left:200px;
+}
+#comment{
+  width:660px;
+}
+.information_mid > hr {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-top: 1px solid black;  
+}
+.selector_feild{
+  position:relative;
+  float:right;
+}
+.information_top{
+  position:relative;
+  padding-top:10px;
+}
+.information_mid{
+  padding-top:10px;
+  
+}
 
 .a_d_predicate{
   position:relative;
@@ -108,6 +152,7 @@
   left:150px;
   border-radius:0 0 0 0;
 }
+
 #ma_submit{
   position:relative;
   top:5px;
