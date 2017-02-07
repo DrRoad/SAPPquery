@@ -1238,7 +1238,7 @@ server <- function(input,output,session){
     # CLean up post requests. New sparql functing has quotes around everything
     clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
     
-    fetch_query <- rename_head(results_interpro)
+    fetch_query <- rename_manual(results_interpro)
     fetch_query <- clean_post(results_interpro)
     
     fetch_query <-as.data.table(fetch_query)
