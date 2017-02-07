@@ -626,7 +626,7 @@ server <- function(input,output,session){
         }
         
         #Test the query and rename columns
-        results_interpro <- data.table(sparql(endpoint, paste(prefixes, queryfun(basequery_interpro, ECnumber)) ))
+        results_interpro <- data.table(sparql(endpoint, paste(prefixes, queryfun(basequery_interpro, ECnumber))))
         results_interpro <- rename_head(results_interpro)
         results_interpro <- clean_post(results_interpro)
         
@@ -672,7 +672,9 @@ server <- function(input,output,session){
             
             # Send swiss_Table to a function that proceses the headers
             swiss_table <- blast_reaction_rename(swiss_table)
-          } else {swiss_tool <- toupper("N/A"); swiss_version <- "N/A";swiss_table <- noframe()}
+          }else {
+            swiss_tool <- toupper("N/A"); swiss_version <- "N/A";swiss_table <- noframe()
+          }
           
           ### PRIAM #############################
           if ("Priam" %in% results$tool) {
