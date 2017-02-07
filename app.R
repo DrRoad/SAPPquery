@@ -616,12 +616,17 @@ server <- function(input,output,session){
         
         ### Query functions #############################
         queryfun <- function(basequery, ecnumber) { return(sub('4.2.1.11', ecnumber, basequery))  }
-        rename_head <- function(x){rename(x,c("?header" = "header", "?colname" = "colname", "?value" = "value", "?feature" = "feature")) }
+        rename_head <- function(x){
+          rename(x, c("?header" = "header", "?colname" = "colname", "?value" = "value", "?feature" = "feature")) 
+        }
+        
         # CLean up post requests. New sparql functing has quotes around everything
-        clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
+        clean_post <- function(data){
+          data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] 
+        }
         
         #Test the query and rename columns
-        results_interpro <- data.table(sparql( endpoint, paste(prefixes, queryfun(basequery_interpro, ECnumber)) ))
+        results_interpro <- data.table(sparql(endpoint, paste(prefixes, queryfun(basequery_interpro, ECnumber)) ))
         results_interpro <- rename_head(results_interpro)
         results_interpro <- clean_post(results_interpro)
         
@@ -646,7 +651,7 @@ server <- function(input,output,session){
                         content = "The number you enterd is not a valid ECnumber or a EC number wich returned an
                         empty results", append = FALSE)
           })
-          }
+        }
         # Build dataframes =================================
         else{
           ### Rename columns #############################
