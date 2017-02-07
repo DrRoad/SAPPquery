@@ -45,13 +45,7 @@ body{
 .setwidth{
   margin:0;
 }
-#submit{
-  
-  left: 80px;
-  top: 13px;
-  position: relative;
-}
-#submitprot{
+#submit, #submitprot{
   left: 80px;
   top: 13px;
   position: relative;
@@ -67,16 +61,16 @@ body{
 .info{
   font-size:12px;
   position:relative;
-  left:-40px;
+    left:-40px;
 }
 .selectize-input{
-  width:220px;
+    width:220px;
 }
 .info li {
-       display: inline;
+    display: inline;
 }
 .info ul {
-      list-style-type: none;
+    list-style-type: none;
 }
 .tab-content{
   width:100%;
@@ -98,14 +92,11 @@ body{
 .input_feilds{
   border-radius:0 0 0 0;
 }
-#author{
+#author, #author_prot, #author_gene{
   position:relative;
   margin-top:-5px;
 }
-#selectInst{
-  position:relative;
-  left:10px;
-}
+
 .information_top > hr {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -122,7 +113,7 @@ body{
   position:relative;
   left:200px;
 }
-#comment{
+#comment, #comment_prot, #comment_gene{
   width:660px;
 }
 .information_mid > hr {
@@ -131,8 +122,9 @@ body{
   border-top: 1px solid black;  
 }
 .selector_feild{
-  position:relative;
-  float:right;
+    position: absolute;
+    left: 220px;
+    top: 55px;
 }
 .information_top{
   position:relative;
@@ -148,52 +140,8 @@ body{
 .doi{position:relative;left:100px;}
 .url{position:relative;left:200px;}
 
-.a_d_predicate{
-  position:relative;
-  border-radius:0 0 0 0;
-  left:75px;
-}
-.a_d_object{
-  position:relative;
-  -webkit-left: 150px;
-  -moz-left: 150px;
-  left:150px;
-  border-radius:0 0 0 0;
-}
-
-#ma_submit{
+#ma_submit, #ma_submit_prot{
   position:relative;
   top:5px;
   border-radius:0 0 0 0;
-}
-#ma_submit_prot{
-  position:relative;
-  top:5;
-  border-radius:0 0 0 0;
-}
-#delete_submit_prot,#delete_reaction{
-  position:relative;
-  -webkit-left: 225px;
-  -moz-left: 225px;
-  left:225px;
-  border-radius:0 0 0 0;
-  top:12.5px;
-}
-.delete_subject{
-  position:relative;
-  border-radius:0 0 0 0;
-}
-.delete_predicate{
-  position:relative;
-  -webkit-left: 75px;
-  -moz-left: 75px;
-  left:75px;
-  border-radius:0 0 0 0;
-}
-.delete_object{
-  position:relative;
-  -webkit-left: 150px;
-  -moz-left: 150px;
-  left:150px;
-  border-radius:0 0 0 0; 
 }
