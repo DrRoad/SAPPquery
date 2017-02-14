@@ -27,7 +27,6 @@ ui <- fluidPage(
   tags$div(class = "Header",
            tags$div(class = "banner", tags$img( src = "CIGENE.png", width = 'auto', height = "50px" ),
                     tags$img( src = "DS.png", width = 'auto', style = 'position:relative;left:50px;', height = "50px" ) ) ),
-  
   navbarPage (
     "SAPP Query",
     # Reaction NavTab =================================
@@ -1300,7 +1299,7 @@ server <- function(input,output,session){
     date <- shQuote(as.integer(Sys.Date()))
     
     ### Save inputs from text fields, reactions #################
-    ECnumber <- isolate(input$variableprot)
+    ECnumber <- isolate(input$variable)
     ecnumber <- shQuote(ECnumber)
     reaction_name <- shQuote(input$reaction)
     author <- isolate(shQuote(input$author))
@@ -1333,7 +1332,7 @@ server <- function(input,output,session){
                     <ma:url> ",url,"
                     }",
       sep="")
-    
+
     # SPARQL update request using post. using tryCatch to grab the error if any.
     #SPARQL(endpoint2, update=update, curl_args = list(style="post"))
     out <- tryCatch (SPARQL(endpoint2,update=update, curl_args = list(style="post")), error = function(e) e)
@@ -1435,6 +1434,7 @@ server <- function(input,output,session){
                     }",sep="")
 
     # SPARQL update request using post. using tryCatch to grab the error if any.
+    
     out <- tryCatch (SPARQL(endpoint2, update=update, curl_args = list(style="post")), error = function(e) e)
     
     # This does not work on the cluste
