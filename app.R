@@ -1313,10 +1313,6 @@ server <- function(input,output,session){
     doi <- isolate(shQuote(input$doi))
     url <- isolate(shQuote(input$url))
     
-    # Unique identifiers
-    #uniqid <-  as.integer(Sys.time())
-    #nid <- shQuote(uniqid)
-    
     annotation(creator, description, geneid, genecard, organization)
     
     # Build an update query THIS NEED TO CHANGE
