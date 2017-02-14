@@ -655,7 +655,7 @@ ui <- fluidPage(
                                    dataTableOutput('contents_gene')) # mainPanel
                  )
                ) # Fluid row ends
-          ) # div container ends
+           ) # div container ends
       ) # Gene tabPanel ends
     ) # TabsetPanel ends
   ) # Navbar page
@@ -670,7 +670,6 @@ server <- function(input,output,session){
   # endpoint <- 'http://10.209.0.227:8030/blazegraph/namespace/SalmoDB/sparql'
   # ncbiprotein <- 'NP_001130025.1'
   # ECnumber <- '5.4.2.11'
-  
   
   output$value <- renderPrint({ input$select })
   # Get Date for Manual annotations
