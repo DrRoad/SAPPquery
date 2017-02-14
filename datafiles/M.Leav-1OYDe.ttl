@@ -1,0 +1,36 @@
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/106606621>
+        a                          <http://gbol.life#Gene> ;
+        <http://gbol.life#gene>    "Srebpf1" ;
+        <http://gbol.life#note>    <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/anote> ;
+        <http://gbol.life#number>  106606621 .
+
+<http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/anote>
+        a                        <http://gbol.life#Note> ;
+        <http://gbol.life#text>  "Sterol regulatory element binding protein 1. Regulates cholesterol biosynthesis and lipogenesis, including genes of LC-PUFA biosynthesis." .
+
+<http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/org>
+        a                             <http://gbol.life#Organisation> ;
+        <http://gbol.life#legalName>  "University of Sterling" .
+
+<http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/M.Leav>
+        a                         <http://gbol.life#Curator> ;
+        <http://gbol.life#name>   "M.Leaver" ;
+        <http://gbol.life#orcid>  <http://orcid.org/123123-1123> ;
+        <http://www.w3.org/ns/prov#actedOnBehalfOf>
+                <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/org> .
+
+<http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/manualAnnotationResult>
+        a       <http://gbol.life#AnnotationResult> ;
+        <http://www.w3.org/ns/prov#wasAttributedTo>
+                <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/M.Leav> .
+
+<http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/manualAnnotationActivity>
+        a       <http://gbol.life#AnnotationActivity> ;
+        <http://www.w3.org/ns/prov#endedAtTime>
+                "2017-02-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        <http://www.w3.org/ns/prov#startedAtTime>
+                "2017-02-14"^^<http://www.w3.org/2001/XMLSchema#date> .
