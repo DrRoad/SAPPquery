@@ -1,5 +1,4 @@
 manual_annotation <- function(creator,geneid, genecard,description,organization){
-
 ### START THE RGBOL API
 domain <- Domain$new("")
 date <- Sys.Date()
@@ -8,7 +7,6 @@ try(aGene <- domain$life.gbol$createGene(gene_link))
 aGene$setGene(genecard)
 aGene$setNumber(geneid)
 # Here is the comment from the author
-### Does the link need to be unique? ###
 try(note <- domain$life.gbol$createNote("http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/anote"))
 note$setText(description)
 aGene$addNote(note)
@@ -35,21 +33,13 @@ manualAnnotationActivity <- domain$life.gbol$createAnnotationActivity("http://10
 manualAnnotationActivity$setStartedAtTime(date)
 manualAnnotationActivity$setEndedAtTime(date)
 
-set.seed(1)
+set.seed(as.integer(Sys.time()))
 rand <- stringi::stri_rand_strings(1, 5)
 filename <- paste(auth_link_clean,"-",rand, ".ttl",sep="")
 domain$save(filename)
 
-<<<<<<< HEAD
 #curlup <- paste("fread(\'curl -X POST -H Content-Type:text/turtle -G http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql -T Robert-GNZuC.ttl\') ")
 curlup <- paste("fread(\'curl -X POST -H Content-Type:text/turtle -G http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql -T ",filename,"\') ")
 try(eval(parse(text=curlup)))
-
-=======
-#upload <- readChar(fileName, file.info(fileName)$size)
-#upload <- readChar("joexample_r_res.ttl", file.info("joexample_r_res.ttl")$size)
-#SPARQL(endpoint2, update=upload,curl_args = list(style="post"))
-#SPARQL(endpoint2, update=update, curl_args = list(style="post"))
->>>>>>> 2e24b656d745b96b0c2b4c2e5e75d0e0e22db1ec
 domain$close()
 }
