@@ -27,7 +27,6 @@ ui <- fluidPage(
   tags$div(class = "Header",
            tags$div(class = "banner", tags$img( src = "CIGENE.png", width = 'auto', height = "50px" ),
                     tags$img( src = "DS.png", width = 'auto', style = 'position:relative;left:50px;', height = "50px" ) ) ),
-  
   navbarPage (
     "SAPP Query",
     # Reaction NavTab =================================
