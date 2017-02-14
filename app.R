@@ -7,6 +7,8 @@ library(data.table)
 library(DT)
 library(stringr)
 library(plyr)
+library(rJava)
+library(RGBOLApi)
 
 # Source hyperlink function and directories
 sapply(list.files(pattern="[.]R$", path="var/", full.names=TRUE), source)
@@ -531,7 +533,7 @@ ui <- fluidPage(
       "Gene",
       tags$div(class = "content",
         tags$div(class = " container setwidth",style ="height:650px", # tables ma
-               fluidRow(
+                 fluidRow(
                  ### Input feilds
                  column(12, 
                         tags$form(class = "form-inline",
@@ -542,7 +544,7 @@ ui <- fluidPage(
                                              tagAppendAttributes(
                                                class ="input_feilds",
                                                textInput(
-                                                 "author_prot", 
+                                                 "author_gene", 
                                                  "Author",
                                                  width = "125px",
                                                  value = "",
@@ -550,8 +552,8 @@ ui <- fluidPage(
                                                )
                                              ),
                                              tags$div(class="selector_feild",
-                                                      selectInput( # ER þetta ID
-                                                        "selectInst_prot", label = ("Select Institute"),
+                                                      selectInput( 
+                                                        "selectInst_gene", label = ("Select Institute"),
                                                         choices = list(
                                                           "NMBU" = 'Norges miljø- og biovitenskapelige universitet',
                                                           "University of Sterling" = 'University of Sterling', 
@@ -566,7 +568,7 @@ ui <- fluidPage(
                                              tagAppendAttributes(
                                                class ="input_feilds",
                                                textInput(
-                                                 "comment_prot",
+                                                 "comment_gene",
                                                  "Comment",
                                                  width = "250px",
                                                  value = "",
@@ -577,8 +579,8 @@ ui <- fluidPage(
                                                       tagAppendAttributes(
                                                         class ="input_feilds gene",
                                                         textInput(
-                                                          "gene_prot",
-                                                          "Gene",
+                                                          "gene_gene",
+                                                          "GeneID",
                                                           width = "125px",
                                                           value = "",
                                                           placeholder = NULL
@@ -587,17 +589,17 @@ ui <- fluidPage(
                                                       tagAppendAttributes(
                                                         class ="input_feilds protein",
                                                         textInput(
-                                                          "protein_prot",
-                                                          "Protein",
+                                                          "name_gene",
+                                                          "Gene name",
                                                           width = "125px",
                                                           value = "",
                                                           placeholder = NULL
                                                         )
                                                       ),
-                                                      tagAppendAttributes(
+                                                      tagAppendAttributes( style ="display:none",
                                                         class ="input_feilds reaction",
                                                         textInput(
-                                                          "reaction_prot",
+                                                          "reaction_gene",
                                                           "Reaction",
                                                           width = "125px",
                                                           value = "",
@@ -606,11 +608,11 @@ ui <- fluidPage(
                                                       )
                                              )
                                     ),
-                                    tags$div(class="information_bottom",
+                                    tags$div(class="information_bottom", style ="display:none",
                                              tagAppendAttributes(
                                                class ="input_feilds goterm",
                                                textInput(
-                                                 "goterm_prot",
+                                                 "goterm_gen",
                                                  "Goterm",
                                                  width = "125px",
                                                  value = "",
@@ -640,18 +642,17 @@ ui <- fluidPage(
                                     ),
                                     
                                     tagAppendAttributes(
-                                      `data-proxy-click` = "ma_submit_prot",
-                                      actionButton("ma_submit_prot", "Submit")
+                                      `data-proxy-click` = "ma_submit_gene",
+                                      actionButton("ma_submit_gene", "Submit")
                                     )
-                                    
                                   )# tags div end
                         )
                  ),#tags from and columns ends
-                 ### Reaction Database view 
+                 ### Gene Database view 
                  column (8,
                          mainPanel(style="margin-left:15px;padding-top:10px;",
                                    tags$hr(),
-                                   dataTableOutput('contents_prot')) # mainPanel
+                                   dataTableOutput('contents_gene')) # mainPanel
                  )
                ) # Fluid row ends
           ) # div container ends
@@ -1300,6 +1301,7 @@ server <- function(input,output,session){
     
     ### Save inputs from text fields, reactions #################
     ECnumber <- isolate(input$variable)
+    
     ecnumber <- shQuote(ECnumber)
     reaction_name <- shQuote(input$reaction)
     author <- isolate(shQuote(input$author))
@@ -1311,72 +1313,43 @@ server <- function(input,output,session){
     goterm <- isolate(shQuote(input$goterm))
     doi <- isolate(shQuote(input$doi))
     url <- isolate(shQuote(input$url))
-    uniqid <-  as.integer(Sys.time())
-    nid <- shQuote(uniqid)
     
-    #Build update query
+    # Unique identifiers
+    #uniqid <-  as.integer(Sys.time())
+    #nid <- shQuote(uniqid)
+    
+    annotation(creator, description, geneid, genecard, organization)
+    
+    # Build an update query THIS NEED TO CHANGE
     update <- paste("
-                    prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
-                    INSERT DATA{
-                    <ma:",ECnumber,"> <id> <ma:",uniqid,">.
-                    <ma:",uniqid,"> <ma:uid> ",nid,";
-                    <ma:ecnumber> ",ecnumber,";
-                    <ma:reaction> ",reaction_name,";
-                    <dc:creator> ",author,";
-                    <dc:date> ",date,";
-                    <dc:description> ",comment,";
-                    <ma:gene> ",gene,";
-                    <ma:protein> ",protein,";
-                    <ma:goterm> ",goterm,";
-                    <ma:doi> ",doi,";
-                    <ma:url> ",url,"
-                    }",
-      sep="")
+                prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                INSERT DATA{
+                <ma:",ECnumber,"> <id> <ma:",uniqid,">.
+                <ma:",uniqid,"> <ma:uid> ",nid,";
+                <ma:ecnumber> ",ecnumber,";
+                <ma:reaction> ",reaction_name,";
+                <dc:creator> ",author,";
+                <dc:date> ",date,";
+                <dc:description> ",comment,";
+                <ma:gene> ",gene,";
+                <ma:protein> ",protein,";
+                <ma:goterm> ",goterm,";
+                <ma:doi> ",doi,";
+                <ma:url> ",url,"
+                }",
+                    sep="")
+    
+    ## SPARQL update request using post. using tryCatch to grab the error if any.
+    #out <- tryCatch (SPARQL(endpoint2,update=update, curl_args = list(style="post")), error = function(e) e)
+    # if ( any( class ( out ) == "error" ) == FALSE ) {
+    #   # Alert message if the upload works
+    #   shinyjs::alert("Data uploaded to Blazegraph succesfull")
+    # }else{
+    #   # Alert message if the upload fails
+    #   shinyjs::alert("Data upload failed")
+    # }
 
-    # SPARQL update request using post. using tryCatch to grab the error if any.
-    #SPARQL(endpoint2, update=update, curl_args = list(style="post"))
-    out <- tryCatch (SPARQL(endpoint2,update=update, curl_args = list(style="post")), error = function(e) e)
-    
-    if ( any( class ( out ) == "error" ) == FALSE ) {
-      # Alert message if the upload works
-      shinyjs::alert("Data uploaded to Blazegraph succesfull")
-    }else{
-      # Alert message if the upload fails
-      shinyjs::alert("Data upload failed")
-    }
-    
-    # update the table
-    maquery <- paste("
-                     prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
-                     prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                     prefix dc: <http://purl.org/dc/elements/1.1/>
-                     
-                     select ?ECnumber ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
-                     where{
-                     <ma:",ECnumber,"> <id> ?id.
-                     ?id <ma:uid> ?uid;
-                     <ma:ecnumber> ?ECnumber;
-                     <dc:creator> ?Author;
-                     <dc:date> ?Date;
-                     <dc:description> ?Comment;
-                     <ma:gene> ?Gene;
-                     <ma:protein> ?Protein;
-                     <ma:goterm> ?GOterm;
-                     <ma:doi> ?Doi;
-                     <ma:url> ?Url
-                     }",
-    sep="")
-    
-    fetch_query <- SPARQL(endpoint2,maquery)$results
-    rename_manual <- function(x){rename(x,c("?ECnumber" = "ECnumber", "?Author" = "Author", "?Date" = "Date", "?Comment" = "Comment", 
-                                            "?Gene" = "Gene","?Protein" = "Protein", "?GOterm" = "GOterm","?Doi" = "Doi","?Url" = "Url") ) }
-    # CLean up post requests. New sparql functing has quotes around everything
-    clean_post <- function(data){data[, value := sub('"','',value, perl = TRUE)] ; data[, value := sub('".+>','',value, perl = TRUE)] }
-    
-    fetch_query <- rename_manual(fetch_query)
-    fetch_query <- clean_post(fetch_query)
-    
-    fetch_query <-as.data.table(fetch_query)
+
     output$ma_table <- renderDataTable({
       fetch_query
     })
@@ -1484,47 +1457,30 @@ server <- function(input,output,session){
     updateTextInput(session,'url', value = "")
     
   })
+  # Gene Annotation ========================
+  observeEvent(input$ma_submit_gene,{
+    ### Save inputs from text fields, reactions #################
+    creator <- input$author_gene    #creator <- "Robert Hafthorsson"
+    description <- input$comment_gene   #description <- "This ia a comment"
+    geneid <- input$gene_gene   #geneid <- "11000234"
+    genecard <- input$name_gene   #genecard <- "Flox15"
+    organization <- isolate(input$selectInst_gene)    #organization <- "NMUB"
+    
+    manual_annotation(creator,geneid, genecard,description,organization)
+   
+    # Clear the texinputs after use
+    updateTextInput(session,'author_gene', value = "")
+    updateTextInput(session,'comment_gene', value = "")
+    updateTextInput(session,'gene_gene', value = "")
+    updateTextInput(session,'name_gene', value = "")
+    
+    #updateTextInput(session,'goterm', value = "")
+    #updateTextInput(session,'doi', value = "")
+    #updateTextInput(session,'url', value = "")
+    
+  })
   
-  # Manual Annotation ========================
-  # observeEvent(input$submit_manual,{
-  # The possible insert structure
-  # prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
-  #   INSERT DATA{
-  #     <ma:100192341> <gene> <ma:1000003>.
-  #     <ma:1000003> <ma:uid> "1000003";
-  #     <ma:ecnumber> "";
-  #     <ma:reaction> "";
-  #     <dc:creator> "M. Leaver";
-  #     <dc:date> "2015-1112";
-  #     <dc:description> "Last elongation step for LC-PUFA biosynthesis (experimentally supported). Probably important for efficient DHA and EPA biosynthesis. Not found in Acanthopterygians, but present in zebrafish. Reference: Morais,S., Monroig,O., Zheng,X., Leaver,M.J. and Tocher,D.R.Highly unsaturated fatty acid synthesis in Atlantic salmon:characterization of ELOVL5- and ELOVL2-like elongases. Mar. Biotechnol. 11 (5), 627-639 (2009)";
-  #     <ma:gene> "elovl2";
-  #     <ma:protein> "NP_001130025";
-  #     <ma:goterm> "";
-  #     <ma:doi> "";
-  #     <ma:url> "http://identifiers.org/ncbigene/100192341"
-  #   }
-  # 
-  #})
-  # Possible query structure
-  magquery <- paste( "select ?GeneId ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
-                     where{
-                     ?genes <gene> ?id.
-                     ?id <ma:uid> ?uid;
-                     <ma:genename> ?GeneId;
-                     <ma:ecnumber> ?ECnumber;
-                     <dc:creator> ?Author;
-                     <dc:date> ?Date;
-                     <dc:description> ?Comment;
-                     <ma:gene> ?Gene;
-                     <ma:protein> ?Protein;
-                     <ma:goterm> ?GOterm;
-                     <ma:doi> ?Doi;
-                     <ma:url> ?Url
-                     }",sep = " ")
-  fetch_query <- SPARQL(endpoint2,magquery)$results
-  
-  output$myTableGene <- renderDataTable(
-    fetch_query
-  )
-  }
+
+
+  } # End of file
 shinyApp(ui, server)
