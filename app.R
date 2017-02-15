@@ -1471,6 +1471,7 @@ server <- function(input,output,session){
     genecard <- input$name_gene   #genecard <- "Flox15"
     organization <- isolate(input$selectInst_gene)    #organization <- "NMUB"
     
+    # Call the RGBOL API function
     manual_annotation(creator,geneid, genecard,description,organization)
    
     # Clear the texinputs after use
@@ -1479,13 +1480,6 @@ server <- function(input,output,session){
     updateTextInput(session,'gene_gene', value = "")
     updateTextInput(session,'name_gene', value = "")
     
-    #updateTextInput(session,'goterm', value = "")
-    #updateTextInput(session,'doi', value = "")
-    #updateTextInput(session,'url', value = "")
-    
   })
-  
-
-
   } # End of file
 shinyApp(ui, server)
