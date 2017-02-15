@@ -2,6 +2,7 @@ manual_annotation <- function(creator,geneid, genecard,description,organization)
 ### START THE RGBOL API
 domain <- Domain$new("")
 date <- Sys.Date()
+
 gene_link <- paste("http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/", geneid ,"",sep ="")
 try(aGene <- domain$life.gbol$createGene(gene_link))
 aGene$setGene(genecard)
