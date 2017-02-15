@@ -1,0 +1,12 @@
+prefix ssb: <http://csb.wur.nl/genome/>
+prefix uni: <http://purl.uniprot.org/core/>
+prefix uniec: <http://purl.uniprot.org/enzyme/>
+prefix idec: <http://identifiers.org/ec-code/>
+prefix biopax: <http://www.biopax.org/release/bp-level3.owl#> select ?header ?colname ?value ?feature
+where { #EnzDP features : ec-codes directly linked to feature
+?feature biopax:xref idec:5.4.2.11.
+?feature a ssb:EnzDP.
+?protein ssb:feature ?feature. 
+?cds ssb:header ?header.
+?cds ssb:protein ?protein.
+?feature ?colname ?value. }
