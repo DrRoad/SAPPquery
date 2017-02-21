@@ -159,10 +159,10 @@ ui <- fluidPage(
                                                                            selectInput(
                                                                              "selectInst", label = ("Select Institute"),
                                                                              choices = list(
-                                                                               "NMBU" = 'Norges miljø- og biovitenskapelige universitet',
-                                                                               "University of Sterling" = 'University of Sterling', 
-                                                                               "Wageningen University" = 'Wageningen University' ),
-                                                                             selected = 'Norges miljø- og biovitenskapelige universitet'
+                                                                               "NMBU" = 'NMBU',
+                                                                               "University of Sterling" = 'UOS', 
+                                                                               "Wageningen University" = 'WUR' ),
+                                                                             selected = 'NMBU'
                                                                            )
                                                                   )
                                                          ),
@@ -409,10 +409,10 @@ ui <- fluidPage(
                                                                            selectInput( # ER þetta ID
                                                                              "selectInst_prot", label = ("Select Institute"),
                                                                              choices = list(
-                                                                               "NMBU" = 'Norges miljø- og biovitenskapelige universitet',
-                                                                               "University of Sterling" = 'University of Sterling', 
-                                                                               "Wageningen University" = 'Wageningen University' ),
-                                                                             selected = 'Norges miljø- og biovitenskapelige universitet'
+                                                                               "NMBU" = 'NMBU',
+                                                                               "University of Sterling" = 'uos', 
+                                                                               "Wageningen University" = 'wur' ),
+                                                                             selected = 'NMBU'
                                                                            )
                                                                   )
                                                          ),
@@ -558,10 +558,10 @@ ui <- fluidPage(
                                                                  selectInput( 
                                                                    "selectInst_gene", label = ("Select Institute"),
                                                                    choices = list(
-                                                                     "NMBU" = 'Norges miljø- og biovitenskapelige universitet',
-                                                                     "University of Sterling" = 'University of Sterling', 
-                                                                     "Wageningen University" = 'Wageningen University' ),
-                                                                   selected = 'Norges miljø- og biovitenskapelige universitet'
+                                                                     "Norges miljø- og biovitenskapelige universitet" = 'NMBU',
+                                                                     "University of Sterling" = 'uos', 
+                                                                     "Wageningen University" = 'wur' ),
+                                                                   selected = 'NMBU'
                                                                  )
                                                         )
                                                ),
@@ -1090,9 +1090,9 @@ server <- function(input,output,session){
         ### Start querying and load results #############################
         queryfun <- function(basequery, ncbiprotein) {return(sub('changeme', ncbiprotein, basequery))}
         
-        results_interpro <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_interpro, ECnumber))))
-        results_interpro <- rename_head(results_interpro)
-        results_interpro <- clean_post(results_interpro)
+        #results_interpro <- data.table(sparql(endpoint, paste(prefixes,queryfun(basequery_interpro, ECnumber))))
+        #results_interpro <- rename_head(results_interpro)
+        #results_interpro <- clean_post(results_interpro)
         
         res <- SPARQL(endpoint, queryfun(basequery,ncbiprotein))
         
@@ -1469,11 +1469,33 @@ server <- function(input,output,session){
     description <- input$comment_gene   #description <- "This ia a comment"
     geneid <- input$gene_gene   #geneid <- "11000234"
     genecard <- input$name_gene   #genecard <- "Flox15"
-    organization <- isolate(input$selectInst_gene)    #organization <- "NMUB"
+    org <- isolate(input$selectInst_gene)    #organization <- "NMUB"
     
     # Call the RGBOL API function
-    manual_annotation(creator,geneid, genecard,description,organization)
-   
+    manual_annnotation(creator, geneid, genecard, description, org)
+    #test_annotation(creator,geneid, genecard,description,organization)
+    
+    query <- paste("
+          SELECT DISTINCT ?GeneId ?GeneName ?Author ?Org ?Time ?Comment where 
+          {
+            ?Genes <http://gbol.life#number> ?GeneId ;
+            <http://gbol.life#gene> ?GeneName ;
+            <http://gbol.life#xref> ?xreflink ;
+            <http://gbol.life#note> ?com .
+            ?com <http://gbol.life#text> ?Comment .
+            ?xreflink <http://gbol.life#name> ?Author ;
+            <http://www.w3.org/ns/prov#actedOnBehalfOf> ?orglink.
+            ?orglink <http://gbol.life#legalName> ?Org.
+            
+            ?ano <http://www.w3.org/ns/prov#wasAttributedTo> ?xreflink .
+            ?ano <http://www.w3.org/ns/prov#wasGeneratedBy> ?man_activity .
+            
+            ?man_activity <http://www.w3.org/ns/prov#endedAtTime> ?Time .
+            
+            } 
+        ",sep="")
+    
+    
     # Clear the texinputs after use
     updateTextInput(session,'author_gene', value = "")
     updateTextInput(session,'comment_gene', value = "")
