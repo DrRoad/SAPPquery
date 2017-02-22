@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 prefix ssb: <http://csb.wur.nl/genome/>
 prefix uni: <http://purl.uniprot.org/core/>
 prefix uniec: <http://purl.uniprot.org/enzyme/>
@@ -10,3 +11,24 @@ where { #EnzDP features : ec-codes directly linked to feature
 ?cds ssb:header ?header.
 ?cds ssb:protein ?protein.
 ?feature ?colname ?value. }
+=======
+
+                     prefix ma: <http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/>
+                     prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                     prefix dc: <http://purl.org/dc/elements/1.1/>
+                     
+                     select ?NCBIprotein ?Author ?Date ?Comment ?Gene ?Protein ?GOterm ?Doi ?Url
+                     where{
+                     <ma:NP_001130025.1> <id> ?id.
+                     ?id <ma:uid> ?uid;
+                     <ma:ncbinumber> ?NCBIprotein;
+                     <dc:creator> ?Author;
+                     <dc:date> ?Date;
+                     <dc:description> ?Comment;
+                     <ma:gene> ?Gene;
+                     <ma:protein> ?Protein;
+                     <ma:goterm> ?GOterm;
+                     <ma:doi> ?Doi;
+                     <ma:url> ?Url
+                     }
+>>>>>>> 0f94711235ab32da188bd282a3fd2d91ab6c833b
