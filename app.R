@@ -136,7 +136,7 @@ ui <- fluidPage(
                          tabsetPanel(
                            tabPanel("Input Annotations",
                               tags$div(class="ma",
-                                 tags$div(class = "container",style ="height:650px",
+                                 tags$div(class = "container",style ="min-height:650px",
                                     fluidRow(
                                       ### Input feilds
                                       column(12,
@@ -532,9 +532,9 @@ ui <- fluidPage(
     tabPanel(
       "Gene",
       tags$div(class = "content",
-        tags$div(class = " container setwidth",style ="height:650px", # tables ma
-             mainPanel(
-               tabsetPanel(
+        tags$div(class = " container setwidth",style ="min-height:650px", # tables ma
+             mainPanel(width = 12,
+               tabsetPanel( id ="geneTabset",
                  tabPanel("Manual Annotation",
                           fluidRow(
                             ### Input feilds
@@ -650,17 +650,16 @@ ui <- fluidPage(
                                                )
                                              )# tags div end
                                    )
-                            ),#tags from and columns ends
-                            ### Gene Database view 
-                            column (8,
-                                    mainPanel(style="margin-left:15px;padding-top:10px;",
-                                              tags$hr(),
-                                              dataTableOutput('contents_gene')) # mainPanel
-                            )
+                            )#tags from and columns ends
+
                           ) # Fluid row ends
                  ),
-                 tabPanel("View"
-                   
+                 tabPanel(width = 12, "View annotations",
+                          ### Gene Database view 
+                          column (12,
+                                  dataTableOutput('contents_gene')
+                                  
+                          )
                  )
                )
              )
@@ -1473,28 +1472,6 @@ server <- function(input,output,session){
     
     # Call the RGBOL API function
     manual_annnotation(creator, geneid, genecard, description, org)
-    #test_annotation(creator,geneid, genecard,description,organization)
-    
-    query <- paste("
-          SELECT DISTINCT ?GeneId ?GeneName ?Author ?Org ?Time ?Comment where 
-          {
-            ?Genes <http://gbol.life#number> ?GeneId ;
-            <http://gbol.life#gene> ?GeneName ;
-            <http://gbol.life#xref> ?xreflink ;
-            <http://gbol.life#note> ?com .
-            ?com <http://gbol.life#text> ?Comment .
-            ?xreflink <http://gbol.life#name> ?Author ;
-            <http://www.w3.org/ns/prov#actedOnBehalfOf> ?orglink.
-            ?orglink <http://gbol.life#legalName> ?Org.
-            
-            ?ano <http://www.w3.org/ns/prov#wasAttributedTo> ?xreflink .
-            ?ano <http://www.w3.org/ns/prov#wasGeneratedBy> ?man_activity .
-            
-            ?man_activity <http://www.w3.org/ns/prov#endedAtTime> ?Time .
-            
-            } 
-        ",sep="")
-    
     
     # Clear the texinputs after use
     updateTextInput(session,'author_gene', value = "")
@@ -1503,5 +1480,62 @@ server <- function(input,output,session){
     updateTextInput(session,'name_gene', value = "")
     
   })
+  
+  query <- paste("
+          SELECT DISTINCT ?GeneId ?GeneName ?Author ?Org ?Time ?Comment where
+          {
+            ?Genes <http://gbol.life#number> ?GeneId ;
+                   <http://gbol.life#gene> ?GeneName ;
+                   <http://gbol.life#xref> ?xreflink ;
+                   <http://gbol.life#note> ?com .
+            ?com <http://gbol.life#text> ?Comment .
+            ?xreflink <http://gbol.life#name> ?Author ;
+            <http://www.w3.org/ns/prov#actedOnBehalfOf> ?orglink.
+            ?orglink <http://gbol.life#legalName> ?Org.
+
+            ?ano <http://www.w3.org/ns/prov#wasAttributedTo> ?xreflink .
+            ?ano <http://www.w3.org/ns/prov#wasGeneratedBy> ?man_activity .
+            ?man_activity <http://www.w3.org/ns/prov#endedAtTime> ?Time .
+
+            }
+        ",sep="")
+  
+  
+  fetch_query <- SPARQL(endpoint2,query)$results
+  
+  fetch_query <-as.data.table(fetch_query)
+  output$contents_gene <- renderDataTable({
+    fetch_query
+  })
+
+  
+  # observeEvent(input$ma_submit_geneview,{
+  #   query <- paste("
+  #         SELECT DISTINCT ?GeneId ?GeneName ?Author ?Org ?Time ?Comment where 
+  #         {
+  #           ?Genes <http://gbol.life#number> ?GeneId ;
+  #                  <http://gbol.life#gene> ?GeneName ;
+  #                  <http://gbol.life#xref> ?xreflink ;
+  #                  <http://gbol.life#note> ?com .
+  #           ?com <http://gbol.life#text> ?Comment .
+  #           ?xreflink <http://gbol.life#name> ?Author ;
+  #           <http://www.w3.org/ns/prov#actedOnBehalfOf> ?orglink.
+  #           ?orglink <http://gbol.life#legalName> ?Org.
+  #           
+  #           ?ano <http://www.w3.org/ns/prov#wasAttributedTo> ?xreflink .
+  #           ?ano <http://www.w3.org/ns/prov#wasGeneratedBy> ?man_activity .
+  #           ?man_activity <http://www.w3.org/ns/prov#endedAtTime> ?Time .
+  #           
+  #           } 
+  #       ",sep="")
+  #   
+  #   
+  #   fetch_query <- SPARQL(endpoint2,query)$results
+  #   
+  #   fetch_query <-as.data.table(fetch_query)
+  #   output$contents_gene <- renderDataTable({
+  #     fetch_query
+  #   })
+  # })
   } # End of file
 shinyApp(ui, server)
