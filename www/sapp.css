@@ -1,3 +1,6 @@
+body{
+  max-width:1600px;
+}
 .banner{
   margin-left:auto;
   margin-right:auto;
@@ -42,13 +45,7 @@
 .setwidth{
   margin:0;
 }
-#submit{
-  
-  left: 80px;
-  top: 13px;
-  position: relative;
-}
-#submitprot{
+#submit, #submitprot{
   left: 80px;
   top: 13px;
   position: relative;
@@ -64,16 +61,16 @@
 .info{
   font-size:12px;
   position:relative;
-  left:-40px;
+    left:-40px;
 }
 .selectize-input{
-  width:220px;
+    width:220px;
 }
 .info li {
-       display: inline;
+    display: inline;
 }
 .info ul {
-      list-style-type: none;
+    list-style-type: none;
 }
 .tab-content{
   width:100%;
@@ -95,55 +92,56 @@
 .input_feilds{
   border-radius:0 0 0 0;
 }
+#author, #author_prot, #author_gene{
+  position:relative;
+  margin-top:-5px;
+}
 
-.a_d_predicate{
-  position:relative;
-  border-radius:0 0 0 0;
-  left:75px;
+.information_top > hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-top: 1px solid black;
 }
-.a_d_object{
+.gene{
   position:relative;
-  -webkit-left: 150px;
-  -moz-left: 150px;
-  left:150px;
-  border-radius:0 0 0 0;
 }
-#ma_submit{
+.protein{
   position:relative;
-  top:00px;
-  border-radius:0 0 0 0;
+  left:100px;
 }
-#ma_submit_prot{
+.reaction{
   position:relative;
-  -webkit-left: 225px;
-  -moz-left: 225px;
-  left:225px;
-  top:12.5px;
-  border-radius:0 0 0 0;
+  left:200px;
 }
-#delete_submit_prot,#delete_reaction{
-  position:relative;
-  -webkit-left: 225px;
-  -moz-left: 225px;
-  left:225px;
-  border-radius:0 0 0 0;
-  top:12.5px;
+#comment, #comment_prot, #comment_gene{
+  width:660px;
 }
-.delete_subject{
-  position:relative;
-  border-radius:0 0 0 0;
+.information_mid > hr {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-top: 1px solid black;  
 }
-.delete_predicate{
-  position:relative;
-  -webkit-left: 75px;
-  -moz-left: 75px;
-  left:75px;
-  border-radius:0 0 0 0;
+.selector_feild{
+    position: absolute;
+    left: 220px;
+    top: 55px;
 }
-.delete_object{
+.information_top{
   position:relative;
-  -webkit-left: 150px;
-  -moz-left: 150px;
-  left:150px;
-  border-radius:0 0 0 0; 
+  padding-top:10px;
+}
+.information_mid{
+  padding-top:10px;
+}
+.information_bottom{
+  padding-top:10px;
+}
+.goterm{position:relative;}
+.doi{position:relative;left:100px;}
+.url{position:relative;left:200px;}
+
+#ma_submit, #ma_submit_prot{
+  position:relative;
+  top:5px;
+  border-radius:0 0 0 0;
 }

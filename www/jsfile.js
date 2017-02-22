@@ -1,3 +1,7 @@
+// Alert function
+shinyjs.textAlert = function myAlert(x){
+  alert(x);
+};
 //Jquery function to allow using ENTER key with inputbox
 $(document).ready(function() {
   var $els = $("[data-proxy-click]");
