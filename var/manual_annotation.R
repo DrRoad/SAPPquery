@@ -25,10 +25,10 @@ manual_annnotation <- function(creator, geneid, genecard, description, org){
   if (org == "uos"){
     org_name <- "University of Sterling"
   }
-  if (org =="NMBU"){
+  if (org == "NMBU"){
     org_name <- "NMBU"
   }
-  if (org =="wur"){
+  if (org == "wur"){
     org_name <- "Wageningen University"
   }
   org_link <- paste("http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/",geneid,"/",org,"",sep="")
