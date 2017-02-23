@@ -7,8 +7,8 @@ library(data.table)
 library(DT)
 library(stringr)
 library(plyr)
-library(rJava)
-library(RGBOLApi)
+#library(rJava)
+#library(RGBOLApi)
 
 # Source hyperlink function and directories
 sapply(list.files(pattern="[.]R$", path="var/", full.names=TRUE), source)
@@ -532,140 +532,139 @@ ui <- fluidPage(
     tabPanel(
       "Gene",
       tags$div(class = "content",
-               tags$div(class = " container setwidth",style ="min-height:650px", # tables ma
-                        mainPanel(width = 12,
-                                  tabsetPanel( id ="geneTabset",
-                                               tabPanel("Manual Annotation",
-                                                        fluidRow(
-                                                          ### Input feilds
-                                                          column(12, 
-                                                                 tags$form(class = "form-inline",
-                                                                           tags$div( #class = "form-group",
-                                                                             tags$div(class="information_top",
-                                                                                      h4("Personal information and institute"),
-                                                                                      tags$hr(),
-                                                                                      tagAppendAttributes(
-                                                                                        class ="input_feilds",
-                                                                                        textInput(
-                                                                                          "author_gene", 
-                                                                                          "Author",
-                                                                                          width = "125px",
-                                                                                          value = "",
-                                                                                          placeholder = NULL
-                                                                                        )
-                                                                                      ),
-                                                                                      tags$div(class="selector_feild",
-                                                                                               selectInput( 
-                                                                                                 "selectInst_gene", label = ("Select Institute"),
-                                                                                                 choices = list(
-                                                                                                   "Norges miljø- og biovitenskapelige universitet" = 'NMBU',
-                                                                                                   "University of Sterling" = 'uos', 
-                                                                                                   "Wageningen University" = 'wur' ),
-                                                                                                 selected = 'NMBU'
-                                                                                               )
-                                                                                      )
-                                                                             ),
-                                                                             tags$div(class="information_mid",
-                                                                                      h4("Annotation information"),
-                                                                                      tags$hr(),
-                                                                                      tagAppendAttributes(
-                                                                                        class ="input_feilds",
-                                                                                        textInput(
-                                                                                          "comment_gene",
-                                                                                          "Comment",
-                                                                                          width = "250px",
-                                                                                          value = "",
-                                                                                          placeholder = NULL
-                                                                                        )
-                                                                                      ),
-                                                                                      tags$div(class="GPR",
-                                                                                               tagAppendAttributes(
-                                                                                                 class ="input_feilds gene",
-                                                                                                 textInput(
-                                                                                                   "gene_gene",
-                                                                                                   "GeneID",
-                                                                                                   width = "125px",
-                                                                                                   value = "",
-                                                                                                   placeholder = NULL
-                                                                                                 )
-                                                                                               ),
-                                                                                               tagAppendAttributes(
-                                                                                                 class ="input_feilds protein",
-                                                                                                 textInput(
-                                                                                                   "name_gene",
-                                                                                                   "Gene name",
-                                                                                                   width = "125px",
-                                                                                                   value = "",
-                                                                                                   placeholder = NULL
-                                                                                                 )
-                                                                                               ),
-                                                                                               tagAppendAttributes( style ="display:none",
-                                                                                                                    class ="input_feilds reaction",
-                                                                                                                    textInput(
-                                                                                                                      "reaction_gene",
-                                                                                                                      "Reaction",
-                                                                                                                      width = "125px",
-                                                                                                                      value = "",
-                                                                                                                      placeholder = NULL
-                                                                                                                    )
-                                                                                               )
-                                                                                      )
-                                                                             ),
-                                                                             tags$div(class="information_bottom", style ="display:none",
-                                                                                      tagAppendAttributes(
-                                                                                        class ="input_feilds goterm",
-                                                                                        textInput(
-                                                                                          "goterm_gen",
-                                                                                          "Goterm",
-                                                                                          width = "125px",
-                                                                                          value = "",
-                                                                                          placeholder = NULL
-                                                                                        )
-                                                                                      ),
-                                                                                      tagAppendAttributes(
-                                                                                        class ="input_feilds doi",
-                                                                                        textInput(
-                                                                                          "doi_prot",
-                                                                                          "Doi",
-                                                                                          width = "125px",
-                                                                                          value = "",
-                                                                                          placeholder = NULL
-                                                                                        )
-                                                                                      ),
-                                                                                      tagAppendAttributes(
-                                                                                        class ="input_feilds url",
-                                                                                        textInput(
-                                                                                          "url_prot",
-                                                                                          "URL",
-                                                                                          width = "125px",
-                                                                                          value = "",
-                                                                                          placeholder = NULL
-                                                                                        )
-                                                                                      )
-                                                                             ),
-                                                                             
-                                                                             tagAppendAttributes(
-                                                                               `data-proxy-click` = "ma_submit_gene",
-                                                                               actionButton("ma_submit_gene", "Submit")
-                                                                             )
-                                                                           )# tags div end
-                                                                 )
-                                                          )#tags from and columns ends
-                                                          
-                                                        ) # Fluid row ends
-                                               ),
-                                               tabPanel(width = 12, "View annotations", value ="gene_tab",
-                                                        ### Gene Database view 
-                                                        column (12,
-                                                                actionButton("ma_submit_geneview","view"),
-                                                                dataTableOutput('contents_gene')
-                                                                
+     tags$div(class = " container setwidth",style ="min-height:650px", # tables ma
+        mainPanel(width = 12,
+          tabsetPanel( id ="geneTabset",
+               tabPanel("Manual Annotation",
+                        fluidRow(
+                          ### Input feilds
+                          column(12, 
+                                 tags$form(class = "form-inline",
+                                           tags$div( #class = "form-group",
+                                             tags$div(class="information_top",
+                                                      h4("Personal information and institute"),
+                                                      tags$hr(),
+                                                      tagAppendAttributes(
+                                                        class ="input_feilds",
+                                                        textInput(
+                                                          "author_gene", 
+                                                          "Author",
+                                                          width = "125px",
+                                                          value = "",
+                                                          placeholder = NULL
                                                         )
-                                               )
-                                  )
-                        )
-                        
-               ) # div container ends
+                                                      ),
+                                                      tags$div(class="selector_feild",
+                                                               selectInput( 
+                                                                 "selectInst_gene", label = ("Select Institute"),
+                                                                 choices = list(
+                                                                   "Norges miljø- og biovitenskapelige universitet" = 'NMBU',
+                                                                   "University of Sterling" = 'uos', 
+                                                                   "Wageningen University" = 'wur' ),
+                                                                 selected = 'NMBU'
+                                                               )
+                                                      )
+                                             ),
+                                             tags$div(class="information_mid",
+                                                      h4("Annotation information"),
+                                                      tags$hr(),
+                                                      tagAppendAttributes(
+                                                        class ="input_feilds",
+                                                        textInput(
+                                                          "comment_gene",
+                                                          "Comment",
+                                                          width = "250px",
+                                                          value = "",
+                                                          placeholder = NULL
+                                                        )
+                                                      ),
+                                                      tags$div(class="GPR",
+                                                               tagAppendAttributes(
+                                                                 class ="input_feilds gene",
+                                                                 textInput(
+                                                                   "gene_gene",
+                                                                   "GeneID",
+                                                                   width = "125px",
+                                                                   value = "",
+                                                                   placeholder = NULL
+                                                                 )
+                                                               ),
+                                                               tagAppendAttributes(
+                                                                 class ="input_feilds protein",
+                                                                 textInput(
+                                                                   "name_gene",
+                                                                   "Gene name",
+                                                                   width = "125px",
+                                                                   value = "",
+                                                                   placeholder = NULL
+                                                                 )
+                                                               ),
+                                                               tagAppendAttributes( 
+                                                                 style ="display:none",
+                                                                  class ="input_feilds reaction",
+                                                                  textInput(
+                                                                    "reaction_gene",
+                                                                    "Reaction",
+                                                                    width = "125px",
+                                                                    value = "",
+                                                                    placeholder = NULL
+                                                                  )
+                                             )
+                                                      )
+                                             ),
+                                             tags$div(class="information_bottom", style ="display:none",
+                                                      tagAppendAttributes(
+                                                        class ="input_feilds goterm",
+                                                        textInput(
+                                                          "goterm_gen",
+                                                          "Goterm",
+                                                          width = "125px",
+                                                          value = "",
+                                                          placeholder = NULL
+                                                        )
+                                                      ),
+                                                      tagAppendAttributes(
+                                                        class ="input_feilds doi",
+                                                        textInput(
+                                                          "doi_prot",
+                                                          "Doi",
+                                                          width = "125px",
+                                                          value = "",
+                                                          placeholder = NULL
+                                                        )
+                                                      ),
+                                                      tagAppendAttributes(
+                                                        class ="input_feilds url",
+                                                        textInput(
+                                                          "url_prot",
+                                                          "URL",
+                                                          width = "125px",
+                                                          value = "",
+                                                          placeholder = NULL
+                                                        )
+                                                      )
+                                             ),
+                                             
+                                             tagAppendAttributes(
+                                               `data-proxy-click` = "ma_submit_gene",
+                                               actionButton("ma_submit_gene", "Submit")
+                                             )
+                                           )# tags div end
+                                 )
+                          )#tags from and columns ends
+                          
+                        ) # Fluid row ends
+                ),
+                tabPanel(width = 12, "View annotations", value ="gene_tab",
+                        ### Gene Database view 
+                        column (12,
+                                dataTableOutput('contents_gene')
+                                
+                )
+              )
+            )
+          )
+        ) # div container ends
       ) # Gene tabPanel ends
     ) # TabsetPanel ends
   ) # Navbar page
@@ -1470,20 +1469,21 @@ server <- function(input,output,session){
     geneid <- input$gene_gene   #geneid <- "11000234"
     genecard <- input$name_gene   #genecard <- "Flox15"
     org <- isolate(input$selectInst_gene)    #organization <- "NMUB"
-    
+
     # Call the RGBOL API function
     manual_annnotation(creator, geneid, genecard, description, org)
-    
+
     # Clear the texinputs after use
     updateTextInput(session,'author_gene', value = "")
     updateTextInput(session,'comment_gene', value = "")
     updateTextInput(session,'gene_gene', value = "")
     updateTextInput(session,'name_gene', value = "")
-    
+
   })
-  observeEvent(input$ma_submit_geneview,{
-    query <- paste("
-          SELECT DISTINCT ?GeneId ?GeneName ?Author ?Org ?Time ?Comment where 
+  
+  ### Querying and rendering Gene annotation to UI ##########################
+  query <- paste("
+          SELECT DISTINCT ?GeneId ?GeneName ?Author ?Org ?Time ?Comment where
           {
             ?Genes <http://gbol.life#number> ?GeneId ;
                    <http://gbol.life#gene> ?GeneName ;
@@ -1493,21 +1493,20 @@ server <- function(input,output,session){
             ?xreflink <http://gbol.life#name> ?Author ;
             <http://www.w3.org/ns/prov#actedOnBehalfOf> ?orglink.
             ?orglink <http://gbol.life#legalName> ?Org.
-            
+
             ?ano <http://www.w3.org/ns/prov#wasAttributedTo> ?xreflink .
             ?ano <http://www.w3.org/ns/prov#wasGeneratedBy> ?man_activity .
             ?man_activity <http://www.w3.org/ns/prov#endedAtTime> ?Time .
-            
-            } 
-        ",sep="")
-    
-    
-    fetch_query <- SPARQL(endpoint2,query)$results
-    
-    fetch_query <-as.data.table(fetch_query)
-    output$contents_gene <- renderDataTable({
-      fetch_query
-    })
+
+            }
+    ",sep="")
+ 
+  fetch_query <- SPARQL(endpoint2,query)$results
+   
+  fetch_query <-as.data.table(fetch_query)
+   output$contents_gene <- renderDataTable({
+   fetch_query
   })
-  } # End of file
+  
+  }# End of file
 shinyApp(ui, server)
