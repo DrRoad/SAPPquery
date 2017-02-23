@@ -1,3 +1,4 @@
+library(RGBOLApi)
 manual_annnotation <- function(creator, geneid, genecard, description, org){
   ### START THE RGBOL API
   domain <- Domain$new("")
@@ -62,11 +63,13 @@ manual_annnotation <- function(creator, geneid, genecard, description, org){
   #xrefProvenance$setNote(shQuote(date))
   
   filename <- paste(auth_link_clean,"-",rand, ".ttl",sep="")
-  file_link <- paste("c:/Rstudio/ShinyApps/SAPPquery/datafiles/",filename,"",sep="")
+  
+  ### This needs to bechanged if running locally.
+  file_link <- paste("/mnt/users/rohaftor/ShinyApps/SAPP/datafiles/",filename,"",sep="")
   domain$save(file_link)
   
   #curlup <- paste("fread(\'curl -X POST -H Content-Type:text/turtle -G http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql -T Robert-GNZuC.ttl\') ")
-  curlup <- paste("fread(\'curl -X POST -H Content-Type:text/turtle -G http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql -T ",file_link,"\') ")
-  try(eval(parse(text=curlup)))
+  #curlup <- paste("fread(\'curl -X POST -H Content-Type:text/turtle -G http://10.209.0.133:8080/blazegraph/namespace/ManualAnno/sparql -T ",file_link,"\') ")
+  #try(eval(parse(text=curlup)))
   domain$close()
 }
