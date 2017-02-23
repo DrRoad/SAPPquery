@@ -1481,9 +1481,8 @@ server <- function(input,output,session){
     updateTextInput(session,'name_gene', value = "")
     
   })
-  observeEvent(input$ma_submit_geneview,{
-    query <- paste("
-          SELECT DISTINCT ?GeneId ?GeneName ?Author ?Org ?Time ?Comment where 
+  query <- paste("
+          SELECT DISTINCT ?GeneId ?GeneName ?Author ?Org ?Time ?Comment where
           {
             ?Genes <http://gbol.life#number> ?GeneId ;
                    <http://gbol.life#gene> ?GeneName ;
@@ -1493,21 +1492,20 @@ server <- function(input,output,session){
             ?xreflink <http://gbol.life#name> ?Author ;
             <http://www.w3.org/ns/prov#actedOnBehalfOf> ?orglink.
             ?orglink <http://gbol.life#legalName> ?Org.
-            
+
             ?ano <http://www.w3.org/ns/prov#wasAttributedTo> ?xreflink .
             ?ano <http://www.w3.org/ns/prov#wasGeneratedBy> ?man_activity .
             ?man_activity <http://www.w3.org/ns/prov#endedAtTime> ?Time .
-            
-            } 
-        ",sep="")
-    
-    
-    fetch_query <- SPARQL(endpoint2,query)$results
-    
-    fetch_query <-as.data.table(fetch_query)
-    output$contents_gene <- renderDataTable({
-      fetch_query
-    })
+
+            }
+    ",sep="")
+  
+  fetch_query <- SPARQL(endpoint2,query)$results
+  
+  fetch_query <-as.data.table(fetch_query)
+  output$contents_gene <- renderDataTable({
+    fetch_query
   })
-  } # End of file
+  
+  }# End of file
 shinyApp(ui, server)
