@@ -1,4 +1,4 @@
-library(RGBOLApi)
+
 manual_annnotation <- function(creator, geneid, genecard, description, org){
   ### START THE RGBOL API
   domain <- Domain$new("")
