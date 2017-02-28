@@ -9,7 +9,6 @@ library(stringr)
 library(plyr)
 library(rJava)
 library(RGBOLApi)
-library(shinysky)
 
 # Source hyperlink function and directories
 sapply(list.files(pattern="[.]R$", path="var/", full.names=TRUE), source)
@@ -1446,9 +1445,8 @@ server <- function(input,output,session){
                      }",sep="")
 
     fetch_query <- SPARQL(endpoint2,maquery)$results
-
-    fetch_query <-as.data.table(fetch_query)
-    output$ma_table_prot <- renderDataTable({
+    fetch_query <- as.data.table(fetch_query)
+     output$ma_table_prot <- renderDataTable({
       fetch_query
     })
     # Update text field after a submition and set value to empty
@@ -1470,10 +1468,11 @@ server <- function(input,output,session){
     geneid <- input$gene_gene   #geneid <- "11000234"
     genecard <- input$name_gene   #genecard <- "Flox15"
     org <- isolate(input$selectInst_gene)    #organization <- "NMUB"
-
+    prot <- ""
+    ecnumber <- ""
     # Call the RGBOL API function
-    manual_annnotation(creator, geneid, genecard, description, org)
-
+    manual_annnotation(creator, geneid, genecard, description, org, prot, ecnumber)
+    
     # Clear the texinputs after use
     updateTextInput(session,'author_gene', value = "")
     updateTextInput(session,'comment_gene', value = "")
@@ -1484,30 +1483,28 @@ server <- function(input,output,session){
 
   ### Querying and rendering Gene annotation to UI ##########################
   query <- paste("
-          SELECT DISTINCT ?GeneId ?GeneName ?Author ?Org ?Time ?Comment where
-          {
-            ?Genes <http://gbol.life#number> ?GeneId ;
-                   <http://gbol.life#gene> ?GeneName ;
-                   <http://gbol.life#xref> ?xreflink ;
-                   <http://gbol.life#note> ?com .
-            ?com <http://gbol.life#text> ?Comment .
-            ?xreflink <http://gbol.life#name> ?Author ;
-            <http://www.w3.org/ns/prov#actedOnBehalfOf> ?orglink.
-            ?orglink <http://gbol.life#legalName> ?Org.
-
-            ?ano <http://www.w3.org/ns/prov#wasAttributedTo> ?xreflink .
-            ?ano <http://www.w3.org/ns/prov#wasGeneratedBy> ?man_activity .
-            ?man_activity <http://www.w3.org/ns/prov#endedAtTime> ?Time .
-
+            SELECT ?GeneID ?GeneName ?Protein ?Author ?Org ?Comment where {
+              ?gene	<http://gbol.life#number> ?GeneID .
+                             ?gene   <http://gbol.life#gene>	?GeneName .
+                             ?gene <http://gbol.life#xref> ?author .
+                             ?author <http://gbol.life#name> ?Author .
+                             ?author <http://www.w3.org/ns/prov#actedOnBehalfOf> ?org .
+                             ?org 	<http://gbol.life#legalName> ?Org .
+                             ?gene <http://gbol.life#note>	?comment .
+                             ?comment <http://gbol.life#text> ?Comment .
+                             ?gene <http://gbol.life#xref>	?protein .
+                             ?protein <http://gbol.life#protein_id> ?Protein .
             }
-    ",sep="")
 
+                 ",sep="")
+  
   fetch_query <- SPARQL(endpoint2,query)$results
 
   fetch_query <-as.data.table(fetch_query)
-   output$contents_gene <- renderDataTable({
-   fetch_query
+  output$contents_gene <- renderDataTable({
+    fetch_query
   })
   
-  }
+}
+
 shinyApp(ui, server)
